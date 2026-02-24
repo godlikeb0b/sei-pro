@@ -28,6 +28,7 @@
             <li><a href="#options-functions"><i class="fas fa-cog"></i> Geral</a></li>
             <li><a href="#options-database"><i class="fas fa-database"></i> Base de Dados</a></li>
             <li><a href="#options-complements"><i class="fas fa-puzzle-piece"></i> Complementos</a></li>
+            <li><a href="#options-prompts"><i class="fas fa-robot"></i> Prompts IA</a></li>
         </ul>
         <div id="options-database">
             <div id="options-profile">
@@ -60,6 +61,7 @@
                                 <!-- <option value="processos">Processos</option> -->
                                 <option value="openai">Chat GPT (Open AI)</option>
                                 <option value="gemini">Gemini (Google)</option>
+                                <option value="ollama">Ollama / LiteLLM (Local)</option>
                             </select>
                         </td>
                     </tr>
@@ -117,6 +119,14 @@
                             <i id="sca-passRevealBtn-0" class="option-ref passRevealBtn fas fa-eye" style="margin-top: 8px;"></i>
                         </td>
                     </tr>
+                    <tr class="ai-platform" style="display:none;">
+                        <th>
+                            <label class="option-ref" id="sca-label-MODEL_AI-0" for="sca-MODEL_AI-0">Modelo de IA</label>
+                        </th>
+                        <td>
+                            <input id="sca-MODEL_AI-0" class="sca-MODEL_AI option-ref input-config-pro" type="text" placeholder="Ex: gpt-4o, gemini-2.0-flash, llama3.2" data-name-input="MODEL_AI" value="" style="width: 100%;"/>
+                        </td>
+                    </tr>
                     <tr>
                         <td colspan="2">
                             <hr>
@@ -142,9 +152,9 @@
                         </p>
                     </td>
                     <td>
-                           <div class="onoffswitch">
-                               <input type="checkbox" data-name="gerenciaratividades" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_gerenciaratividades" tabindex="0" checked>
-                               <label class="onoff-switch-label" for="itemConfigGeral_gerenciaratividades"></label>
+                           <div class="infraAncoraSigla">
+                               <input type="checkbox" data-name="gerenciaratividades" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_gerenciaratividades" tabindex="0" checked>
+                               <label class="infraTd" for="itemConfigGeral_gerenciaratividades"></label>
                            </div>
                     </td>
                 </tr>
@@ -156,9 +166,9 @@
                         </p>
                     </td>
                     <td>
-                           <div class="onoffswitch">
-                               <input type="checkbox" data-name="gerenciarprojetos" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_gerenciarprojetos" tabindex="0" checked>
-                               <label class="onoff-switch-label" for="itemConfigGeral_gerenciarprojetos"></label>
+                           <div class="infraAncoraSigla">
+                               <input type="checkbox" data-name="gerenciarprojetos" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_gerenciarprojetos" tabindex="0" checked>
+                               <label class="infraTd" for="itemConfigGeral_gerenciarprojetos"></label>
                            </div>
                     </td>
                 </tr>
@@ -170,9 +180,9 @@
                         </p>
                     </td>
                     <td>
-                           <div class="onoffswitch">
-                               <input type="checkbox" data-name="gerenciarprescricoes" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_gerenciarprescricoes" tabindex="0" checked>
-                               <label class="onoff-switch-label" for="itemConfigGeral_gerenciarprescricoes"></label>
+                           <div class="infraAncoraSigla">
+                               <input type="checkbox" data-name="gerenciarprescricoes" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_gerenciarprescricoes" tabindex="0" checked>
+                               <label class="infraTd" for="itemConfigGeral_gerenciarprescricoes"></label>
                            </div>
                     </td>
                 </tr>
@@ -184,9 +194,9 @@
                         </p>
                     </td>
                     <td>
-                           <div class="onoffswitch">
-                               <input type="checkbox" data-name="debugpage" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_debugpage" tabindex="0">
-                               <label class="onoff-switch-label" for="itemConfigGeral_debugpage"></label>
+                           <div class="infraAncoraSigla">
+                               <input type="checkbox" data-name="debugpage" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_debugpage" tabindex="0">
+                               <label class="infraTd" for="itemConfigGeral_debugpage"></label>
                            </div>
                     </td>
                 </tr>
@@ -198,9 +208,9 @@
                         </p>
                     </td>
                     <td>
-                           <div class="onoffswitch">
-                               <input type="checkbox" data-name="disablequery" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_disablequery" tabindex="0">
-                               <label class="onoff-switch-label" for="itemConfigGeral_disablequery"></label>
+                           <div class="infraAncoraSigla">
+                               <input type="checkbox" data-name="disablequery" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_disablequery" tabindex="0">
+                               <label class="infraTd" for="itemConfigGeral_disablequery"></label>
                            </div>
                     </td>
                 </tr>
@@ -212,9 +222,9 @@
                         </p>
                     </td>
                     <td>
-                           <div class="onoffswitch">
-                               <input type="checkbox" data-name="gerenciarformularios" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_gerenciarformularios" tabindex="0" checked>
-                               <label class="onoff-switch-label" for="itemConfigGeral_gerenciarformularios"></label>
+                           <div class="infraAncoraSigla">
+                               <input type="checkbox" data-name="gerenciarformularios" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_gerenciarformularios" tabindex="0" checked>
+                               <label class="infraTd" for="itemConfigGeral_gerenciarformularios"></label>
                            </div>
                     </td>
                 </tr>
@@ -226,9 +236,9 @@
                         </p>
                     </td>
                     <td>
-                           <div class="onoffswitch">
-                               <input type="checkbox" data-name="sincronizarprocessos" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_sincronizarprocessos" tabindex="0" checked>
-                               <label class="onoff-switch-label" for="itemConfigGeral_sincronizarprocessos"></label>
+                           <div class="infraAncoraSigla">
+                               <input type="checkbox" data-name="sincronizarprocessos" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_sincronizarprocessos" tabindex="0" checked>
+                               <label class="infraTd" for="itemConfigGeral_sincronizarprocessos"></label>
                            </div>
                     </td>
                 </tr>
@@ -240,9 +250,9 @@
                         </p>
                     </td>
                     <td>
-                           <div class="onoffswitch">
-                               <input type="checkbox" data-name="natjus" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_natjus" tabindex="0">
-                               <label class="onoff-switch-label" for="itemConfigGeral_natjus"></label>
+                           <div class="infraAncoraSigla">
+                               <input type="checkbox" data-name="natjus" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_natjus" tabindex="0">
+                               <label class="infraTd" for="itemConfigGeral_natjus"></label>
                            </div>
                     </td>
                 </tr>
@@ -261,9 +271,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="gerenciarfavoritos" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_gerenciarfavoritos" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_gerenciarfavoritos"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="gerenciarfavoritos" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_gerenciarfavoritos" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_gerenciarfavoritos"></label>
                                    </div>
                             </td>
                         </tr>
@@ -275,9 +285,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="gerenciarprazos" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_gerenciarprazos" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_gerenciarprazos"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="gerenciarprazos" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_gerenciarprazos" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_gerenciarprazos"></label>
                                    </div>
                             </td>
                         </tr>
@@ -289,9 +299,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="reaberturaprogramada" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_reaberturaprogramada" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_reaberturaprogramada"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="reaberturaprogramada" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_reaberturaprogramada" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_reaberturaprogramada"></label>
                                    </div>
                             </td>
                         </tr>
@@ -320,9 +330,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="marcar_naolido" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_marcar_naolido" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_marcar_naolido"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="marcar_naolido" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_marcar_naolido" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_marcar_naolido"></label>
                                    </div>
                             </td>
                         </tr>
@@ -334,9 +344,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="agruparlista" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_agruparlista" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_agruparlista"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="agruparlista" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_agruparlista" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_agruparlista"></label>
                                    </div>
                             </td>
                         </tr>
@@ -348,9 +358,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="menurapido" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_menurapido" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_menurapido"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="menurapido" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_menurapido" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_menurapido"></label>
                                    </div>
                             </td>
                         </tr>
@@ -362,9 +372,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="removepaginacao" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_removepaginacao" tabindex="0" >
-                                       <label class="onoff-switch-label" for="itemConfigGeral_removepaginacao"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="removepaginacao" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_removepaginacao" tabindex="0" >
+                                       <label class="infraTd" for="itemConfigGeral_removepaginacao"></label>
                                    </div>
                             </td>
                         </tr>
@@ -376,9 +386,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="rolageminfinita" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_rolageminfinita" tabindex="0" >
-                                       <label class="onoff-switch-label" for="itemConfigGeral_rolageminfinita"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="rolageminfinita" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_rolageminfinita" tabindex="0" >
+                                       <label class="infraTd" for="itemConfigGeral_rolageminfinita"></label>
                                    </div>
                             </td>
                         </tr>
@@ -390,9 +400,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="menususpenso" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_menususpenso" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_menususpenso"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="menususpenso" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_menususpenso" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_menususpenso"></label>
                                    </div>
                             </td>
                         </tr>
@@ -404,9 +414,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="ordenarmenu" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_ordenarmenu" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_ordenarmenu"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="ordenarmenu" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_ordenarmenu" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_ordenarmenu"></label>
                                    </div>
                             </td>
                         </tr>
@@ -418,9 +428,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="ordernartabela" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_ordernartabela" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_ordernartabela"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="ordernartabela" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_ordernartabela" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_ordernartabela"></label>
                                    </div>
                             </td>
                         </tr>
@@ -432,9 +442,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="nomesusuarios" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_nomesusuarios" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_nomesusuarios"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="nomesusuarios" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_nomesusuarios" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_nomesusuarios"></label>
                                    </div>
                             </td>
                         </tr>
@@ -446,9 +456,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="especificaprocesso" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_especificaprocesso" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_especificaprocesso"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="especificaprocesso" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_especificaprocesso" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_especificaprocesso"></label>
                                    </div>
                             </td>
                         </tr>
@@ -460,9 +470,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="contadoricone" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_contadoricone" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_contadoricone"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="contadoricone" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_contadoricone" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_contadoricone"></label>
                                    </div>
                             </td>
                         </tr>
@@ -474,9 +484,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="historicoproc" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_historicoproc" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_historicoproc"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="historicoproc" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_historicoproc" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_historicoproc"></label>
                                    </div>
                             </td>
                         </tr>
@@ -488,9 +498,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="substituiselecao" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_substituiselecao" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_substituiselecao"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="substituiselecao" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_substituiselecao" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_substituiselecao"></label>
                                    </div>
                             </td>
                         </tr>
@@ -502,9 +512,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="trocaunidade" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_trocaunidade" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_trocaunidade"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="trocaunidade" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_trocaunidade" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_trocaunidade"></label>
                                    </div>
                             </td>
                         </tr>
@@ -516,9 +526,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="coresmarcadores" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_coresmarcadores" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_coresmarcadores"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="coresmarcadores" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_coresmarcadores" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_coresmarcadores"></label>
                                    </div>
                             </td>
                         </tr>
@@ -530,9 +540,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="autopreenchersenha" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_autopreenchersenha" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_autopreenchersenha"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="autopreenchersenha" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_autopreenchersenha" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_autopreenchersenha"></label>
                                    </div>
                             </td>
                         </tr>
@@ -549,9 +559,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="ferramentasia" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_ferramentasia" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_ferramentasia"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="ferramentasia" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_ferramentasia" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_ferramentasia"></label>
                                    </div>
                             </td>
                         </tr>
@@ -563,9 +573,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="revisaotexto" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_revisaotexto" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_revisaotexto"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="revisaotexto" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_revisaotexto" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_revisaotexto"></label>
                                    </div>
                             </td>
                         </tr>
@@ -577,9 +587,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="escrivainterativa" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_escrivainterativa" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_escrivainterativa"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="escrivainterativa" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_escrivainterativa" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_escrivainterativa"></label>
                                    </div>
                             </td>
                         </tr>
@@ -591,9 +601,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="ditado" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_ditado" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_ditado"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="ditado" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_ditado" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_ditado"></label>
                                    </div>
                             </td>
                         </tr>
@@ -605,9 +615,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="editarlinks" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_editarlinks" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_editarlinks"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="editarlinks" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_editarlinks" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_editarlinks"></label>
                                    </div>
                             </td>
                         </tr>
@@ -658,9 +668,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="teclasatalho" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_teclasatalho" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_teclasatalho"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="teclasatalho" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_teclasatalho" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_teclasatalho"></label>
                                    </div>
                             </td>
                         </tr>
@@ -693,9 +703,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="editarimagens" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_editarimagens" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_editarimagens"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="editarimagens" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_editarimagens" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_editarimagens"></label>
                                    </div>
                             </td>
                         </tr>
@@ -724,9 +734,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="estilolegistica" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_estilolegistica" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_estilolegistica"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="estilolegistica" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_estilolegistica" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_estilolegistica"></label>
                                    </div>
                             </td>
                         </tr>
@@ -743,9 +753,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="acoesemlote" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_acoesemlote" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_acoesemlote"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="acoesemlote" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_acoesemlote" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_acoesemlote"></label>
                                    </div>
                             </td>
                         </tr>
@@ -757,9 +767,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="documentosemlote" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_documentosemlote" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_documentosemlote"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="documentosemlote" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_documentosemlote" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_documentosemlote"></label>
                                    </div>
                             </td>
                         </tr>
@@ -771,9 +781,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="comparardocumentos" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_comparardocumentos" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_comparardocumentos"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="comparardocumentos" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_comparardocumentos" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_comparardocumentos"></label>
                                    </div>
                             </td>
                         </tr>
@@ -785,9 +795,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="uploaddocsexternos" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_uploaddocsexternos" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_uploaddocsexternos"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="uploaddocsexternos" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_uploaddocsexternos" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_uploaddocsexternos"></label>
                                    </div>
                             </td>
                         </tr>
@@ -799,9 +809,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="sortbeforeupload" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_sortbeforeupload" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_sortbeforeupload"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="sortbeforeupload" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_sortbeforeupload" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_sortbeforeupload"></label>
                                    </div>
                             </td>
                         </tr>
@@ -813,9 +823,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="infoarvore" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_infoarvore" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_infoarvore"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="infoarvore" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_infoarvore" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_infoarvore"></label>
                                    </div>
                             </td>
                         </tr>
@@ -827,9 +837,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="resizearvore" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_resizearvore" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_resizearvore"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="resizearvore" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_resizearvore" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_resizearvore"></label>
                                    </div>
                             </td>
                         </tr>
@@ -841,9 +851,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="duaslinhas" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_duaslinhas" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_duaslinhas"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="duaslinhas" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_duaslinhas" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_duaslinhas"></label>
                                    </div>
                             </td>
                         </tr>
@@ -855,9 +865,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="numerar_documentos" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_numerar_documentos" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_numerar_documentos"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="numerar_documentos" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_numerar_documentos" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_numerar_documentos"></label>
                                    </div>
                             </td>
                         </tr>
@@ -869,9 +879,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="urlamigavel" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_urlamigavel" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_urlamigavel"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="urlamigavel" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_urlamigavel" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_urlamigavel"></label>
                                    </div>
                             </td>
                         </tr>
@@ -883,9 +893,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="naoassinados" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_naoassinados" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_naoassinados"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="naoassinados" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_naoassinados" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_naoassinados"></label>
                                    </div>
                             </td>
                         </tr>
@@ -897,9 +907,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="linhanumerada" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_linhanumerada" tabindex="0">
-                                       <label class="onoff-switch-label" for="itemConfigGeral_linhanumerada"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="linhanumerada" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_linhanumerada" tabindex="0">
+                                       <label class="infraTd" for="itemConfigGeral_linhanumerada"></label>
                                    </div>
                             </td>
                         </tr>
@@ -911,9 +921,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="certidaosigilo" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_certidaosigilo" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_certidaosigilo"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="certidaosigilo" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_certidaosigilo" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_certidaosigilo"></label>
                                    </div>
                             </td>
                         </tr>
@@ -942,9 +952,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="movericone" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_movericone" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_movericone"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="movericone" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_movericone" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_movericone"></label>
                                    </div>
                             </td>
                         </tr>
@@ -956,9 +966,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="visualizarzip" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_visualizarzip" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_visualizarzip"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="visualizarzip" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_visualizarzip" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_visualizarzip"></label>
                                    </div>
                             </td>
                         </tr>
@@ -970,9 +980,9 @@
                                 </p>
                             </td>
                             <td>
-                                   <div class="onoffswitch">
-                                       <input type="checkbox" data-name="newdocdefault" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_newdocdefault" tabindex="0" checked>
-                                       <label class="onoff-switch-label" for="itemConfigGeral_newdocdefault"></label>
+                                   <div class="infraAncoraSigla">
+                                       <input type="checkbox" data-name="newdocdefault" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_newdocdefault" tabindex="0" checked>
+                                       <label class="infraTd" for="itemConfigGeral_newdocdefault"></label>
                                    </div>
                             </td>
                         </tr>
@@ -1031,9 +1041,9 @@
                                         </span>
                                     </td>
                                     <td style="width: 40%;">
-                                           <div class="onoffswitch">
-                                               <input type="checkbox" data-name="newdoctoday" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_newdoctoday" tabindex="0" checked>
-                                               <label class="onoff-switch-label" for="itemConfigGeral_newdoctoday"></label>
+                                           <div class="infraAncoraSigla">
+                                               <input type="checkbox" data-name="newdoctoday" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_newdoctoday" tabindex="0" checked>
+                                               <label class="infraTd" for="itemConfigGeral_newdoctoday"></label>
                                            </div>
                                     </td>
                                 </tr>
@@ -1044,9 +1054,9 @@
                                         </span>
                                     </td>
                                     <td style="width: 40%;">
-                                           <div class="onoffswitch">
-                                               <input type="checkbox" data-name="newdocnivel" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_newdocnivel" tabindex="0" checked>
-                                               <label class="onoff-switch-label" for="itemConfigGeral_newdocnivel"></label>
+                                           <div class="infraAncoraSigla">
+                                               <input type="checkbox" data-name="newdocnivel" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_newdocnivel" tabindex="0" checked>
+                                               <label class="infraTd" for="itemConfigGeral_newdocnivel"></label>
                                            </div>
                                     </td>
                                 </tr>
@@ -1057,9 +1067,9 @@
                                         </span>
                                     </td>
                                     <td style="width: 40%;">
-                                           <div class="onoffswitch">
-                                               <input type="checkbox" data-name="newproc_selfunidade" name="onoffswitch" class="onoffswitch-checkbox" id="itemConfigGeral_newproc_selfunidade" tabindex="0" checked>
-                                               <label class="onoff-switch-label" for="itemConfigGeral_newproc_selfunidade"></label>
+                                           <div class="infraAncoraSigla">
+                                               <input type="checkbox" data-name="newproc_selfunidade" name="infraAncoraSigla" class="infraLinkOrgao" id="itemConfigGeral_newproc_selfunidade" tabindex="0" checked>
+                                               <label class="infraTd" for="itemConfigGeral_newproc_selfunidade"></label>
                                            </div>
                                     </td>
                                 </tr>
@@ -1080,6 +1090,52 @@
                     </table>
                 </div>
             </div>
+        </div>
+        <div id="options-prompts">
+            <table class="tableZebra" style="width: 100%; margin-bottom: 10px;">
+                <tr>
+                    <td colspan="2" style="padding: 10px 0 5px;">
+                        <strong><i class="fas fa-robot"></i> Instru&ccedil;&atilde;o do Sistema</strong>
+                        <p style="font-size: 11px; color: #888; margin: 2px 0 5px;">Define o comportamento base da IA para todas as consultas. Deixe em branco para usar o padr&atilde;o.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <textarea id="aiSystemInstruction" placeholder="Ex: Voc&ecirc; &eacute; um assistente jur&iacute;dico especializado em direito administrativo..." style="width: 100%; height: 75px; font-size: 12px; box-sizing: border-box;"></textarea>
+                    </td>
+                </tr>
+            </table>
+            <table style="width: 100%; margin-bottom: 5px;">
+                <tr>
+                    <td style="padding: 10px 0 5px;">
+                        <strong><i class="fas fa-list"></i> Prompts da IA</strong>
+                        <p style="font-size: 11px; color: #888; margin: 2px 0 5px;">Configure os prompts dispon&iacute;veis na janela de an&aacute;lise de IA. O <strong>Nome</strong> &eacute; exibido no menu; o <strong>Texto do Prompt</strong> &eacute; enviado &agrave; IA.</p>
+                    </td>
+                </tr>
+            </table>
+            <table id="prompts-table" style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                <thead>
+                    <tr style="background: #f0f0f0; border-bottom: 2px solid #ccc;">
+                        <th style="width: 40px; text-align: center; padding: 5px;"></th>
+                        <th style="width: 190px; text-align: left; padding: 5px;">Nome no menu</th>
+                        <th style="text-align: left; padding: 5px;">Texto do prompt (enviado &agrave; IA)</th>
+                        <th style="width: 50px; text-align: center; padding: 5px;"></th>
+                    </tr>
+                </thead>
+                <tbody id="prompts-list">
+                    <!-- Preenchido pelo JS -->
+                </tbody>
+            </table>
+            <table style="margin-top: 10px;">
+                <tr>
+                    <td>
+                        <button id="add-prompt"><i class="fas fa-plus"></i> Adicionar Prompt</button>
+                    </td>
+                    <td style="padding-left: 10px; font-size: 11px; color: #888;">
+                        Salve as configura&ccedil;&otilde;es para aplicar as altera&ccedil;&otilde;es nos prompts.
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
     <div class="importExport" style="margin: 10px auto; padding-bottom: 50px;">

@@ -31,7 +31,7 @@ var fileSystemContentPro = false;
 var delayCrash = false;
 var isProcUrgente = false;
 var isNewSEI = getIsNewSEI();
-var isSEI_5 = isNewSEI && getSeiVersionPro() && compareVersionNumbers(getSeiVersionPro(),'5') >= 0 ? true : false;
+var isSEI_5 = isNewSEI && getSeiVersionPro() && compareVersionNumbers(getSeiVersionPro(),'4') >= 0 ? true : false;
 const lnkInfraUnidade = $('#lnkInfraUnidade').attr('onclick');
 const infra_unidade_atual = lnkInfraUnidade ? getParamsUrlPro(lnkInfraUnidade.split("'")[1]).infra_unidade_atual : null;
 var siglaUnidadeAtual = isNewSEI ? $('#lnkInfraUnidade').text().trim() : $('#selInfraUnidades').find('option:selected').text().trim();
@@ -47,16 +47,17 @@ var nameDocInterno = isNewSEI ? 'documento_interno.svg' : 'sei_documento_interno
 var nomeInstituicao = isNewSEI ? $('#divInfraBarraSistema h6.infraCorBarraSuperior').eq(0).text().trim() : $('#divInfraBarraSuperior label').text().trim();
 var divComandos = isNewSEI && getSeiVersionPro() && compareVersionNumbers(getSeiVersionPro(),'4.1.0') >= 0 ? '#divBotoesControleProcessos' : '#divComandos';
 var ifrVisualizacao_ = isNewSEI && getSeiVersionPro() && compareVersionNumbers(getSeiVersionPro(),'4.1.0') >= 0 ? 'ifrConteudoVisualizacao' : 'ifrVisualizacao';
+var targetIframeVisualizacao_ = isSEI_5 ? 'ifrConteudoVisualizacao' : 'ifrVisualizacao';
 var $ifrVisualizacao = '#'+ifrVisualizacao_;
 var ifrArvoreHtml_ = isNewSEI && getSeiVersionPro() && compareVersionNumbers(getSeiVersionPro(),'4.1.0') >= 0 ? 'ifrVisualizacao' : 'ifrArvoreHtml';
 var $ifrArvoreHtml = '#'+ifrArvoreHtml_;
 var dialogIsDraggable = false;
 var tableHomeTimeout = 3000;
 var URL_SPRO = (typeof parent._P !== 'undefined' && parent._P() !== null && typeof parent._P().URL_SPRO !== 'undefined' && parent._P().URL_SPRO !== null) ? parent._P().URL_SPRO : undefined;
-var NAMESPACE_SPRO = (typeof parent._P !== 'undefined' && typeof parent._P().NAMESPACE_SPRO !== 'undefined') ? parent._P().NAMESPACE_SPRO : undefined;
-var URLPAGES_SPRO = (typeof parent._P !== 'undefined' && typeof parent._P().URLPAGES_SPRO !== 'undefined') ? parent._P().URLPAGES_SPRO : undefined;
-var VERSION_SPRO = (typeof parent._P !== 'undefined' && typeof parent._P().VERSION_SPRO !== 'undefined') ? parent._P().VERSION_SPRO : undefined;
-var ICON_SPRO = (typeof parent._P !== 'undefined' && typeof parent._P().ICON_SPRO !== 'undefined') ? parent._P().ICON_SPRO : undefined;
+var NAMESPACE_SPRO = (typeof parent._P !== 'undefined' && parent._P() !== null && typeof parent._P().NAMESPACE_SPRO !== 'undefined') ? parent._P().NAMESPACE_SPRO : undefined;
+var URLPAGES_SPRO = (typeof parent._P !== 'undefined' && parent._P() !== null && typeof parent._P().URLPAGES_SPRO !== 'undefined') ? parent._P().URLPAGES_SPRO : undefined;
+var VERSION_SPRO = (typeof parent._P !== 'undefined' && parent._P() !== null && typeof parent._P().VERSION_SPRO !== 'undefined') ? parent._P().VERSION_SPRO : undefined;
+var ICON_SPRO = (typeof parent._P !== 'undefined' && parent._P() !== null && typeof parent._P().ICON_SPRO !== 'undefined') ? parent._P().ICON_SPRO : undefined;
 var urlTxtPadrao = $(mainMenu+' a[href*="acao=texto_padrao_interno_listar"]').attr('href');
 
 var iconsFlashMenu = [
@@ -286,7 +287,7 @@ function getIsNewSEI() {
 
 // FUNÇÃO PARA OBTER O NÚMERO DO PROCESSO
 const getNumProcesso = () => {
-    const num_processo = $('#ifrArvore').length ? $('#ifrArvore').contents().find(`a[target="${ifrVisualizacao_}"]`).eq(0).text().trim() : dadosProcessoPro.propProcesso.hdnProtocoloFormatado;
+    const num_processo = $('#ifrArvore').length ? $('#ifrArvore').contents().find(`a[target="${targetIframeVisualizacao_}"]`).eq(0).text().trim() : dadosProcessoPro.propProcesso.hdnProtocoloFormatado;
     return num_processo;
 };
 
@@ -1443,55 +1444,8 @@ function chosenReparePosition(target = $('body')) {
         });
 }
 function setMenuSistemaView(force = false) {
-    /*
-    var checkMenu = $('#divInfraAreaTelaE').is(':visible');
-    $('#divInfraAreaTelaD').css('width',(checkMenu ? '79%' : '99%'));
-    if (checkMenu || force) {
-        // removeOptionsPro('panelMenuSistemaView');
-        $('#divInfraAreaTelaE').removeClass('menuSuspenso');
-        $('#divInfraBarraSistemaE').removeClass('barSuspenso').removeClass('barSuspenso_show');
-    } else {
-        // setOptionsPro('panelMenuSistemaView', 'active');
-        $('#divInfraAreaTelaE').addClass('menuSuspenso');
-        $('#divInfraBarraSistemaE').addClass('barSuspenso');
-    }
-    */
 }
 function hideMenuSistemaView() {
-    /*
-    if ($('#divInfraAreaTelaE').length > 0) {
-        $('#lnkInfraMenuSistema').unbind().on("click", function () {
-            setMenuSistemaView();
-        });
-        if (getOptionsPro('panelMenuSistemaView') == 'active' && !$('#divInfraAreaTelaE').is(':visible')) {
-            $('#divInfraAreaTelaE').addClass('menuSuspenso');
-            $('#divInfraBarraSistemaE').addClass('barSuspenso').removeClass('barSuspenso_show');
-        }
-        $('#divInfraBarraSistemaE').unbind().on('click', function(event){
-            event.stopPropagation();
-            event.preventDefault();
-            if (!delayCrash) {
-                var menu = $('#divInfraAreaTelaE');
-                if (!$(this).hasClass('barSuspenso')) {
-                    $(this).addClass('barSuspenso');
-                    menu.addClass('menuSuspenso');
-                    setOptionsPro('panelMenuSistemaView', 'active');
-                    $('#divInfraAreaTelaD').css('width','99%');
-                }
-                $('body').addClass('seiSlim_hidemenu');
-                if (menu.is(':visible')) {
-                    menu.hide("slide", { direction: "left" }, 300);
-                    $(this).removeClass('barSuspenso_show');
-                } else {
-                    menu.show("slide", { direction: "left" }, 300);
-                    $(this).addClass('barSuspenso_show');
-                }
-                delayCrash = true;
-                setTimeout(function(){ delayCrash = false }, 300);
-            }
-        });
-    }
-    */
 }
 function checkMenuSistemaView() {
     if ($('#divInfraAreaTelaE').is(':visible')) {
@@ -1698,7 +1652,7 @@ function extractDataFormulario(output = 'obj', allFields = false) {
                     }
                 }).join('') 
             : false;
-    var processo = $('#ifrArvore').contents().find(`a[target="${ifrVisualizacao_}"]`).eq(0).text().trim();
+    var processo = $('#ifrArvore').contents().find(`a[target="${targetIframeVisualizacao_}"]`).eq(0).text().trim();
     var objOut = {};
     var arrayOut = [];
     var fieldsOut = [];
@@ -2044,9 +1998,9 @@ function editDadosArvorePro_(this_ = false, parse = false) {
                         '               Reabertura programada?'+
                         '          </td>'+
                         '          <td>'+
-                        '              <div class="onoffswitch" style="float: right;">'+
-                        '                  <input type="checkbox" onchange="configDatesSwitchChangeReabertura(this)" name="onoffswitch" class="onoffswitch-checkbox" id="configDatesBox_setreopen" data-type="setdate" tabindex="0" '+(force || configAcomp ? 'checked' : '')+'>'+
-                        '                  <label class="onoff-switch-label" for="configDatesBox_setreopen"></label>'+
+                        '              <div class="infraAncoraSigla" style="float: right;">'+
+                        '                  <input type="checkbox" onchange="configDatesSwitchChangeReabertura(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="configDatesBox_setreopen" data-type="setdate" tabindex="0" '+(force || configAcomp ? 'checked' : '')+'>'+
+                        '                  <label class="infraTd" for="configDatesBox_setreopen"></label>'+
                         '              </div>'+
                         '          </td>'+
                         '      </tr>'+
@@ -2124,9 +2078,9 @@ function editDadosArvorePro_(this_ = false, parse = false) {
                         '               Controlar Prazo?'+
                         '          </td>'+
                         '          <td>'+
-                        '              <div class="onoffswitch" style="float: right;">'+
-                        '                  <input type="checkbox" onchange="configDatesSwitchChangePrazo(this)" name="onoffswitch" class="onoffswitch-checkbox" id="configDatesBox_setdate" data-type="setdate" tabindex="0" '+(checkPrazo ? 'checked' : '')+'>'+
-                        '                  <label class="onoff-switch-label" for="configDatesBox_setdate"></label>'+
+                        '              <div class="infraAncoraSigla" style="float: right;">'+
+                        '                  <input type="checkbox" onchange="configDatesSwitchChangePrazo(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="configDatesBox_setdate" data-type="setdate" tabindex="0" '+(checkPrazo ? 'checked' : '')+'>'+
+                        '                  <label class="infraTd" for="configDatesBox_setdate"></label>'+
                         '              </div>'+
                         '          </td>'+
                         '      </tr>'+
@@ -2136,9 +2090,9 @@ function editDadosArvorePro_(this_ = false, parse = false) {
                         '               Controlar vencimento?'+
                         '          </td>'+
                         '          <td>'+
-                        '              <div class="onoffswitch" style="float: right;">'+
-                        '                  <input type="checkbox" onchange="configDatesSwitchChangeHome(this)" name="onoffswitch" class="onoffswitch-checkbox" id="configDatesBox_duesetdate" data-type="duesetdate" tabindex="0" '+(datePrazoDue ? 'checked' : '')+'>'+
-                        '                  <label class="onoff-switch-label" for="configDatesBox_duesetdate"></label>'+
+                        '              <div class="infraAncoraSigla" style="float: right;">'+
+                        '                  <input type="checkbox" onchange="configDatesSwitchChangeHome(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="configDatesBox_duesetdate" data-type="duesetdate" tabindex="0" '+(datePrazoDue ? 'checked' : '')+'>'+
+                        '                  <label class="infraTd" for="configDatesBox_duesetdate"></label>'+
                         '              </div>'+
                         '          </td>'+
                         '      </tr>'+
@@ -3908,13 +3862,13 @@ function waitLoadProSimple(Elem, func, TimeOut = 6000) {
 }
 function execArvorePro(func) {
   var Obj = $("#ifrArvore").contents();
-  waitLoadPro(Obj, "#divArvore > div", `a[target="${ifrVisualizacao_}"]`, function () {
+  waitLoadPro(Obj, "#divArvore > div", `a[target="${targetIframeVisualizacao_}"]`, function () {
     func();
     Obj.find("#divArvore > div > div:hidden").each(function () {
       var idPasta = Obj.find(this).attr("id").substr(3);
     //   console.log(idPasta + " -> evento click adicionado.");
       Obj.find("#ancjoin" + idPasta).on('click', function () {
-        waitLoadPro(Obj, "#div" + idPasta, `a[target="${ifrVisualizacao_}"]`, func);
+        waitLoadPro(Obj, "#div" + idPasta, `a[target="${targetIframeVisualizacao_}"]`, func);
         // console.log(idPasta + " -> evento click adicionado2."); 
         $('#ifrArvore')[0].contentWindow.getLinksArvorePasta(idPasta);
         $(this).off("click");
@@ -3984,8 +3938,8 @@ function initCheckDadosProcesso(TimeOut = 9000) {
         getCheckDadosProcesso();
     } else {
         setTimeout(function(){ 
-            initInfraImg(TimeOut - 100); 
-            if(typeof verifyConfigValue !== 'undefined' && verifyConfigValue('debugpage'))console.log('Reload initInfraImg'); 
+            initCheckDadosProcesso(TimeOut - 100); 
+            if(typeof verifyConfigValue !== 'undefined' && verifyConfigValue('debugpage'))console.log('Reload initCheckDadosProcesso'); 
         }, 500);
     }
 }
@@ -5264,9 +5218,9 @@ function configFlashMenuTrPro(value, color, state, mode) {
             '               <p><i class="iconPopup fa '+value.icon+' '+color+'"></i><span class="info">'+value.name+'</span></p>'+
             '           </td>'+
             '           <td>'+
-            '               <div class="onoffswitch">'+
-            '                   <input type="checkbox" data-name="'+value.name+'" onchange="changeFlashMenuPro(this, \''+mode+'\')" name="onoffswitch" class="onoffswitch-checkbox" id="itemFlashMenu_'+index+'" tabindex="0" '+state+'>'+
-            '                   <label class="onoff-switch-label" for="itemFlashMenu_'+index+'"></label>'+
+            '               <div class="infraAncoraSigla">'+
+            '                   <input type="checkbox" data-name="'+value.name+'" onchange="changeFlashMenuPro(this, \''+mode+'\')" name="infraAncoraSigla" class="infraLinkOrgao" id="itemFlashMenu_'+index+'" tabindex="0" '+state+'>'+
+            '                   <label class="infraTd" for="itemFlashMenu_'+index+'"></label>'+
             '               </div>'+
             '           </td>'+
             '        </tr>';
@@ -5286,9 +5240,9 @@ function configFlashMenuPro(arrayLinksArvore) {
                     '   </ul>'+
                     '   <div id="tabs_flashMenuPro">'+
                     '       <h3 style="font-weight: bold; color: #666;">'+
-                    '          <div class="onoffswitch" style="position: absolute;right: 30px;">'+
-                    '              <input type="checkbox" data-name="Ativar menu do processo" data-mode="menuproc" onchange="changeFlashMenuGeneralPro(this)" name="onoffswitch" class="onoffswitch-checkbox optionFlashMenu" id="optionFlashMenu_proc" tabindex="0" '+(getOptionsPro('optionsFlashMenu_menuproc') == 'disabled' ? '' : 'checked')+'>'+
-                    '              <label class="onoff-switch-label" for="optionFlashMenu_proc"></label>'+
+                    '          <div class="infraAncoraSigla" style="position: absolute;right: 30px;">'+
+                    '              <input type="checkbox" data-name="Ativar menu do processo" data-mode="menuproc" onchange="changeFlashMenuGeneralPro(this)" name="infraAncoraSigla" class="infraLinkOrgao optionFlashMenu" id="optionFlashMenu_proc" tabindex="0" '+(getOptionsPro('optionsFlashMenu_menuproc') == 'disabled' ? '' : 'checked')+'>'+
+                    '              <label class="infraTd" for="optionFlashMenu_proc"></label>'+
                     '          </div>'+
                     '          <i class="iconPopup fa fa-scroll cinzaColor"></i> Menu r\u00E1pido do processo'+
                     '       </h3>'+
@@ -5312,9 +5266,9 @@ function configFlashMenuPro(arrayLinksArvore) {
     
         textBox +=  '   <div id="tabs_flashDocMenuPro">'+
                     '       <h3 style="font-weight: bold;color: #666;">'+
-                    '          <div class="onoffswitch" style="position: absolute;right: 30px;">'+
-                    '              <input type="checkbox" data-name="Ativar menu dos documentos" data-mode="menudoc" onchange="changeFlashMenuGeneralPro(this)" name="onoffswitch" class="onoffswitch-checkbox optionFlashMenu" id="optionFlashMenu_doc" tabindex="0" '+(getOptionsPro('optionsFlashMenu_menudoc') == 'disabled' ? '' : 'checked')+'>'+
-                    '              <label class="onoff-switch-label" for="optionFlashMenu_doc"></label>'+
+                    '          <div class="infraAncoraSigla" style="position: absolute;right: 30px;">'+
+                    '              <input type="checkbox" data-name="Ativar menu dos documentos" data-mode="menudoc" onchange="changeFlashMenuGeneralPro(this)" name="infraAncoraSigla" class="infraLinkOrgao optionFlashMenu" id="optionFlashMenu_doc" tabindex="0" '+(getOptionsPro('optionsFlashMenu_menudoc') == 'disabled' ? '' : 'checked')+'>'+
+                    '              <label class="infraTd" for="optionFlashMenu_doc"></label>'+
                     '          </div>'+
                     '          <i class="iconPopup fa fa-file cinzaColor"></i> Menu r\u00E1pido dos documentos'+
                     '       </h3>'+
@@ -5341,9 +5295,9 @@ function configFlashMenuPro(arrayLinksArvore) {
 
         textBox +=  '   <div id="tabs_flashDocArvorePro">'+
                     '       <h3 style="font-weight: bold;color: #666;">'+
-                    '          <div class="onoffswitch" style="position: absolute;right: 30px;">'+
-                    '              <input type="checkbox" data-name="Ativar icones na arvore" data-mode="iconstree" onchange="changeFlashMenuGeneralPro(this)" name="onoffswitch" class="onoffswitch-checkbox optionFlashMenu" id="optionFlashMenu_tree" tabindex="0" '+(getOptionsPro('optionsFlashMenu_iconstree') == 'disabled' ? '' : 'checked')+'>'+
-                    '              <label class="onoff-switch-label" for="optionFlashMenu_tree"></label>'+
+                    '          <div class="infraAncoraSigla" style="position: absolute;right: 30px;">'+
+                    '              <input type="checkbox" data-name="Ativar icones na arvore" data-mode="iconstree" onchange="changeFlashMenuGeneralPro(this)" name="infraAncoraSigla" class="infraLinkOrgao optionFlashMenu" id="optionFlashMenu_tree" tabindex="0" '+(getOptionsPro('optionsFlashMenu_iconstree') == 'disabled' ? '' : 'checked')+'>'+
+                    '              <label class="infraTd" for="optionFlashMenu_tree"></label>'+
                     '          </div>'+
                     '          <i class="iconPopup fa fa-tree cinzaColor"></i> \u00CDcones r\u00E1pidos na \u00E1rvore'+
                     '       </h3>'+
@@ -5366,9 +5320,9 @@ function configFlashMenuPro(arrayLinksArvore) {
 
         textBox +=  '   <div id="tabs_flashPanelArvorePro">'+
                     '       <h3 style="font-weight: bold;color: #666;">'+
-                    '          <div class="onoffswitch" style="position: absolute;right: 30px;">'+
-                    '              <input type="checkbox" data-name="Ativar painel de informa\u00E7\u00F5es na arvore" data-mode="panelinfo" onchange="changeFlashMenuGeneralPro(this)" name="onoffswitch" class="onoffswitch-checkbox optionFlashMenu" id="optionFlashMenu_panelinfo" tabindex="0" '+(getOptionsPro('optionsFlashMenu_panelinfo') == 'disabled' ? '' : 'checked')+'>'+
-                    '              <label class="onoff-switch-label" for="optionFlashMenu_panelinfo"></label>'+
+                    '          <div class="infraAncoraSigla" style="position: absolute;right: 30px;">'+
+                    '              <input type="checkbox" data-name="Ativar painel de informa\u00E7\u00F5es na arvore" data-mode="panelinfo" onchange="changeFlashMenuGeneralPro(this)" name="infraAncoraSigla" class="infraLinkOrgao optionFlashMenu" id="optionFlashMenu_panelinfo" tabindex="0" '+(getOptionsPro('optionsFlashMenu_panelinfo') == 'disabled' ? '' : 'checked')+'>'+
+                    '              <label class="infraTd" for="optionFlashMenu_panelinfo"></label>'+
                     '          </div>'+
                     '          <i class="iconPopup fa fa-info-circle cinzaColor"></i> Painel de Informa\u00E7\u00F5es na \u00E1rvore'+
                     '       </h3>'+
@@ -5524,7 +5478,7 @@ function dialogCopyNewDoc(doc) {
                 text: "Copiar",
                 class: 'confirm ui-state-active',
                 open: function() {
-                    appendAutocompleteProc(this, $('#dialogBoxProcesso'));
+                    if (typeof objProcessosUnidadePro !== 'undefined' && objProcessosUnidadePro.length) appendAutocompleteProc(this, $('#dialogBoxProcesso'));
                 },
                 click: function() {
                     loadingButtonConfirm(true);
@@ -5763,18 +5717,40 @@ function markdownToHTML(markdown) {
     // CONVERTE *itálico*
     markdown = markdown.replace(/\*(.+?)\*/g, '<em>$1</em>');
   
+    // CONVERTE ~~texto tachado~~
+    markdown = markdown.replace(/~~(.+?)~~/g, '<del>$1</del>');
+  
     // CONVERTE QUEBRAS DE LINHA SIMPLES EM <br>
     markdown = markdown.replace(/\n{2,}/g, '</p><p>');
     markdown = markdown.replace(/\n/g, '<br>');
   
     // ENVOLVE TUDO EM <p> CASO SEJA TEXTO SOLTO
     return `<p>${markdown}</p>`;
-  }
+}
 function copyToClipboardWithBR(element) {
+    var html = element.clone().find('.copy_response').remove().end().html();
+    // Converte elementos de bloco em quebras de linha antes de remover as tags
+    html = html
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<\/p>/gi, '\n')
+        .replace(/<\/h[1-6]>/gi, '\n\n')
+        .replace(/<h[1-6][^>]*>/gi, '')
+        .replace(/<\/li>/gi, '\n')
+        .replace(/<li[^>]*>/gi, '\u2022 ')
+        .replace(/<\/tr>/gi, '\n')
+        .replace(/<\/td>/gi, '\t')
+        .replace(/<[^>]+>/g, '')        // Remove todas as tags restantes
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/\n{3,}/g, '\n\n')     // Máximo 2 quebras de linha seguidas
+        .trim();
     var $temp = $("<textarea>");
-    var brRegex = /<br\s*[\/]?>/gi;
     $("body").append($temp);
-    $temp.val(element.clone().find('.copy_response').remove().end().html().replace(brRegex, "\r\n")).select();
+    $temp.val(html).select();
     document.execCommand("copy");
     $temp.remove();
 }
@@ -7215,7 +7191,7 @@ function arrayDadosIframeDocumentosPro(ifrArvore, mode) {
 function getListDocumentosArvore(ifrArvore) {
     var processo = [];
     var dadosProcessoPro = pullDadosProcessoSession();
-    ifrArvore.find(`#divArvore a[target="${ifrVisualizacao_}"]`).each(function(index){
+    ifrArvore.find(`#divArvore a[target="${targetIframeVisualizacao_}"]`).each(function(index){
         var txt = $(this).text().trim();
         var text = txt.split(' ');
         var id_protocolo = $(this).attr('id').replace('anchor','');
@@ -7400,7 +7376,7 @@ function mergeAllAndamentosProcesso(callback = false) {
         var ifrArvore = _ifrArvore.contents();
         var arrayLinksArvoreAll = _ifrArvore[0].contentWindow.arrayLinksArvoreAll;
         var id_procedimento = getParamsUrlPro(_ifrArvore.attr('src')).id_procedimento;
-        var processo = ifrArvore.find(`a[target="${ifrVisualizacao_}"]`).eq(0).text().trim();
+        var processo = ifrArvore.find(`a[target="${targetIframeVisualizacao_}"]`).eq(0).text().trim();
         var linkHistorico = isSEI_5 
         ? ifrArvore.find('#divConsultarAndamento a').attr('onclick').match(/consultarAndamento\('([^']+)'\)/)?.[1]
         : typeof arrayLinksArvoreAll !== 'undefined' ? arrayLinksArvoreAll.filter(function(v){ return (v.indexOf('procedimento_consultar_historico') !== -1) }) : [];
@@ -8236,15 +8212,6 @@ function copyLinkProcesso(this_) {
     copyToClipboard(linkProc);
     _this.fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 }
-/*
-function verifyMenuSistemaView() {
-    var prefixoCookie = $('#hdnInfraPrefixoCookie').val();
-    if (infraLerCookie(prefixoCookie+'_menu_mostrar') == 'N' && $(mainMenu).is(':visible')) {
-        $('#lnkInfraMenuSistema').trigger('click');
-    }
-    checkMenuSistemaView();
-}
-*/
 function getDocsArvore_fillSelect(select, optionBlank = false, disableId = false, docExternoDisable = true, docExternoOnlyPDF = false) {
     let idRef = $('#ifrArvore').contents().find('#content .infraArvoreNoSelecionado').attr('id');
         idRef = typeof idRef !== 'undefined' ? idRef.replace('span','') : false;
@@ -8894,7 +8861,8 @@ function setHistoryProcessosPro(dadosProcessoPro) {
     localStorageStorePro('dadosHistoricoProcessoPro', dadosHistoricoProcessoPro);
 }
 function pullDadosProcessoSession() {
-    return getDadosProcessoSession() ? getDadosProcessoSession() : dadosProcessoPro;
+    const return_dadosProcessoPro = (dadosProcessoPro && typeof dadosProcessoPro === 'object' && Object.keys(dadosProcessoPro).length > 0) ? dadosProcessoPro : false;
+    return getDadosProcessoSession() ? getDadosProcessoSession() : return_dadosProcessoPro;
 }
 function getDadosProcessoSession() {
     var id_procedimento = getParamsUrlPro($('#ifrArvore').attr('src')).id_procedimento;
@@ -9051,7 +9019,7 @@ function getIfrArvoreDadosProcesso() {
         }
         var data_documento = (assinatura) ? assinatura : versao;
         
-        var processoLnk = ifrArvore.find(`a[target="${ifrVisualizacao_}"]`).eq(0);
+        var processoLnk = ifrArvore.find(`a[target="${targetIframeVisualizacao_}"]`).eq(0);
         var processo_sei = processoLnk.text().trim();
         var tipo = processoLnk.find('span').attr('title');
         var tipo = typeof tipo !== 'undefined' ? tipo.trim() : tipo;
@@ -10842,7 +10810,7 @@ function setNewDocDefault() {
         ifrVisualizacao.find('#txtProtocoloDocumentoTextoBase').removeAttr('maxlength'); // remove atributo de largura do campo de modelo de documento
 
     var form = ifrVisualizacao.find('#frmDocumentoCadastro');
-    var now = moment().format('DD/MM/YYYY');
+    var now = typeof moment !== 'undefined' ? moment().format('DD/MM/YYYY') : (function(d){ return [String(d.getDate()).padStart(2,'0'), String(d.getMonth()+1).padStart(2,'0'), d.getFullYear()].join('/'); })(new Date());
     if (form.length > 0 && ifrVisualizacao.find('#txtNumero').length ) {
         ifrVisualizacao.find('div.urgentePro').remove();
         ifrVisualizacao.find('#txtNumero').css('width','46%').attr('data-oldtext',ifrVisualizacao.find('#txtNumero').val()).after('<div class="urgentePro" style="right: 48%;top: 10px;" onclick="parent.addUrgentPro(this)" onmouseover="return infraTooltipMostrar(\'Adicionar/remover marca de Urg\u00EAncia\');" onmouseout="return infraTooltipOcultar();"></div>');
@@ -11410,9 +11378,9 @@ function openStyleBoxSlimPro_() {
                         '               <label for="iconLabel"><i class="iconPopup iconSwitch fas fa-text-width azulColor"></i>\u00CDcones com legenda:</label>'+
                         '           </td>'+
                         '           <td style="text-align: right;">'+
-                        '              <div class="onoffswitch" style="float: right;">'+
-                        '                  <input type="checkbox" onchange="setIconLabel(this)" name="onoffswitch" class="onoffswitch-checkbox" id="iconLabel" '+(localStorage.getItem('iconLabel') ? 'checked' : '')+'>'+
-                        '                  <label class="onoff-switch-label" for="iconLabel"></label>'+
+                        '              <div class="infraAncoraSigla" style="float: right;">'+
+                        '                  <input type="checkbox" onchange="setIconLabel(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="iconLabel" '+(localStorage.getItem('iconLabel') ? 'checked' : '')+'>'+
+                        '                  <label class="infraTd" for="iconLabel"></label>'+
                         '              </div>'+
                         '           </td>'+
                         '      </tr>'+
@@ -11421,9 +11389,9 @@ function openStyleBoxSlimPro_() {
                         '               <label for="darkModePro"><i class="iconPopup iconSwitch fas fa-moon azulColor"></i>Modo noturno:</label>'+
                         '           </td>'+
                         '           <td style="text-align: right;">'+
-                        '              <div class="onoffswitch" style="float: right;">'+
-                        '                  <input type="checkbox" onchange="setDarkModePro(this)" name="onoffswitch" class="onoffswitch-checkbox" id="darkModePro" '+(localStorage.getItem('darkModePro') ? 'checked' : '')+'>'+
-                        '                  <label class="onoff-switch-label" for="darkModePro"></label>'+
+                        '              <div class="infraAncoraSigla" style="float: right;">'+
+                        '                  <input type="checkbox" onchange="setDarkModePro(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="darkModePro" '+(localStorage.getItem('darkModePro') ? 'checked' : '')+'>'+
+                        '                  <label class="infraTd" for="darkModePro"></label>'+
                         '              </div>'+
                         '           </td>'+
                         '      </tr>'+
@@ -11432,9 +11400,9 @@ function openStyleBoxSlimPro_() {
                         '               <label for="seiBtnRight"><i class="iconPopup iconSwitch fas fa-grip-vertical azulColor"></i>Barra de Bot\u00F5es na Vertical:</label>'+
                         '           </td>'+
                         '           <td style="text-align: right;">'+
-                        '              <div class="onoffswitch" style="float: right;">'+
-                        '                  <input type="checkbox" onchange="setBtnRight(this)" name="onoffswitch" class="onoffswitch-checkbox" id="seiBtnRight" '+(localStorage.getItem('seiBtnRight') ? 'checked' : '')+'>'+
-                        '                  <label class="onoff-switch-label" for="seiBtnRight"></label>'+
+                        '              <div class="infraAncoraSigla" style="float: right;">'+
+                        '                  <input type="checkbox" onchange="setBtnRight(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="seiBtnRight" '+(localStorage.getItem('seiBtnRight') ? 'checked' : '')+'>'+
+                        '                  <label class="infraTd" for="seiBtnRight"></label>'+
                         '              </div>'+
                         '           </td>'+
                         '      </tr>'+
@@ -11919,10 +11887,32 @@ function setNewDoc(id_procedimento, id_tipo_documento, insertHtml = false, openP
                 var arrayLinksArvoreDoc = getLinksInText(textLink);
                 var urlNewDoc = arrayLinksArvoreDoc.filter(function(v){ return v.indexOf('acao=documento_escolher_tipo') !== -1 });
                 if (urlNewDoc) {
-                    $.ajax({ url: urlNewDoc }).done(function (htmlNewDoc) {
+                    $.ajax({ url: urlNewDoc }).done(async function (htmlNewDoc) {
                         let $htmlNewDoc = $(htmlNewDoc);
                         var urlDoc = $htmlNewDoc.find('a[href*="&id_serie='+id_tipo_documento+'&"]').attr('href');
                         console.log(urlDoc, id_tipo_documento);
+                        // Novo SEI: links diretos substituídos por formulário POST com hdnIdSerie
+                        if (typeof urlDoc === 'undefined') {
+                            var serieForm = $htmlNewDoc.find('#frmDocumentoEscolherTipo');
+                            if (serieForm.length) {
+                                var serieParam = {};
+                                serieForm.find("input[type=hidden]").each(function () {
+                                    if ($(this).attr('name') && $(this).attr('id').indexOf('hdn') !== -1) {
+                                        serieParam[$(this).attr('name')] = $(this).val();
+                                    }
+                                });
+                                serieParam.hdnIdSerie = id_tipo_documento;
+                                var xhrSerie = new XMLHttpRequest();
+                                await $.ajax({
+                                    method: 'POST',
+                                    data: serieParam,
+                                    url: serieForm.attr('action'),
+                                    contentType: 'application/x-www-form-urlencoded; charset=ISO-8859-1',
+                                    xhr: function() { return xhrSerie; }
+                                });
+                                urlDoc = xhrSerie.responseURL;
+                            }
+                        }
                             if (typeof urlDoc !== 'undefined') {
                                 $.ajax({ url: urlDoc }).done(function (htmlDoc) {
                                     var $htmlDoc = $(htmlDoc);
@@ -11980,25 +11970,20 @@ function setNewDoc(id_procedimento, id_tipo_documento, insertHtml = false, openP
                                             var ifrArvore = $('#ifrArvore');
                                             if (status) {
                                                 console.log('Documento gerado com sucesso');
-                                                var $htmlResult = $(htmlResult);
-                                                var urlEditor = [];
-                                                var idUser = false;
-                                                $.each($htmlResult.text().split('\n'), function(i, v){
-                                                    if (v.indexOf("atualizarArvore('") !== -1) {
-                                                        urlReload = v.split("'")[1];
-                                                    }
-                                                    if (v.indexOf("acao=editor_montar") !== -1) {
-                                                        urlEditor.push(v.split("'")[1]);
-                                                    }
-                                                    if (v.indexOf("janelaEditor_") !== -1) {
-                                                        idUser = v.split("_")[1];
-                                                    }
-                                                });
+                                                // Usar regex no HTML bruto para extrair editor/user (mais robusto que jQuery.text() no novo SEI)
+                                                var urlEditorMatch = htmlResult.match(/controlador\.php\?acao=editor_montar&[^'"<\s]*/);
+                                                var urlEditor = urlEditorMatch ? [urlEditorMatch[0]] : [];
+                                                var idUserMatch = htmlResult.match(/janelaEditor_([^_'"]+)_/);
+                                                var idUser = idUserMatch ? idUserMatch[1] : false;
+                                                var urlReloadMatch = htmlResult.match(/atualizarArvore\('([^']+)'\)/);
+                                                if (urlReloadMatch) urlReload = urlReloadMatch[1];
                                                 if (urlEditor.length > 0 && idUser) {
                                                     var acao_pro = insertHtml ? 'set_automatico' : 'set_new_doc';
                                                     if (openProc) openLinkNewTab(href);
                                                     openWindowEditor(urlEditor[0]+'#&acao_pro='+acao_pro, idUser);
                                                     if (insertHtml) alertaBoxPro('Sucess', 'check-circle', 'Documento gerado com sucesso', refreshDocViewArvorePro);
+                                                } else if (insertHtml) {
+                                                    alertaBoxPro('Sucess', 'check-circle', 'Documento criado. Abra-o manualmente para inserir o conte\u00FAdo', refreshDocViewArvorePro);
                                                 }
                                                 if (ifrArvore.length) {
                                                     if (urlReload) {
@@ -12146,70 +12131,6 @@ function setSizeIframePro(tLeft, saveSize = true) {
     if (saveSize) setOptionsPro('iframeSizeSlimPro',tLeft);
     if (isNewSEI) $('#divIframeArvore').css('width',tLeft);
 }
-/*
-if (verifyConfigValue('menususpenso')) {
-    function infraMenuSistemaEsquema(bolInicializar, tipo){
-        var mostrarMenu = null;
-        var tamanhoDados = null;
-        var title = '';
-
-        if (bolInicializar == undefined) bolInicializar = false; 
-
-        var lnkMenu = document.getElementById('lnkInfraMenuSistema');
-        if (lnkMenu == null) return;
-
-        var hdnCookie = document.getElementById('hdnInfraPrefixoCookie');
-        if (hdnCookie == null) return;
-
-        var prefixoCookie = hdnCookie.value;
-        infraTooltipOcultar();
-
-        if (bolInicializar){
-            //le do cookie
-            if (infraLerCookie(prefixoCookie+'_menu_mostrar')!='N'){
-                tamanhoDados = document.getElementById("divInfraAreaTelaD").offsetWidth/document.getElementById("divInfraAreaTela").offsetWidth;
-                tamanhoDados = Math.floor(tamanhoDados*Math.pow(10,2));
-                infraCriarCookie(prefixoCookie+'_menu_tamanho_dados',tamanhoDados,1);
-                title = 'Ocultar';
-            } else {
-                title = 'Exibir';
-            }
-        } else {
-            if (tipo == undefined || tipo == null) {
-                if (document.getElementById('divInfraAreaTelaE').style.display == ''){
-                    tipo = 'Ocultar';
-                } else {
-                    tipo = 'Exibir';
-                }
-            }
-            if (tipo == 'Ocultar' || (getOptionsPro('panelMenuSistemaView') !== false && !$('#divInfraBarraSistemaE').hasClass('barSuspenso'))) {
-                document.getElementById('divInfraAreaTelaE').style.display='none';
-                document.getElementById('divInfraAreaTelaD').style.width = '99%';
-                infraCriarCookie(prefixoCookie+'_menu_mostrar','N',1);
-                title = 'Exibir';
-                if ($('#divInfraBarraSistemaE').hasClass('barSuspenso')) removeOptionsPro('panelMenuSistemaView');
-                if (getOptionsPro('panelMenuSistemaView')) setMenuSistemaView();
-            } else {
-                setMenuSistemaView(true);
-                removeOptionsPro('panelMenuSistemaView');
-
-                tamanhoDados = infraLerCookie(prefixoCookie+'_menu_tamanho_dados');
-                document.getElementById('divInfraAreaTelaE').style.display='';
-
-                if (tamanhoDados == null) tamanhoDados = infraClientWidth() * 0.80;
-
-                document.getElementById('divInfraAreaTelaD').style.width = tamanhoDados+'%';
-                infraCriarCookie(prefixoCookie+'_menu_mostrar','S',1);
-                title = 'Ocultar';
-            }
-            if (tipo == 'Ocultar') setOptionsPro('panelMenuSistemaView', 'active');
-                infraResize();
-                checkMenuSistemaView();
-        }
-        // console.log('***** infraMenuSistemaEsquema',bolInicializar, tipo, prefixoCookie, tamanhoDados, window.name);
-    }
-}
-*/
 function infraMenuSistemaEsquema() {
     return false;
 }
@@ -12301,7 +12222,7 @@ function checkMenuSEIPro() {
     }, 500);
 
     // OCULTA O ÍCONE NATIVO DE EXIBIR MENU DO SISTEMA PARA O SEI > 5.0
-    $('img[title="Exibir/Ocultar Menu do Sistema"]').hide()
+    if (verifyConfigValue('menususpenso')) $('img[title="Exibir/Ocultar Menu do Sistema"]').hide();
 }
 
 // SUBSTITUI CAMPOS PERSONALIZADOS
@@ -12643,6 +12564,7 @@ if (localStorage.getItem('seiSlim') && !isNewSEI) {
 function loadResizeIframeArvoreNewSEI() {
     if ($("#divIframeArvore").length) {
         setTimeout(() => {
+            if (typeof $().resizable !== 'function') return;
             $("#divIframeArvore").resizable({
                 handles: "e,  w",
                 minWidth: 200,

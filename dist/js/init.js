@@ -7,8 +7,9 @@ var frmEditor5Exists = $('html script[charset="utf-8"]').last().html().includes(
 $.getScript(getUrlExtension("js/lib/jquery-3.4.1.min.js"));
 $.getScript(getUrlExtension("js/lib/jmespath.min.js"));
 $.getScript(getUrlExtension("js/lib/purify.min.js"));
-$.getScript(getUrlExtension("js/lib/moment.min.js"));
-$.getScript(getUrlExtension("js/lib/moment-duration-format.min.js"));
+$.getScript(getUrlExtension("js/lib/moment.min.js"), function() {
+    $.getScript(getUrlExtension("js/lib/moment-duration-format.min.js"));
+});
 $.getScript(getUrlExtension("js/lib/crypto-js.min.js"));
 $.getScript(getUrlExtension("js/lib/diff2html.min.js"));
 $.getScript(getUrlExtension("js/sei-pro-docs-lote.js"));
@@ -47,22 +48,46 @@ function getManifestExtension() {
         return browser.runtime.getManifest();
     }
 }
+function loadAIPromptsToStorage(aiPromptsPro) {
+    if (aiPromptsPro && aiPromptsPro !== '') {
+        try {
+            var aiData = JSON.parse(aiPromptsPro);
+            if (aiData.systemInstruction) {
+                localStorage.setItem('aiSystemInstruction', aiData.systemInstruction);
+            } else {
+                localStorage.removeItem('aiSystemInstruction');
+            }
+            if (aiData.prompts && aiData.prompts.length > 0) {
+                localStorage.setItem('aiPromptsPro_prompts', JSON.stringify(aiData.prompts));
+            } else {
+                localStorage.removeItem('aiPromptsPro_prompts');
+            }
+        } catch(e) { /* ignore parse errors */ }
+    } else {
+        localStorage.removeItem('aiSystemInstruction');
+        localStorage.removeItem('aiPromptsPro_prompts');
+    }
+}
 function loadConfigPro() {
     if (typeof browser === "undefined") {
         chrome.storage.sync.get({
-            dataValues: ''
-        }, function(items) {  
+            dataValues: '',
+            aiPromptsPro: ''
+        }, function(items) {
             if (typeof items !== 'undefined') {
                 localStorage.setItem('configBasePro', items.dataValues);
+                loadAIPromptsToStorage(items.aiPromptsPro);
                 loadDataBaseProStorage(items);
             }
         });
     } else {
         browser.storage.sync.get({
-            dataValues: ''
-        }, function(items) {  
+            dataValues: '',
+            aiPromptsPro: ''
+        }, function(items) {
             if (typeof items !== 'undefined') {
                 localStorage.setItem('configBasePro', items.dataValues);
+                loadAIPromptsToStorage(items.aiPromptsPro);
                 loadDataBaseProStorage(items);
             }
         });
@@ -75,6 +100,7 @@ function loadScriptDataBasePro(dataValues) {
     var dataValues_ProcessosSheets = jmespath.search(dataValues, "[?baseTipo=='processos'] | [?conexaoTipo=='sheets'] | [?API_KEY!='']");
     var dataValues_OpenAI = jmespath.search(dataValues, "[?baseTipo=='openai'] | [?conexaoTipo=='api'] | [?KEY_USER!='']");
     var dataValues_Gemini = jmespath.search(dataValues, "[?baseTipo=='gemini'] | [?conexaoTipo=='api'] | [?KEY_USER!='']");
+    var dataValues_Ollama = jmespath.search(dataValues, "[?baseTipo=='ollama'] | [?conexaoTipo=='api']");
     var dataValues_AtividadesAPI = jmespath.search(dataValues, "[?baseTipo=='atividades'] | [?conexaoTipo=='api'||conexaoTipo=='googleapi']");
     // console.log(dataValues, dataValues_ProjetosSheets);
     if (dataValues_ProjetosSheets.length > 0 && checkConfigValue('gerenciarprojetos')) {
@@ -107,6 +133,11 @@ function loadScriptDataBasePro(dataValues) {
     } else {
         removeLocalStoragePlataformAI('gemini');
     }
+    if (dataValues_Ollama.length > 0 && checkConfigValue('ferramentasia')) {
+        loadDataBaseApiPlataformAIPro(dataValues_Ollama, 'ollama');
+    } else {
+        removeLocalStoragePlataformAI('ollama');
+    }
 }
 function removeLocalStoragePlataformAI(plataform) { 
     localStorageRemovePro('configBasePro_'+plataform);
@@ -117,7 +148,7 @@ function loadDataBaseApiPlataformAIPro(dataValues, plataform = 'openai' ) {
                     ? dataValues[perfilSelected] 
                     : false;
     if (perfil && checkConfigValue('ferramentasia')) {
-        localStorage.setItem('configBasePro_'+plataform, JSON.stringify({URL_API: perfil.URL_API, KEY_USER: perfil.KEY_USER}));
+        localStorage.setItem('configBasePro_'+plataform, JSON.stringify({URL_API: perfil.URL_API, KEY_USER: perfil.KEY_USER, MODEL_AI: perfil.MODEL_AI || ''}));
     } else {
         removeLocalStoragePlataformAI(plataform);
     }

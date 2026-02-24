@@ -248,9 +248,9 @@ var docsLote_printDataCrossing = async () => {
                             <tr>
                                 <td style="width: 50px;">
                                     <div class="divInputForceNames" style="margin: 10px 0; font-size: 9pt;transform: scale(0.9);">
-                                        <div class="onoffswitch" style="float: left;margin-right: 1em;">
-                                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="checkForceNames" data-type="setdate" tabindex="0">
-                                        <label class="onoff-switch-label" for="checkForceNames"></label>
+                                        <div class="infraAncoraSigla" style="float: left;margin-right: 1em;">
+                                        <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="checkForceNames" data-type="setdate" tabindex="0">
+                                        <label class="infraTd" for="checkForceNames"></label>
                                     </div>
                                 </td>
                                 <td>
@@ -282,9 +282,9 @@ var docsLote_printDataCrossing = async () => {
                         <tr>
                             <td style="width: 50px;">
                                 <div style="margin: 10px 0;font-size: 9pt;display: inline-block;transform: scale(0.9);float: left;">
-                                    <div class="onoffswitch" style="float: left;margin-right: 1em;margin-left: 0;">
-                                        <input type="checkbox" onchange="changeNewProcs(this)" name="onoffswitch" class="onoffswitch-checkbox" id="newProcs" data-type="setdate" tabindex="0">
-                                        <label class="onoff-switch-label" for="newProcs"></label>
+                                    <div class="infraAncoraSigla" style="float: left;margin-right: 1em;margin-left: 0;">
+                                        <input type="checkbox" onchange="changeNewProcs(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="newProcs" data-type="setdate" tabindex="0">
+                                        <label class="infraTd" for="newProcs"></label>
                                     </div>
                                 </div>
                             </td>
@@ -561,9 +561,13 @@ var docsLote_formNewDoc = async (urlFormNewDoc, data, dataDialog) => {
     params.txtDescricao = '';
     if (dataDialog.nrTxtPadrao) {
         params.selTextoPadrao = selectedModel.numero;
+        params.hdnIdTextoPadrao = selectedModel.numero;
     } else {
         params.txtProtocoloDocumentoTextoBase = selectedModel.numero;
     }
+    console.log('selectedModel', selectedModel);
+    console.log('dataDialog', dataDialog);
+    console.log('params', params);
 
     const regex = new RegExp(Object.keys(docsLote_normalChars).join('|'), 'g');
     // let nomeArvore = forceNames ? data[dataDialog.docsNames].replace(regex, (match) => docsLote_normalChars[match]).substring(0, 50) : data[dataDialog.docsNames].substring(0, 50);

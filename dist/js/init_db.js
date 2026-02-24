@@ -201,11 +201,11 @@ function observeAcaoPro() {
             // console.log(data);
             getOptionsSEIPro(data);
         } else if (param.base == 'gemini') {
-            var data = { 
-                type: "NEW_BASE", 
-                mode: param.mode, 
-                base: param.base, 
-                alert: true, 
+            var data = {
+                type: "NEW_BASE",
+                mode: param.mode,
+                base: param.base,
+                alert: true,
                 newItem: {
                     "baseName": "Gemini (Google)",
                     "baseTipo": "gemini",
@@ -218,6 +218,24 @@ function observeAcaoPro() {
                 }
             };
             // console.log(data);
+            getOptionsSEIPro(data);
+        } else if (param.base == 'ollama') {
+            var data = {
+                type: "NEW_BASE",
+                mode: param.mode,
+                base: param.base,
+                alert: true,
+                newItem: {
+                    "baseName": "Ollama / LiteLLM",
+                    "baseTipo": "ollama",
+                    "conexaoTipo": "api",
+                    "CLIENT_ID": "",
+                    "API_KEY": "",
+                    "spreadsheetId": "",
+                    "URL_API": param.url,
+                    "KEY_USER": param.token
+                }
+            };
             getOptionsSEIPro(data);
         }
     } else if (typeof param.acao_pro !== 'undefined' && param.acao_pro == 'set_database' && typeof param.client_id !== 'undefined') {

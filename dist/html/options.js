@@ -102,7 +102,8 @@ function save_options(reload) {
 		if ( checkInput == 0  ) { dataValues.push(input); }
     });
     dataValues.push({configGeral: changeConfigGeral()});
-        
+    saveAIPrompts();
+
     chrome.storage.sync.set({
         dataValues: JSON.stringify(dataValues)
     }, function() {
@@ -145,6 +146,7 @@ function restore_options() {
                         conexaoTipo.val(typeApi)
                         changeConexaoTipo(conexaoTipo);
                 }
+                changeBaseTipo(nProfile.find('.sca-baseTipo'));
             });
         });
         if (dataValues == null || dataValues.length == 0) {
@@ -240,6 +242,7 @@ function restore_options() {
             $('#newDoc_sigilo').show();
         }
         addActionsProfile();
+        loadAIPrompts();
     });
 }
 function actionRemoveProfile(idTable) {
@@ -282,6 +285,9 @@ function addActionsProfile() {
     $('.sca-conexaoTipo').unbind().on("change", function () {
         changeConexaoTipo(this);
     });
+    $('.sca-baseTipo').unbind().on("change", function () {
+        changeBaseTipo(this);
+    });
     $('.passRevealBtn').unbind().on("click", function () {
         passReveal(this);
     })
@@ -303,7 +309,7 @@ function passUpdate(this_) {
 }
 function changeConfigGeral() {
     var arrayShowItensMenu = [];
-    $('#options-functions').find('input[name="onoffswitch"]').each(function(){
+    $('#options-functions').find('input[name="infraAncoraSigla"]').each(function(){
         if ($(this).is(':checked')) {
             var value = true;
             $(this).closest('tr').find('.iconPopup').addClass('azulColor').removeClass('cinzaColor');
@@ -313,7 +319,7 @@ function changeConfigGeral() {
         }
         arrayShowItensMenu.push({name: $(this).attr('data-name'), value: value});
     });
-    $('#options-complements').find('input[name="onoffswitch"]').each(function(){
+    $('#options-complements').find('input[name="infraAncoraSigla"]').each(function(){
         if ($(this).is(':checked')) {
             var value = true;
             $(this).closest('tr').find('.iconPopup').addClass('azulColor').removeClass('cinzaColor');
@@ -380,6 +386,16 @@ function changeConexaoTipo(this_) {
         _parent.find('tr.api.keyuser').hide();
     }
 }
+function changeBaseTipo(this_) {
+    var _this = $(this_);
+    var _parent = _this.closest('table');
+    var baseTipo = _this.val();
+    if (baseTipo === 'openai' || baseTipo === 'gemini' || baseTipo === 'ollama') {
+        _parent.find('tr.ai-platform').show();
+    } else {
+        _parent.find('tr.ai-platform').hide().find('input').val('');
+    }
+}
 function passReveal(this_){
     var _this = $(this_);
     var _parent = _this.closest('td');
@@ -419,6 +435,127 @@ function setNamePage() {
     }
     console.log(manifest);
 }
+// =====================================================================
+// GERENCIAMENTO DE PROMPTS DE IA
+// =====================================================================
+function escapeAttrPro(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+function escapeHtmlPro(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+function getDefaultAIPrompts() {
+    return [
+        {id: 'resume',               name: 'Resuma:',                      prompt: 'O texto abaixo \u00e9 um processo administrativo.\nResuma seu conte\u00fado detalhadamente, destacando os pontos principais, as partes envolvidas e as decis\u00f5es tomadas.'},
+        {id: 'dados_sensiveis',      name: 'Dados sens\u00edveis (LGPD)',   prompt: 'Encontre dados sens\u00edveis no processo abaixo, de acordo com a LGPD.\nDados de empresas (nome, raz\u00e3o social, endere\u00e7o, CNPJ e s\u00f3cios) n\u00e3o s\u00e3o protegidos pela LGPD.\nCaso n\u00e3o encontre, diga apenas: "N\u00e3o foram encontrados dados sens\u00edveis no processo."\nCaso encontre, cite o nome do documento e liste os dados sens\u00edveis encontrados de forma objetiva.'},
+        {id: 'discorra',             name: 'Discorra sobre:',               prompt: 'O texto abaixo \u00e9 um processo administrativo.\nDiscorra detalhadamente sobre o tema abordado, pesquisando fontes e base legal aplic\u00e1vel, citando legisla\u00e7\u00e3o pertinente.'},
+        {id: 'erros_gramaticais',    name: 'Erros gramaticais:',            prompt: 'Encontre os erros gramaticais no texto abaixo.\nPara cada erro, cite o trecho com erro (tachado) e sua sugest\u00e3o de corre\u00e7\u00e3o (em negrito).'},
+        {id: 'amplie',               name: 'Amplie o conte\u00fado',        prompt: 'Reescreva e amplie o texto a seguir, em voz ativa, com corre\u00e7\u00f5es gramaticais, citando as fontes e adicionando coes\u00e3o \u00e0s ora\u00e7\u00f5es.'},
+        {id: 'linguagem_simples',    name: 'Linguagem simples',             prompt: 'Reformule o texto abaixo em linguagem simples, tornando-o acess\u00edvel ao p\u00fablico geral, sem jarg\u00f5es t\u00e9cnicos.'},
+        {id: 'sugira_encaminhamento',name: 'Sugira encaminhamento:',        prompt: 'O texto abaixo \u00e9 um processo administrativo.\nCom base no seu est\u00e1gio atual, sugira os pr\u00f3ximos encaminhamentos mais adequados, com justificativa.'},
+        {id: 'crie_parecer',         name: 'Crie um parecer t\u00e9cnico',  prompt: 'O texto abaixo \u00e9 um processo administrativo.\nCrie um Parecer t\u00e9cnico detalhado, cite fontes e legisla\u00e7\u00e3o, traga argumentos a favor e contr\u00e1rios sobre o tema.'},
+        {id: 'base_legal',           name: 'Base legal do tema',            prompt: 'Identifique e explique a base legal aplic\u00e1vel ao tema do texto abaixo, citando legisla\u00e7\u00e3o, jurisprud\u00eancia e doutrina pertinentes.'},
+        {id: 'analise_critica',      name: 'An\u00e1lise cr\u00edtica',     prompt: 'Fa\u00e7a uma an\u00e1lise cr\u00edtica detalhada sobre o tema do texto abaixo, avaliando pontos fortes, fracos, riscos e oportunidades.'},
+        {id: 'palavras_chave',       name: 'Palavras-chave:',               prompt: 'Extraia as principais palavras-chave do texto abaixo, listando-as em ordem de relev\u00e2ncia.'},
+        {id: 'traduza',              name: 'Traduza para portugu\u00eas',   prompt: 'Traduza para o portugu\u00eas brasileiro o texto abaixo, mantendo a fidelidade ao original.'},
+        {id: 'topico',               name: 'Estrutura de t\u00f3picos:',    prompt: 'Crie uma estrutura organizada de t\u00f3picos e subt\u00f3picos sobre o conte\u00fado do texto abaixo.'},
+        {id: 'converte_ata',         name: 'Converte em ata',               prompt: 'Converta o texto abaixo em uma ata de reuni\u00e3o formal, com: introdu\u00e7\u00e3o, participantes (se informados), pauta, delibera\u00e7\u00f5es e encaminhamentos.'}
+    ];
+}
+function renderPromptsList(prompts) {
+    var html = '';
+    prompts.forEach(function(p, i) {
+        html += '<tr class="prompt-row" data-id="' + escapeAttrPro(p.id) + '" style="border-bottom: 1px solid #eee;">'
+            + '<td style="text-align:center; white-space:nowrap; padding: 4px 2px;">'
+            +   '<i class="fas fa-arrow-up prompt-up" style="cursor:pointer; margin-right:4px; color:#666;" title="Mover para cima"></i>'
+            +   '<i class="fas fa-arrow-down prompt-down" style="cursor:pointer; color:#666;" title="Mover para baixo"></i>'
+            + '</td>'
+            + '<td style="padding:3px 5px;">'
+            +   '<input type="text" class="prompt-name" value="' + escapeAttrPro(p.name) + '" style="width:100%; font-size:12px;"/>'
+            + '</td>'
+            + '<td style="padding:3px 5px;">'
+            +   '<textarea class="prompt-text" style="width:100%; height:52px; font-size:11px; resize:vertical;">' + escapeHtmlPro(p.prompt) + '</textarea>'
+            + '</td>'
+            + '<td style="text-align:center; padding:4px 2px;">'
+            +   '<i class="fas fa-trash-alt prompt-delete" style="cursor:pointer; color:#c00;" title="Excluir prompt"></i>'
+            + '</td>'
+            + '</tr>';
+    });
+    $('#prompts-list').html(html);
+}
+function getPromptsFromUI() {
+    var prompts = [];
+    $('#prompts-list .prompt-row').each(function() {
+        var id = $(this).data('id');
+        var name = $(this).find('.prompt-name').val().trim();
+        var prompt = $(this).find('.prompt-text').val().trim();
+        if (name) {
+            prompts.push({id: String(id), name: name, prompt: prompt});
+        }
+    });
+    return prompts;
+}
+function loadAIPrompts() {
+    if (typeof browser === "undefined") {
+        chrome.storage.sync.get({aiPromptsPro: ''}, function(items) {
+            var data = (items.aiPromptsPro && items.aiPromptsPro !== '') ? JSON.parse(items.aiPromptsPro) : {};
+            $('#aiSystemInstruction').val(data.systemInstruction || '');
+            renderPromptsList(data.prompts && data.prompts.length > 0 ? data.prompts : getDefaultAIPrompts());
+        });
+    } else {
+        browser.storage.sync.get({aiPromptsPro: ''}).then(function(items) {
+            var data = (items.aiPromptsPro && items.aiPromptsPro !== '') ? JSON.parse(items.aiPromptsPro) : {};
+            $('#aiSystemInstruction').val(data.systemInstruction || '');
+            renderPromptsList(data.prompts && data.prompts.length > 0 ? data.prompts : getDefaultAIPrompts());
+        });
+    }
+}
+function saveAIPrompts() {
+    var prompts = getPromptsFromUI();
+    var systemInstruction = $('#aiSystemInstruction').val().trim();
+    var data = JSON.stringify({prompts: prompts, systemInstruction: systemInstruction});
+    if (typeof browser === "undefined") {
+        chrome.storage.sync.set({aiPromptsPro: data});
+    } else {
+        browser.storage.sync.set({aiPromptsPro: data});
+    }
+}
+$(document).on('click', '#add-prompt', function() {
+    var newId = 'custom_' + Date.now();
+    var row = '<tr class="prompt-row" data-id="' + newId + '" style="border-bottom: 1px solid #eee;">'
+        + '<td style="text-align:center; white-space:nowrap; padding: 4px 2px;">'
+        +   '<i class="fas fa-arrow-up prompt-up" style="cursor:pointer; margin-right:4px; color:#666;" title="Mover para cima"></i>'
+        +   '<i class="fas fa-arrow-down prompt-down" style="cursor:pointer; color:#666;" title="Mover para baixo"></i>'
+        + '</td>'
+        + '<td style="padding:3px 5px;"><input type="text" class="prompt-name" value="" placeholder="Nome do prompt" style="width:100%; font-size:12px;"/></td>'
+        + '<td style="padding:3px 5px;"><textarea class="prompt-text" style="width:100%; height:52px; font-size:11px; resize:vertical;" placeholder="Texto do prompt enviado \u00e0 IA (o conte\u00fado do documento ser\u00e1 adicionado automaticamente)"></textarea></td>'
+        + '<td style="text-align:center; padding:4px 2px;"><i class="fas fa-trash-alt prompt-delete" style="cursor:pointer; color:#c00;" title="Excluir prompt"></i></td>'
+        + '</tr>';
+    $('#prompts-list').append(row);
+});
+$(document).on('click', '.prompt-delete', function() {
+    $(this).closest('tr').remove();
+});
+$(document).on('click', '.prompt-up', function() {
+    var row = $(this).closest('tr');
+    var prev = row.prev('.prompt-row');
+    if (prev.length) row.insertBefore(prev);
+});
+$(document).on('click', '.prompt-down', function() {
+    var row = $(this).closest('tr');
+    var next = row.next('.prompt-row');
+    if (next.length) row.insertAfter(next);
+});
+// =====================================================================
+
 $('#options-functions').find('input[type="text"]').on("keyup", function () {
     if ($(this).val() != '') {
         $(this).closest('tr').find('.iconPopup').addClass('azulColor').removeClass('cinzaColor');
@@ -426,7 +563,7 @@ $('#options-functions').find('input[type="text"]').on("keyup", function () {
         $(this).closest('tr').find('.iconPopup').removeClass('azulColor').addClass('cinzaColor');
     }
 });
-$('input[name="onoffswitch"]').on("change", function () {
+$('input[name="infraAncoraSigla"]').on("change", function () {
     changeConfigGeral();
 });
 $('.save').click(function() { save_options(true) });

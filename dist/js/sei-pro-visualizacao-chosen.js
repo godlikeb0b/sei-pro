@@ -26,7 +26,7 @@ function setReplaceSelectOnVisualizacao(force = false) {
                     placeholder_text_single: ' ',
                     no_results_text: 'Nenhum resultado encontrado',
                     normalize_search_text: function(text) {
-                        return removeAcentos(text.toLowerCase());
+                        return parent.removeAcentos(text.toLowerCase());
                     }
                 });
 

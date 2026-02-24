@@ -1597,7 +1597,7 @@ body.dark-mode,
 .seiSlim.dark-mode a.cke_dialog_tab:hover,
 .seiSlim.dark-mode.seiSlim_parent.seiSlim_view a.cke_dialog_ui_button.cke_dialog_ui_button_ok,
 .seiSlim.dark-mode .ui-widget-content .ui-state-active .ui-tabs-anchor, 
-.seiSlim.dark-mode .onoffswitch-checkbox:checked + .onoff-switch-label, 
+.seiSlim.dark-mode input.infraLinkOrgao:checked + label.infraTd, 
 .seiSlim.dark-mode .ui-widget-header .ui-state-active  .ui-tabs-anchor {
     background-color: #007fff !important;
 }
@@ -1798,7 +1798,7 @@ body.dark-mode,
 .seiSlim.dark-mode .infraAreaDados a.ancoraPadraoPreta,
 .seiSlim.dark-mode .hashSpan,
 .seiSlim.dark-mode #frmPesquisaProtocolo .resultado tr.resTituloRegistro td,
-.seiSlim.dark-mode .onoff-switch-label {
+.seiSlim.dark-mode label.infraTd {
     background-color: #494c50;
     border-color: #606060;
 }

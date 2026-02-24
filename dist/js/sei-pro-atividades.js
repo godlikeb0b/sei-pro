@@ -163,7 +163,11 @@ function getServerAtividades(param, mode) {
             dataType: "json",
             data: param,
             success: function(ativData){
-                if (  ativData.status == 0 || ativData.length == 0 ) {
+                if (  ativData.status == 0 && ativData.status_acesso_revogado == 1 ) {
+                    alertaBoxPro('Error', 'exclamation-triangle', 'Erro ao acessar o sistema. Acesso Negado...', function() {
+                        removeTokenAcessoRevogado();
+                    });
+                } else if (  ativData.status == 0 || ativData.length == 0 ) {
                     loadingButtonConfirm(false);
                     loadingTagConfig(param.type, 'set');
 
@@ -1038,9 +1042,9 @@ function failureScreen(data, textStatus, param = false) {
                             '' : '')+
                             '   </span>'+
                             '   <div>'+
-                            '       <div class="onoffswitch" style="transform: scale(0.5);display: inline-block;float: left;">'+
-                            '           <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="screensave_error" tabindex="0" checked>'+
-                            '           <label class="onoff-switch-label" for="screensave_error"></label>'+
+                            '       <div class="infraAncoraSigla" style="transform: scale(0.5);display: inline-block;float: left;">'+
+                            '           <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="screensave_error" tabindex="0" checked>'+
+                            '           <label class="infraTd" for="screensave_error"></label>'+
                             '       </div>'+
                             '       <label style="font-size: 80%;padding-top: 5px;display: inline-block;" for="screensave_error">Enviar captura de tela</label>'+
                             '   </div>'+
@@ -3973,7 +3977,7 @@ function addConfigItem(this_) {
         table.find('tbody tr:last-child').find('td:nth-child(4)').text('');
         table.find('tbody tr:last-child').find('td:nth-child(5)').text('');
     } else if (tr.data('key') == 'id_unidade' || tr.data('key') == 'id_user') {
-        table.find('tbody tr:last-child').find('.onoffswitch-checkbox').prop('checked',false);
+        table.find('tbody tr:last-child').find('input.infraLinkOrgao').prop('checked',false);
     } else if (tr.data('key') == 'entregas_programa') {
         table.find('tbody tr:last-child').find('td:nth-child(1)')
             .removeClass('editCellLoadingError')
@@ -3993,11 +3997,11 @@ function addConfigItem(this_) {
         table.find('tbody tr:last-child').find('td:nth-child(1)').text('').trigger('click');
         table.find('tbody tr:last-child').find('td:nth-child(2)').text('');
         table.find('tbody tr:last-child').find('td:nth-child(3)').text('');
-        var onoffswitch = table.find('tbody tr:last-child').find('.onoffswitch');
-            onoffswitch.find('input[type="checkbox"]')
-                .attr('class','onoffswitch-checkbox switch_complexidadeDefault switch_complexidadeDefault_'+len)
+        var infraAncoraSigla = table.find('tbody tr:last-child').find('div.infraAncoraSigla');
+            infraAncoraSigla.find('input[type="checkbox"]')
+                .attr('class','infraLinkOrgao switch_complexidadeDefault switch_complexidadeDefault_'+len)
                 .attr('id', 'changeItemConfig_atividades_'+len).prop('checked',false);
-            onoffswitch.find('label.onoff-switch-label').attr('for', 'changeItemConfig_atividades_'+len)
+            infraAncoraSigla.find('label.infraTd').attr('for', 'changeItemConfig_atividades_'+len)
     }
 }
 function changeSwitchConfigItem(this_) {
@@ -5224,9 +5228,9 @@ function getRowsTableTabConfig(type, mode, list = false, value = false) {
                                 '           <td align="left" class="'+(checkCapacidade('config_update_'+type) ? 'editCell' : '')+'" data-key="nome_processo" data-text="'+(classNew ? classNew.text : (classClone ? classClone.text : ''))+'"><span>'+value.nome_processo+'</span></td>'+
                                 '           <td align="left" class="'+(checkCapacidade('config_update_'+type) ? 'editCellSelect' : '')+'" data-array="cadeia_valor" data-parent_id="'+value.id_cadeia_valor+'" data-keyref="id_cadeia_valor" data-key="dependencia" data-value="nome_processo" data-new-item="false" data-blank-item="true">'+(value.dependencia_nome ? value.dependencia_nome : '')+'</td>'+
                                 '           <td align="left" data-key="selecionavel" style="text-align: center;">'+
-                                '              <div class="onoffswitch" style="transform: scale(0.8);display: inline-block;">'+
-                                '                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox switch_selecionavel" onchange="changeSwitchConfigTable(this)" id="changeItemConfig_'+type+'_'+value.id_cadeia_valor+'" tabindex="0" '+(value.selecionavel && value.selecionavel == 1  ? 'checked' : '')+' '+(checkCapacidade('config_update_'+type) ? '' : 'disabled')+'>'+
-                                '                  <label class="onoff-switch-label" for="changeItemConfig_'+type+'_'+value.id_cadeia_valor+'"></label>'+
+                                '              <div class="infraAncoraSigla" style="transform: scale(0.8);display: inline-block;">'+
+                                '                  <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao switch_selecionavel" onchange="changeSwitchConfigTable(this)" id="changeItemConfig_'+type+'_'+value.id_cadeia_valor+'" tabindex="0" '+(value.selecionavel && value.selecionavel == 1  ? 'checked' : '')+' '+(checkCapacidade('config_update_'+type) ? '' : 'disabled')+'>'+
+                                '                  <label class="infraTd" for="changeItemConfig_'+type+'_'+value.id_cadeia_valor+'"></label>'+
                                 '              </div>'+
                                 '           </td>'+
                                 (checkCapacidade('config_update_'+type) ? 
@@ -5426,9 +5430,9 @@ function getRowsTableTabConfig(type, mode, list = false, value = false) {
                                 '           <td align="left" class="editCellNum" data-min="0" data-max="100" data-key="meta">'+(value.meta || '')+'</td>'+
                                 '           <td align="left" class="editCellNum" data-min="0" data-max="100" data-key="execucao">'+(value.execucao || '')+'</td>'+
                                 '           <td align="left" data-key="estrategico" style="text-align: center;">'+
-                                '              <div class="onoffswitch" style="transform: scale(0.8);display: inline-block;">'+
-                                '                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox switch_estrategico" onchange="changeSwitchConfigTable(this)" id="changeItemConfig_'+type+'_'+value.id_acao+'" tabindex="0" '+(value.estrategico && value.estrategico == 1  ? 'checked' : '')+' '+(checkCapacidade('config_update_'+type) ? '' : 'disabled')+'>'+
-                                '                  <label class="onoff-switch-label" for="changeItemConfig_'+type+'_'+value.id_acao+'"></label>'+
+                                '              <div class="infraAncoraSigla" style="transform: scale(0.8);display: inline-block;">'+
+                                '                  <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao switch_estrategico" onchange="changeSwitchConfigTable(this)" id="changeItemConfig_'+type+'_'+value.id_acao+'" tabindex="0" '+(value.estrategico && value.estrategico == 1  ? 'checked' : '')+' '+(checkCapacidade('config_update_'+type) ? '' : 'disabled')+'>'+
+                                '                  <label class="infraTd" for="changeItemConfig_'+type+'_'+value.id_acao+'"></label>'+
                                 '              </div>'+
                                 '           </td>'+
                                 '           <td align="left" class="editCellDate" data-key="data_inicio_vigencia" data-ref-limit="data_inicio" data-label-limit="data_fim" data-limit="max" data-time-sorter="'+moment(value.data_inicio_vigencia, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD')+'">'+moment(value.data_inicio_vigencia, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY')+'</td>'+
@@ -5780,9 +5784,9 @@ function getRowsTableTabConfig(type, mode, list = false, value = false) {
                                 '           <td align="left" class="editCell" data-key="ref_metadado">'+(value.ref_metadado || '')+'</td>'+
                                 '           <td align="left" class="editCellSelect" data-array="'+type+'" data-key="tipo_metadado" data-value="tipo_metadado" data-text="'+(classNew ? classNew.text : (classClone ? classClone.text : ''))+'" data-new-item="false" data-blank-item="false" data-key="tipo_metadado">'+(nome_tipo_metadado || '')+'</td>'+
                                 '           <td align="left" data-key="lgpd" style="text-align: center;">'+
-                                '              <div class="onoffswitch" style="transform: scale(0.8);display: inline-block;">'+
-                                '                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox switch_lgpd" onchange="changeSwitchConfigTable(this)" id="changeItemConfig_'+type+'_'+value.id_tipo_metadado+'" tabindex="0" '+(value.lgpd && value.lgpd == 1  ? 'checked' : '')+' '+(checkCapacidade('config_update_'+type) ? '' : 'disabled')+'>'+
-                                '                  <label class="onoff-switch-label" for="changeItemConfig_'+type+'_'+value.id_tipo_metadado+'"></label>'+
+                                '              <div class="infraAncoraSigla" style="transform: scale(0.8);display: inline-block;">'+
+                                '                  <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao switch_lgpd" onchange="changeSwitchConfigTable(this)" id="changeItemConfig_'+type+'_'+value.id_tipo_metadado+'" tabindex="0" '+(value.lgpd && value.lgpd == 1  ? 'checked' : '')+' '+(checkCapacidade('config_update_'+type) ? '' : 'disabled')+'>'+
+                                '                  <label class="infraTd" for="changeItemConfig_'+type+'_'+value.id_tipo_metadado+'"></label>'+
                                 '              </div>'+
                                 '           </td>'+
                                 (checkCapacidade('config_update_'+type) ? 
@@ -5845,15 +5849,15 @@ function getRowsTableTabConfig(type, mode, list = false, value = false) {
                                 '           <td align="left" class="editCellSelect" data-array="'+type+'" data-key="tipo_avaliacao" data-value="tipo_avaliacao" data-text="'+(classNew ? classNew.text : (classClone ? classClone.text : ''))+'" data-new-item="false" data-blank-item="false" data-key="tipo_avaliacao">'+(value.nome_tipo_avaliacao || '')+'</td>'+
                                 '           <td align="left" class="editCellSelect" data-array="'+type+'" data-key="tipo_execucao" data-value="tipo_execucao" data-text="'+(classNew ? classNew.text : (classClone ? classClone.text : ''))+'" data-new-item="false" data-blank-item="false" data-key="tipo_execucao">'+(value.nome_tipo_execucao || '')+'</td>'+
                                 '           <td align="left" data-key="aceita_entrega" style="text-align: center;">'+
-                                '              <div class="onoffswitch" style="transform: scale(0.8);display: inline-block;">'+
-                                '                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox switch_aceita_entrega" onchange="changeSwitchConfigTable(this)" id="changeItemConfig_'+type+'_aceita_entrega_'+value.id_tipo_avaliacao+'" tabindex="0" '+(value.aceita_entrega && value.aceita_entrega == 1  ? 'checked' : '')+' '+(checkCapacidade('config_update_'+type) ? '' : 'disabled')+'>'+
-                                '                  <label class="onoff-switch-label" for="changeItemConfig_'+type+'_aceita_entrega_'+value.id_tipo_avaliacao+'"></label>'+
+                                '              <div class="infraAncoraSigla" style="transform: scale(0.8);display: inline-block;">'+
+                                '                  <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao switch_aceita_entrega" onchange="changeSwitchConfigTable(this)" id="changeItemConfig_'+type+'_aceita_entrega_'+value.id_tipo_avaliacao+'" tabindex="0" '+(value.aceita_entrega && value.aceita_entrega == 1  ? 'checked' : '')+' '+(checkCapacidade('config_update_'+type) ? '' : 'disabled')+'>'+
+                                '                  <label class="infraTd" for="changeItemConfig_'+type+'_aceita_entrega_'+value.id_tipo_avaliacao+'"></label>'+
                                 '              </div>'+
                                 '           </td>'+
                                 '           <td align="left" data-key="exige_justificativa" style="text-align: center;">'+
-                                '              <div class="onoffswitch" style="transform: scale(0.8);display: inline-block;">'+
-                                '                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox switch_exige_justificativa" onchange="changeSwitchConfigTable(this)" id="changeItemConfig_'+type+'_exige_justificativa_'+value.id_tipo_avaliacao+'" tabindex="0" '+(value.exige_justificativa && value.exige_justificativa == 1  ? 'checked' : '')+' '+(checkCapacidade('config_update_'+type) ? '' : 'disabled')+'>'+
-                                '                  <label class="onoff-switch-label" for="changeItemConfig_'+type+'_exige_justificativa_'+value.id_tipo_avaliacao+'"></label>'+
+                                '              <div class="infraAncoraSigla" style="transform: scale(0.8);display: inline-block;">'+
+                                '                  <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao switch_exige_justificativa" onchange="changeSwitchConfigTable(this)" id="changeItemConfig_'+type+'_exige_justificativa_'+value.id_tipo_avaliacao+'" tabindex="0" '+(value.exige_justificativa && value.exige_justificativa == 1  ? 'checked' : '')+' '+(checkCapacidade('config_update_'+type) ? '' : 'disabled')+'>'+
+                                '                  <label class="infraTd" for="changeItemConfig_'+type+'_exige_justificativa_'+value.id_tipo_avaliacao+'"></label>'+
                                 '              </div>'+
                                 '           </td>'+
                                 (checkCapacidade('config_update_'+type) ? 
@@ -6608,41 +6612,41 @@ function getColumnPanelConfigs(listConfig, type, idConfigTabela, isInitOffset, c
                             (type == 'planos' || type == 'termos' || type == 'programas' || type == 'unidades' || type == 'atividades' || type == 'users' || type == 'entregas' || type == 'acoes' ? 
                             '   <div class="editTableToggle hideListaInfItens" style="right: 820px;width: 220px;">'+
                             '           <label class="label" for="changeListaInfTableConfig_'+type+'"><i class="fas fa-eye-slash '+(getOptionsPro('changeListaInfTableConfig_'+type) && getOptionsPro('changeListaInfTableConfig_'+type) == 'show' ? 'azulColor' : 'cinzaColor')+'" style="margin: 0px 6px 0 4px;"></i> Unidades Vinculadas</label>'+
-                            '           <div class="onoffswitch">'+
-                            '               <input type="checkbox" name="onoffswitch" data-type="'+type+'" onchange="changeListaInfTableConfig(this)" class="onoffswitch-checkbox" id="changeListaInfTableConfig_'+type+'" tabindex="0" '+(getOptionsPro('changeListaInfTableConfig_'+type) && getOptionsPro('changeListaInfTableConfig_'+type) == 'show' ? 'checked' : '')+'>'+
-                            '               <label class="onoff-switch-label" for="changeListaInfTableConfig_'+type+'"></label>'+
+                            '           <div class="infraAncoraSigla">'+
+                            '               <input type="checkbox" name="infraAncoraSigla" data-type="'+type+'" onchange="changeListaInfTableConfig(this)" class="infraLinkOrgao" id="changeListaInfTableConfig_'+type+'" tabindex="0" '+(getOptionsPro('changeListaInfTableConfig_'+type) && getOptionsPro('changeListaInfTableConfig_'+type) == 'show' ? 'checked' : '')+'>'+
+                            '               <label class="infraTd" for="changeListaInfTableConfig_'+type+'"></label>'+
                             '           </div>'+
                             '   </div>'+
                             '': '')+
                             ( type == 'planos' && checkCapacidade('config_update_archive_planos') ? 
                             '   <div class="editTableToggle showAllItens" style="right: 1060px;width: 175px;">'+
                             '           <label class="label" for="changeArchivedTableConfig_'+type+'"><i class="fas fa-inbox '+(getOptionsPro('changeArchivedTableConfig_'+type) && getOptionsPro('changeArchivedTableConfig_'+type) == 'show' ? 'azulColor' : 'cinzaColor')+'" style="margin: 0px 6px 0 4px;"></i> Ver Arquivadas</label>'+
-                            '           <div class="onoffswitch">'+
-                            '               <input type="checkbox" name="onoffswitch" data-type="'+type+'" onchange="changeArchivedTableConfig(this)" class="onoffswitch-checkbox" id="changeArchivedTableConfig_'+type+'" tabindex="0" '+(getOptionsPro('changeArchivedTableConfig_'+type) && getOptionsPro('changeArchivedTableConfig_'+type) == 'show' ? 'checked' : '')+'>'+
-                            '               <label class="onoff-switch-label" for="changeArchivedTableConfig_'+type+'"></label>'+
+                            '           <div class="infraAncoraSigla">'+
+                            '               <input type="checkbox" name="infraAncoraSigla" data-type="'+type+'" onchange="changeArchivedTableConfig(this)" class="infraLinkOrgao" id="changeArchivedTableConfig_'+type+'" tabindex="0" '+(getOptionsPro('changeArchivedTableConfig_'+type) && getOptionsPro('changeArchivedTableConfig_'+type) == 'show' ? 'checked' : '')+'>'+
+                            '               <label class="infraTd" for="changeArchivedTableConfig_'+type+'"></label>'+
                             '           </div>'+
                             '   </div>'+
                             '' : '')+
                             '   <div class="editTableToggle showAllItens" style="right: 660px;width: 145px;">'+
                             '           <label class="label" for="changeAllItensTableConfig_'+type+'"><i class="fas fa-eye-slash '+(getOptionsPro('changeAllItensTableConfig_'+type) && getOptionsPro('changeAllItensTableConfig_'+type) == 'show' ? 'azulColor' : 'cinzaColor')+'" style="margin: 0px 6px 0 4px;"></i> Ver Todas</label>'+
-                            '           <div class="onoffswitch">'+
-                            '               <input type="checkbox" name="onoffswitch" data-type="'+type+'" onchange="changeAllItensTableConfig(this)" class="onoffswitch-checkbox" id="changeAllItensTableConfig_'+type+'" tabindex="0" '+(getOptionsPro('changeAllItensTableConfig_'+type) && getOptionsPro('changeAllItensTableConfig_'+type) == 'show' ? 'checked' : '')+'>'+
-                            '               <label class="onoff-switch-label" for="changeAllItensTableConfig_'+type+'"></label>'+
+                            '           <div class="infraAncoraSigla">'+
+                            '               <input type="checkbox" name="infraAncoraSigla" data-type="'+type+'" onchange="changeAllItensTableConfig(this)" class="infraLinkOrgao" id="changeAllItensTableConfig_'+type+'" tabindex="0" '+(getOptionsPro('changeAllItensTableConfig_'+type) && getOptionsPro('changeAllItensTableConfig_'+type) == 'show' ? 'checked' : '')+'>'+
+                            '               <label class="infraTd" for="changeAllItensTableConfig_'+type+'"></label>'+
                             '           </div>'+
                             '   </div>'+
                             '   <div class="editTableToggle hideDisabledItens" style="right: 500px;width: 140px">'+
                             '           <label class="label" for="changeDisabledTableConfig_'+type+'"><i class="fas fa-eye-slash '+(getOptionsPro('changeDisabledTableConfig_'+type) && getOptionsPro('changeDisabledTableConfig_'+type) == 'show' ? 'azulColor' : 'cinzaColor')+'" style="margin: 0px 6px 0 4px;"></i> Inativos</label>'+
-                            '           <div class="onoffswitch">'+
-                            '               <input type="checkbox" name="onoffswitch" data-type="'+type+'" onchange="changeDisabledTableConfig(this)" class="onoffswitch-checkbox" id="changeDisabledTableConfig_'+type+'" tabindex="0" '+(getOptionsPro('changeDisabledTableConfig_'+type) && getOptionsPro('changeDisabledTableConfig_'+type) == 'show' ? 'checked' : '')+'>'+
-                            '               <label class="onoff-switch-label" for="changeDisabledTableConfig_'+type+'"></label>'+
+                            '           <div class="infraAncoraSigla">'+
+                            '               <input type="checkbox" name="infraAncoraSigla" data-type="'+type+'" onchange="changeDisabledTableConfig(this)" class="infraLinkOrgao" id="changeDisabledTableConfig_'+type+'" tabindex="0" '+(getOptionsPro('changeDisabledTableConfig_'+type) && getOptionsPro('changeDisabledTableConfig_'+type) == 'show' ? 'checked' : '')+'>'+
+                            '               <label class="infraTd" for="changeDisabledTableConfig_'+type+'"></label>'+
                             '           </div>'+
                             '   </div>'+
                             (checkCapacidade('config_update_'+type) ? 
                             '   <div class="editTableToggle" style="width:130px">'+
                             '           <label class="label" for="changeViewTableConfig_'+type+'"><i class="fas fa-edit azulColor" style="margin: 0px 6px 0 4px;"></i> Edi\u00E7\u00E3o</label>'+
-                            '           <div class="onoffswitch">'+
-                            '               <input type="checkbox" name="onoffswitch" data-type="'+type+'" onchange="changeViewTableConfig(this)" class="onoffswitch-checkbox" id="changeViewTableConfig_'+type+'" tabindex="0" checked>'+
-                            '               <label class="onoff-switch-label" for="changeViewTableConfig_'+type+'"></label>'+
+                            '           <div class="infraAncoraSigla">'+
+                            '               <input type="checkbox" name="infraAncoraSigla" data-type="'+type+'" onchange="changeViewTableConfig(this)" class="infraLinkOrgao" id="changeViewTableConfig_'+type+'" tabindex="0" checked>'+
+                            '               <label class="infraTd" for="changeViewTableConfig_'+type+'"></label>'+
                             '           </div>'+
                             '   </div>'+
                             '' : '')+
@@ -7728,9 +7732,9 @@ function newConfigUser(this_) {
                     '      </tr>'+
                     '      <tr style="height: 20px;">'+
                     '           <td style="font-size: 9pt;text-align: left;" colspan="4">'+
-                    '              <div class="onoffswitch" style="float: left;transform: scale(0.8);">'+
-                    '                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="novo_plano" tabindex="0" checked>'+
-                    '                  <label class="onoff-switch-label" for="novo_plano"></label>'+
+                    '              <div class="infraAncoraSigla" style="float: left;transform: scale(0.8);">'+
+                    '                  <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="novo_plano" tabindex="0" checked>'+
+                    '                  <label class="infraTd" for="novo_plano"></label>'+
                     '              </div>'+
                     '              <label for="novo_plano" style="vertical-align: sub;color: #666;">Cria plano de trabalho vinculado \u00E0 unidade '+arrayConfigAtivUnidade.nome_unidade+'</label>'+
                     '           </td>'+
@@ -7810,6 +7814,17 @@ function newConfigUser(this_) {
                     }
                 }
             }]
+    });
+}
+function removeTokenAcessoRevogado() {
+    if ($('#frmCheckerProcessoPro').length === 0) {
+        getCheckerProcessoPro();
+    }
+    const href = `${window.location.href}#&acao_pro=set_database&mode=remove&base=atividades&token=x&url=x`;
+    $('#frmCheckerProcessoPro').attr('src', href).unbind().on('load', () => {
+        localStorageRemovePro('configBasePro');
+        localStorageRemovePro('configBasePro_atividades');
+        window.location.reload();
     });
 }
 function getConfigServerDoc(action, param) {
@@ -8557,7 +8572,7 @@ function editConfigOptions(this_, id = false) {
     if (countSelected > 0) {
         table.find('.lnkInfraCheck').data('index',1).trigger('click');
     }
-    _this.closest('tr').find('td').eq(0).find('input[type="checkbox"]:not(.onoffswitch-checkbox)').trigger('click');
+    _this.closest('tr').find('td').eq(0).find('input[type="checkbox"]:not(input.infraLinkOrgao)').trigger('click');
 
     if (data.type == 'atividades') {
         var value = jmespath.search(tableConfigList[data.type], "[?id_atividade==`"+id+"`] | [0]");
@@ -8610,9 +8625,9 @@ function editConfigOptions(this_, id = false) {
                                 '                            <td class="editCellNumComplex" data-key="fator" data-type="num" style="width: 80px; text-align: center;">'+v.fator+'</td>'+
                                 '                            <td class="editCellNumComplex" data-key="tempo_pactuado" data-type="num" style="width: 180px; text-align: center;">'+roundToTwo(v.fator*value.tempo_pactuado)+'</td>'+  
                                 '                            <td data-key="default" data-type="switch" data-required="true" style="width: 50px; text-align: center;">'+
-                                '                               <div class="onoffswitch" style="transform: scale(0.8);">'+
-                                '                                   <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox switch_complexidadeDefault switch_complexidadeDefault_'+i+'" onchange="changeSwitchConfigItem(this)" id="changeItemConfig_'+data.type+'_'+i+'" tabindex="0" '+(v.default  ? 'checked' : '')+'>'+
-                                '                                   <label class="onoff-switch-label" for="changeItemConfig_'+data.type+'_'+i+'"></label>'+
+                                '                               <div class="infraAncoraSigla" style="transform: scale(0.8);">'+
+                                '                                   <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao switch_complexidadeDefault switch_complexidadeDefault_'+i+'" onchange="changeSwitchConfigItem(this)" id="changeItemConfig_'+data.type+'_'+i+'" tabindex="0" '+(v.default  ? 'checked' : '')+'>'+
+                                '                                   <label class="infraTd" for="changeItemConfig_'+data.type+'_'+i+'"></label>'+
                                 '                               </div>'+
                                 '                            </td>'+
                                 '                            <td style="width: 80px; text-align: center;">'+
@@ -8628,9 +8643,9 @@ function editConfigOptions(this_, id = false) {
                             '                            <td class="editCellNumComplex" data-key="fator" data-type="num" style="width: 80px; text-align: center;"></td>'+
                             '                            <td class="editCellNumComplex" data-key="tempo_pactuado" data-type="num" style="width: 180px; text-align: center;"></td>'+
                             '                            <td data-key="default" data-type="switch" data-required="true" style="width: 50px; text-align: center;">'+
-                            '                               <div class="onoffswitch" style="transform: scale(0.8);">'+
-                            '                                   <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox switch_complexidadeDefault switch_complexidadeDefault_'+complexidade_len+'" onchange="changeSwitchConfigItem(this)" id="changeItemConfig_'+data.type+'_'+complexidade_len+'" tabindex="0">'+
-                            '                                   <label class="onoff-switch-label" for="changeItemConfig_'+data.type+'_'+complexidade_len+'"></label>'+
+                            '                               <div class="infraAncoraSigla" style="transform: scale(0.8);">'+
+                            '                                   <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao switch_complexidadeDefault switch_complexidadeDefault_'+complexidade_len+'" onchange="changeSwitchConfigItem(this)" id="changeItemConfig_'+data.type+'_'+complexidade_len+'" tabindex="0">'+
+                            '                                   <label class="infraTd" for="changeItemConfig_'+data.type+'_'+complexidade_len+'"></label>'+
                             '                               </div>'+
                             '                            </td>'+
                             '                            <td style="width: 80px; text-align: center;">'+
@@ -8659,9 +8674,9 @@ function editConfigOptions(this_, id = false) {
                             '                  <tr style="height: 40px;">'+
                             '                      <td style="text-align: left;vertical-align: bottom;height: 40px;"><i class="iconPopup fas fa-chart-line cinzaColor"></i> Utilizar as configura\u00E7\u00F5es de Ganho de Produtividade da unidade</td>'+
                             '                      <td>'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" onchange="changeConfigGanhoUnidade(this)" class="onoffswitch-checkbox singleOptionConfig" id="ganho_unidade" data-key="ganho_unidade" tabindex="0" '+(value.config && typeof value.config.ganho_unidade !== 'undefined' && value.config.ganho_unidade === false  ? '' : 'checked')+'>'+
-                            '                              <label class="onoff-switch-label" for="ganho_unidade"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" onchange="changeConfigGanhoUnidade(this)" class="infraLinkOrgao singleOptionConfig" id="ganho_unidade" data-key="ganho_unidade" tabindex="0" '+(value.config && typeof value.config.ganho_unidade !== 'undefined' && value.config.ganho_unidade === false  ? '' : 'checked')+'>'+
+                            '                              <label class="infraTd" for="ganho_unidade"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  </tr>'+
@@ -8990,18 +9005,18 @@ function editConfigOptions(this_, id = false) {
                             '                  <tr style="height: 40px;">'+
                             '                      <td style="text-align: left;"><i class="iconPopup fas fa-calendar-check cinzaColor"></i> Recalcular o prazo de entrega depois de '+__.iniciada_a_demanda+'</td>'+
                             '                      <td>'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" id="recalcula_prazo" data-key="recalcula_prazo" tabindex="0" '+(value.config && typeof value.config.recalcula_prazo !== 'undefined' && value.config.recalcula_prazo  ? 'checked' : '')+'>'+
-                            '                              <label class="onoff-switch-label" for="recalcula_prazo"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" id="recalcula_prazo" data-key="recalcula_prazo" tabindex="0" '+(value.config && typeof value.config.recalcula_prazo !== 'undefined' && value.config.recalcula_prazo  ? 'checked' : '')+'>'+
+                            '                              <label class="infraTd" for="recalcula_prazo"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  </tr>'+
                             '                  <tr style="height: 40px;">'+
                             '                      <td style="text-align: left;"><i class="iconPopup fas fa-stopwatch cinzaColor"></i> Desativar o c\u00E1lculo de produtividade e controle de tempo de execu\u00E7\u00E3o <br>(para '+__.atividades+' do tipo <em>monitoramento</em>)</td>'+
                             '                      <td>'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" id="desativa_produtividade" data-key="desativa_produtividade" tabindex="0" '+(value.config && typeof value.config.desativa_produtividade !== 'undefined' && value.config.desativa_produtividade  ? 'checked' : '')+'>'+
-                            '                              <label class="onoff-switch-label" for="desativa_produtividade"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" id="desativa_produtividade" data-key="desativa_produtividade" tabindex="0" '+(value.config && typeof value.config.desativa_produtividade !== 'undefined' && value.config.desativa_produtividade  ? 'checked' : '')+'>'+
+                            '                              <label class="infraTd" for="desativa_produtividade"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  </tr>'+
@@ -9184,9 +9199,9 @@ function editConfigOptions(this_, id = false) {
                             '                  <tr style="height: 40px;">'+
                             '                      <td style="text-align: left;"><i class="iconPopup fas fa-clone cinzaColor"></i> N\u00E3o duplicar planos de trabalho automaticamente ap\u00F3s a homologa\u00E7\u00E3o</td>'+
                             '                      <td style="text-align: right;">'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" data-key="nao_duplicar_automaticamente" class="onoffswitch-checkbox singleOptionConfig" id="nao_duplicar_automaticamente" tabindex="0" '+(value.config && typeof value.config.nao_duplicar_automaticamente !== 'undefined' && value.config.nao_duplicar_automaticamente ? 'checked' : '')+'>'+
-                            '                              <label class="onoff-switch-label" for="nao_duplicar_automaticamente"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" data-key="nao_duplicar_automaticamente" class="infraLinkOrgao singleOptionConfig" id="nao_duplicar_automaticamente" tabindex="0" '+(value.config && typeof value.config.nao_duplicar_automaticamente !== 'undefined' && value.config.nao_duplicar_automaticamente ? 'checked' : '')+'>'+
+                            '                              <label class="infraTd" for="nao_duplicar_automaticamente"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  </tr>'+
@@ -9194,9 +9209,9 @@ function editConfigOptions(this_, id = false) {
                             '                  <tr style="height: 40px;">'+
                             '                      <td style="text-align: left;"><i class="iconPopup fas fa-retweet cinzaColor"></i> Vincular toda a lista de '+__.atividades+'</td>'+
                             '                      <td>'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" id="atividades_lista_integral" onchange="changeConfigAtivIntegral(this)" data-key="atividades_lista_integral" tabindex="0" '+(value.config && typeof value.config.atividades_lista_integral !== 'undefined' && value.config.atividades_lista_integral === false ? '' : 'checked')+'>'+
-                            '                              <label class="onoff-switch-label" for="atividades_lista_integral"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" id="atividades_lista_integral" onchange="changeConfigAtivIntegral(this)" data-key="atividades_lista_integral" tabindex="0" '+(value.config && typeof value.config.atividades_lista_integral !== 'undefined' && value.config.atividades_lista_integral === false ? '' : 'checked')+'>'+
+                            '                              <label class="infraTd" for="atividades_lista_integral"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  </tr>'+
@@ -9623,9 +9638,9 @@ function editConfigOptions(this_, id = false) {
                 htmlBox +=  '                        <tr data-index="'+i+'" data-id="'+v.id_lotacao+'" data-value="'+v.id_unidade+'" data-key="lotacao" data-unique="true" style="text-align: left;">'+
                             '                            <td class="" data-type="num_switch" data-key="unidade" style="padding: 0 10px;">'+unicodeToChar(v.sigla_unidade+' - '+v.nome_unidade)+'</td>'+
                             '                            <td data-key="default" data-type="switch" data-required="true" style="width: 50px; text-align: center;">'+
-                            '                               <div class="onoffswitch" style="transform: scale(0.8);">'+
-                            '                                   <input data-key="principal" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox switch_lotacaoDefault switch_lotacaoDefault_'+i+'" onchange="changeSwitchConfigItem(this)" id="changeItemConfig_'+data.type+'_'+i+'" tabindex="0" '+(typeof v.config_lotacao !== 'undefined' && v.config_lotacao !== null && v.config_lotacao.principal  ? 'checked' : '')+'>'+
-                            '                                   <label class="onoff-switch-label" for="changeItemConfig_'+data.type+'_'+i+'"></label>'+
+                            '                               <div class="infraAncoraSigla" style="transform: scale(0.8);">'+
+                            '                                   <input data-key="principal" type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao switch_lotacaoDefault switch_lotacaoDefault_'+i+'" onchange="changeSwitchConfigItem(this)" id="changeItemConfig_'+data.type+'_'+i+'" tabindex="0" '+(typeof v.config_lotacao !== 'undefined' && v.config_lotacao !== null && v.config_lotacao.principal  ? 'checked' : '')+'>'+
+                            '                                   <label class="infraTd" for="changeItemConfig_'+data.type+'_'+i+'"></label>'+
                             '                               </div>'+
                             '                            </td>'+
                             '                            <td style="width: 50px; text-align: center;">'+
@@ -9638,9 +9653,9 @@ function editConfigOptions(this_, id = false) {
                         '                            <tr data-index="'+lotacao_len+'" data-id="new" data-value="" data-key="lotacao" data-unique="true" style="text-align: left;">'+
                         '                                <td class="editCellSelect" data-type="num" data-key="unidade" style="padding: 0 10px;"></td>'+
                         '                                <td data-key="default" data-type="switch" data-required="true" style="width: 50px; text-align: center;">'+
-                        '                                   <div class="onoffswitch" style="transform: scale(0.8);">'+
-                        '                                       <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox switch_lotacaoDefault switch_lotacaoDefault_'+lotacao_len+'" onchange="changeSwitchConfigItem(this)" id="changeItemConfig_'+data.type+'_'+lotacao_len+'" tabindex="0">'+
-                        '                                       <label class="onoff-switch-label" for="changeItemConfig_'+data.type+'_'+lotacao_len+'"></label>'+
+                        '                                   <div class="infraAncoraSigla" style="transform: scale(0.8);">'+
+                        '                                       <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao switch_lotacaoDefault switch_lotacaoDefault_'+lotacao_len+'" onchange="changeSwitchConfigItem(this)" id="changeItemConfig_'+data.type+'_'+lotacao_len+'" tabindex="0">'+
+                        '                                       <label class="infraTd" for="changeItemConfig_'+data.type+'_'+lotacao_len+'"></label>'+
                         '                                   </div>'+
                         '                                </td>'+
                         '                                <td style="width: 50px; text-align: center;">'+
@@ -9913,18 +9928,18 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-stop-circle cinzaColor"></i> Permite a suspens\u00E3o da '+__.prescricao+'</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" id="suspensao_prazo" data-key="suspensao_prazo" tabindex="0" '+(typeof value.config !== 'undefined' && typeof value.config.suspensao_prazo !== 'undefined' && typeof value.config.suspensao_prazo  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="suspensao_prazo"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" id="suspensao_prazo" data-key="suspensao_prazo" tabindex="0" '+(typeof value.config !== 'undefined' && typeof value.config.suspensao_prazo !== 'undefined' && typeof value.config.suspensao_prazo  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="suspensao_prazo"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-exclamation-circle cinzaColor"></i> Adicionar Urg\u00EAncia no processo ao atingir o n\u00EDvel cr\u00EDtico</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" id="urgencia_nivel_critico" data-key="urgencia_nivel_critico" tabindex="0" '+(typeof value.config !== 'undefined' && typeof value.config.urgencia_nivel_critico !== 'undefined' && value.config.urgencia_nivel_critico  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="urgencia_nivel_critico"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" id="urgencia_nivel_critico" data-key="urgencia_nivel_critico" tabindex="0" '+(typeof value.config !== 'undefined' && typeof value.config.urgencia_nivel_critico !== 'undefined' && value.config.urgencia_nivel_critico  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="urgencia_nivel_critico"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -9980,18 +9995,18 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-star-half-alt cinzaColor"></i> Mostrar notas atribu\u00EDdas nos planos de trabalho (m\u00E9dia geral)</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="planos_mostrar_notas" tabindex="0" '+(config_planos && typeof config_planos.mostrar_notas !== 'undefined' && config_planos.mostrar_notas  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="planos_mostrar_notas"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="planos_mostrar_notas" tabindex="0" '+(config_planos && typeof config_planos.mostrar_notas !== 'undefined' && config_planos.mostrar_notas  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="planos_mostrar_notas"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-star cinzaColor"></i> Permitir a auto avalia\u00E7\u00E3o de '+__.demandas+' e planos de trabalho</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="planos_permite_autoavaliacao" tabindex="0" '+(config_planos && typeof config_planos.permite_autoavaliacao !== 'undefined' && config_planos.permite_autoavaliacao  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="planos_permite_autoavaliacao"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="planos_permite_autoavaliacao" tabindex="0" '+(config_planos && typeof config_planos.permite_autoavaliacao !== 'undefined' && config_planos.permite_autoavaliacao  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="planos_permite_autoavaliacao"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -10024,9 +10039,9 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-thumbs-up cinzaColor"></i> Permitir a aprova\u00E7\u00E3o de suas pr\u00F3prias entregas (unidade instituidora / organizacional)</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="programas_unidade_instituidora" tabindex="0" '+(config_programas !== 'undefined' && typeof config_programas.unidade_instituidora !== 'undefined' && config_programas.unidade_instituidora  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="programas_unidade_instituidora"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="programas_unidade_instituidora" tabindex="0" '+(config_programas !== 'undefined' && typeof config_programas.unidade_instituidora !== 'undefined' && config_programas.unidade_instituidora  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="programas_unidade_instituidora"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -10035,18 +10050,18 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-sort-amount-up cinzaColor"></i> Relacionar lista de entregas e a\u00E7\u00F5es da unidade superior (caso exista)</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="programas_lista_superior" tabindex="0" '+(config_programas !== 'undefined' && typeof config_programas.lista_superior !== 'undefined' && !config_programas.lista_superior  ? '' : 'checked')+'>'+
-                        '                              <label class="onoff-switch-label" for="programas_lista_superior"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="programas_lista_superior" tabindex="0" '+(config_programas !== 'undefined' && typeof config_programas.lista_superior !== 'undefined' && !config_programas.lista_superior  ? '' : 'checked')+'>'+
+                        '                              <label class="infraTd" for="programas_lista_superior"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-sort-amount-up cinzaColor"></i> Relacionar lista de entregas e a\u00E7\u00F5es de unidade espec\u00EDfica</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="programas_lista_unidade" onchange="changeConfigListaUnidade(this)" tabindex="0" '+(config_programas && typeof config_programas.lista_unidade !== 'undefined' && config_programas.lista_unidade  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="programas_lista_unidade"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="programas_lista_unidade" onchange="changeConfigListaUnidade(this)" tabindex="0" '+(config_programas && typeof config_programas.lista_unidade !== 'undefined' && config_programas.lista_unidade  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="programas_lista_unidade"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  <tr id="tr_lista_unidade" style="height: 40px; '+(config_programas !== 'undefined' && typeof config_programas.lista_unidade !== 'undefined' && config_programas.lista_unidade  ? '' : 'display: none;')+'">'+
@@ -10128,18 +10143,18 @@ function editConfigOptions(this_, id = false) {
                             '                  <tr style="height: 40px;">'+
                             '                      <td style="text-align: left;"><i class="iconPopup fas fa-sort-amount-up cinzaColor"></i> Relacionar lista de '+__.atividades+' da unidade superior (caso exista)</td>'+
                             '                      <td>'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="atividades_lista_superior" tabindex="0" '+(config_atividades !== 'undefined' && typeof config_atividades.lista_superior !== 'undefined' && config_atividades.lista_superior  ? 'checked' : '')+'>'+
-                            '                              <label class="onoff-switch-label" for="atividades_lista_superior"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="atividades_lista_superior" tabindex="0" '+(config_atividades !== 'undefined' && typeof config_atividades.lista_superior !== 'undefined' && config_atividades.lista_superior  ? 'checked' : '')+'>'+
+                            '                              <label class="infraTd" for="atividades_lista_superior"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  </tr>'+
                             '                  <tr style="height: 40px;">'+
                             '                      <td style="text-align: left;"><i class="iconPopup fas fa-sort-amount-up cinzaColor"></i> Relacionar lista de '+__.atividades+' de unidade '+getNameGenre('atividade', 'espec\u00EDfico', 'espec\u00EDfica')+'</td>'+
                             '                      <td>'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="atividades_lista_unidade" onchange="changeConfigListaUnidade(this)" tabindex="0" '+(config_atividades && typeof config_atividades.lista_unidade !== 'undefined' && config_atividades.lista_unidade  ? 'checked' : '')+'>'+
-                            '                              <label class="onoff-switch-label" for="atividades_lista_unidade"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="atividades_lista_unidade" onchange="changeConfigListaUnidade(this)" tabindex="0" '+(config_atividades && typeof config_atividades.lista_unidade !== 'undefined' && config_atividades.lista_unidade  ? 'checked' : '')+'>'+
+                            '                              <label class="infraTd" for="atividades_lista_unidade"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  <tr id="tr_lista_unidade" style="height: 40px; '+(config_atividades && typeof config_atividades.lista_unidade !== 'undefined' && config_atividades.lista_unidade  ? '' : 'display: none;')+'">'+
@@ -10152,18 +10167,18 @@ function editConfigOptions(this_, id = false) {
                             '                  <tr style="height: 40px;display:none">'+
                             '                      <td style="text-align: left;"><i class="iconPopup fas fa-archive cinzaColor"></i> '+__.Arquivar+' '+__.demandas+' automaticamente ap\u00F3s a avalia\u00E7\u00E3o</td>'+
                             '                      <td>'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="atividades_envio_automatico" tabindex="0" '+(config_atividades && typeof config_atividades.envio_automatico !== 'undefined' && !config_atividades.envio_automatico  ? '' : 'checked')+'>'+
-                            '                              <label class="onoff-switch-label" for="atividades_envio_automatico"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="atividades_envio_automatico" tabindex="0" '+(config_atividades && typeof config_atividades.envio_automatico !== 'undefined' && !config_atividades.envio_automatico  ? '' : 'checked')+'>'+
+                            '                              <label class="infraTd" for="atividades_envio_automatico"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  </tr>'+
                             '                  <tr style="height: 40px;">'+
                             '                      <td style="text-align: left;"><i class="iconPopup fas fa-archive cinzaColor"></i>N\u00E3o '+__.Arquivar+' '+__.demandas+' automaticamente ap\u00F3s a avalia\u00E7\u00E3o</td>'+
                             '                      <td>'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="atividades_nao_arquivar" tabindex="0" '+(config_atividades && typeof config_atividades.nao_arquivar !== 'undefined' && !config_atividades.nao_arquivar  ? 'checked' : '')+'>'+
-                            '                              <label class="onoff-switch-label" for="atividades_nao_arquivar"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="atividades_nao_arquivar" tabindex="0" '+(config_atividades && typeof config_atividades.nao_arquivar !== 'undefined' && !config_atividades.nao_arquivar  ? 'checked' : '')+'>'+
+                            '                              <label class="infraTd" for="atividades_nao_arquivar"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  </tr>'+
@@ -10183,18 +10198,18 @@ function editConfigOptions(this_, id = false) {
                             '                  <tr style="height: 40px;">'+
                             '                      <td style="text-align: left; border: none;"><i class="iconPopup far fa-calendar-alt cinzaColor"></i> Contagem de prazos em dias \u00FAteis</td>'+
                             '                      <td style="border: none;">'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="distribuicao_count_dias_uteis" tabindex="0" '+(config_distribuicao && typeof config_distribuicao.count_dias_uteis !== 'undefined' && config_distribuicao.count_dias_uteis  ? 'checked' : '')+'>'+
-                            '                              <label class="onoff-switch-label" for="distribuicao_count_dias_uteis"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="distribuicao_count_dias_uteis" tabindex="0" '+(config_distribuicao && typeof config_distribuicao.count_dias_uteis !== 'undefined' && config_distribuicao.count_dias_uteis  ? 'checked' : '')+'>'+
+                            '                              <label class="infraTd" for="distribuicao_count_dias_uteis"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  </tr>'+
                             '                  <tr style="height: 40px;">'+
                             '                      <td style="text-align: left; border: none;"><i class="iconPopup fas fa-stopwatch cinzaColor"></i> Contagem de prazos em horas \u00FAteis</td>'+
                             '                      <td style="border: none;">'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="distribuicao_count_horas" tabindex="0" '+(config_distribuicao && typeof config_distribuicao.count_horas !== 'undefined' && config_distribuicao.count_horas  ? 'checked' : '')+'>'+
-                            '                              <label class="onoff-switch-label" for="distribuicao_count_horas"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="distribuicao_count_horas" tabindex="0" '+(config_distribuicao && typeof config_distribuicao.count_horas !== 'undefined' && config_distribuicao.count_horas  ? 'checked' : '')+'>'+
+                            '                              <label class="infraTd" for="distribuicao_count_horas"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  </tr>'+
@@ -10242,15 +10257,15 @@ function editConfigOptions(this_, id = false) {
                     htmlBox +=  '                                              <tr data-index="'+i+'" data-key="feriados">'+
                                 '                                                  <td class="editCell" data-key="nome_feriado" data-type="text" style="width: 250px; padding: 0 10px; text-align: left;">'+unicodeToChar(v.nome_feriado)+'</td>'+
                                 '                                                  <td data-key="recorrente" data-type="switch" style="width: 100px; text-align: center;">'+
-                                '                                                     <div class="onoffswitch" style="transform: scale(0.8);">'+
-                                '                                                         <input type="checkbox" name="onoffswitch" onchange="changeConfigFeriadoRecorrente(this)" class="onoffswitch-checkbox switch_feriadoRecorrente switch_feriadoRecorrente_'+i+'" id="changeItemConfig_'+data.type+'_'+i+'" tabindex="0" '+(v.recorrente  ? 'checked' : '')+'>'+
-                                '                                                         <label class="onoff-switch-label" for="changeItemConfig_'+data.type+'_'+i+'"></label>'+
+                                '                                                     <div class="infraAncoraSigla" style="transform: scale(0.8);">'+
+                                '                                                         <input type="checkbox" name="infraAncoraSigla" onchange="changeConfigFeriadoRecorrente(this)" class="infraLinkOrgao switch_feriadoRecorrente switch_feriadoRecorrente_'+i+'" id="changeItemConfig_'+data.type+'_'+i+'" tabindex="0" '+(v.recorrente  ? 'checked' : '')+'>'+
+                                '                                                         <label class="infraTd" for="changeItemConfig_'+data.type+'_'+i+'"></label>'+
                                 '                                                     </div>'+
                                 '                                                  </td>'+
                                 '                                                  <td data-key="meio_periodo" data-type="switch" style="width: 100px; text-align: center;">'+
-                                '                                                     <div class="onoffswitch" style="transform: scale(0.8);">'+
-                                '                                                         <input type="checkbox" name="onoffswitch" onchange="changeHorasDesconto(this)" class="onoffswitch-checkbox switch_feriadoMeioPeriodo switch_feriadoMeioPeriodo_'+i+'" id="changeItemConfigMP_'+data.type+'_'+i+'" tabindex="0" '+(v.meio_periodo  ? 'checked' : '')+'>'+
-                                '                                                         <label class="onoff-switch-label" for="changeItemConfigMP_'+data.type+'_'+i+'"></label>'+
+                                '                                                     <div class="infraAncoraSigla" style="transform: scale(0.8);">'+
+                                '                                                         <input type="checkbox" name="infraAncoraSigla" onchange="changeHorasDesconto(this)" class="infraLinkOrgao switch_feriadoMeioPeriodo switch_feriadoMeioPeriodo_'+i+'" id="changeItemConfigMP_'+data.type+'_'+i+'" tabindex="0" '+(v.meio_periodo  ? 'checked' : '')+'>'+
+                                '                                                         <label class="infraTd" for="changeItemConfigMP_'+data.type+'_'+i+'"></label>'+
                                 '                                                     </div>'+
                                 '                                                  </td>'+
                                 '                                                  <td class="'+(v.meio_periodo ? 'editCellNum' : '')+'" data-key="horas_desconto" data-type="number" style="width: 150px; text-align: center;">'+(v.meio_periodo ? (v.horas_desconto ? v.horas_desconto : 4) : (v.horas_desconto ? v.horas_desconto : ''))+'</td>'+ 
@@ -10265,15 +10280,15 @@ function editConfigOptions(this_, id = false) {
             htmlBox +=      '                                              <tr data-index="'+(config_feriados ? config_feriados.length : 0)+'" data-key="feriados">'+
                             '                                                  <td class="editCell" data-key="nome_feriado" data-type="text" style="width: 250px; padding: 0 10px; text-align: left;"></td>'+
                             '                                                  <td data-key="recorrente" data-type="switch" style="width: 100px; text-align: center;">'+
-                            '                                                     <div class="onoffswitch" style="transform: scale(0.8);">'+
-                            '                                                         <input type="checkbox" onchange="changeConfigFeriadoRecorrente(this)" name="onoffswitch" class="onoffswitch-checkbox switch_feriadoRecorrente switch_feriadoRecorrente_'+(config_feriados ? config_feriados.length : 0)+'" id="changeItemConfig_'+data.type+'_'+feriados_len+'" tabindex="0" checked>'+
-                            '                                                         <label class="onoff-switch-label" for="changeItemConfig_'+data.type+'_'+(config_feriados ? config_feriados.length : 0)+'"></label>'+
+                            '                                                     <div class="infraAncoraSigla" style="transform: scale(0.8);">'+
+                            '                                                         <input type="checkbox" onchange="changeConfigFeriadoRecorrente(this)" name="infraAncoraSigla" class="infraLinkOrgao switch_feriadoRecorrente switch_feriadoRecorrente_'+(config_feriados ? config_feriados.length : 0)+'" id="changeItemConfig_'+data.type+'_'+feriados_len+'" tabindex="0" checked>'+
+                            '                                                         <label class="infraTd" for="changeItemConfig_'+data.type+'_'+(config_feriados ? config_feriados.length : 0)+'"></label>'+
                             '                                                     </div>'+
                             '                                                  </td>'+
                             '                                                  <td data-key="meio_periodo" data-type="switch" style="width: 100px; text-align: center;">'+
-                            '                                                     <div class="onoffswitch" style="transform: scale(0.8);">'+
-                            '                                                         <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox switch_feriadoMeioPeriodo switch_feriadoMeioPeriodo_'+(config_feriados ? config_feriados.length : 0)+'" id="changeItemConfigMP_'+data.type+'_'+feriados_len+'" tabindex="0">'+
-                            '                                                         <label class="onoff-switch-label" for="changeItemConfigMP_'+data.type+'_'+(config_feriados ? config_feriados.length : 0)+'"></label>'+
+                            '                                                     <div class="infraAncoraSigla" style="transform: scale(0.8);">'+
+                            '                                                         <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao switch_feriadoMeioPeriodo switch_feriadoMeioPeriodo_'+(config_feriados ? config_feriados.length : 0)+'" id="changeItemConfigMP_'+data.type+'_'+feriados_len+'" tabindex="0">'+
+                            '                                                         <label class="infraTd" for="changeItemConfigMP_'+data.type+'_'+(config_feriados ? config_feriados.length : 0)+'"></label>'+
                             '                                                     </div>'+
                             '                                                  </td>'+
                             '                                                  <td class="editCellNum" data-key="horas_desconto" data-type="number" style="width: 150px; text-align: left;"></td>'+
@@ -10366,18 +10381,18 @@ function editConfigOptions(this_, id = false) {
                             '                  <tr style="height: 40px;">'+
                             '                      <td style="text-align: left;"><i class="iconPopup fas fa-user-lock cinzaColor"></i> Permitir a autoedi\u00E7\u00E3o de informa\u00E7\u00F5es gerais pelas unidades subordinadas (nome, sigla e depend\u00EAncia)</td>'+
                             '                      <td>'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="atividades_autoedicao_subordinadas" tabindex="0" '+(config_administrativo && typeof config_administrativo.autoedicao_subordinadas !== 'undefined' && config_administrativo.autoedicao_subordinadas  ? 'checked' : '')+'>'+
-                            '                              <label class="onoff-switch-label" for="atividades_autoedicao_subordinadas"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="atividades_autoedicao_subordinadas" tabindex="0" '+(config_administrativo && typeof config_administrativo.autoedicao_subordinadas !== 'undefined' && config_administrativo.autoedicao_subordinadas  ? 'checked' : '')+'>'+
+                            '                              <label class="infraTd" for="atividades_autoedicao_subordinadas"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  </tr>'+
                             '                  <tr style="height: 40px;">'+
                             '                      <td style="text-align: left;"><i class="iconPopup fas fa-edit cinzaColor"></i> Impedir a altera\u00E7\u00E3o de '+__.demandas+' por unidades superiores ou subordinadas</td>'+
                             '                      <td>'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="atividades_limitar_avaliacao_subordinadas" tabindex="0" '+(config_administrativo && typeof config_administrativo.limitar_avaliacao_subordinadas !== 'undefined' && config_administrativo.limitar_avaliacao_subordinadas  ? 'checked' : '')+'>'+
-                            '                              <label class="onoff-switch-label" for="atividades_limitar_avaliacao_subordinadas"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="atividades_limitar_avaliacao_subordinadas" tabindex="0" '+(config_administrativo && typeof config_administrativo.limitar_avaliacao_subordinadas !== 'undefined' && config_administrativo.limitar_avaliacao_subordinadas  ? 'checked' : '')+'>'+
+                            '                              <label class="infraTd" for="atividades_limitar_avaliacao_subordinadas"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  </tr>'+
@@ -10493,45 +10508,45 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-copy cinzaColor"></i> Utilizar os modelos de documentos da entidade</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="modelos" id="modelos" tabindex="0" '+(config &&  config.hasOwnProperty('modelos') && config.modelos !== null && config.modelos ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="modelos"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="modelos" id="modelos" tabindex="0" '+(config &&  config.hasOwnProperty('modelos') && config.modelos !== null && config.modelos ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="modelos"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-file-signature cinzaColor"></i> Exigir assinatura de modelos de documentos da entidade</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="exige_assinatura" id="exige_assinatura" tabindex="0" '+(config &&  config.hasOwnProperty('exige_assinatura') && config.exige_assinatura !== null && config.exige_assinatura ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="exige_assinatura"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="exige_assinatura" id="exige_assinatura" tabindex="0" '+(config &&  config.hasOwnProperty('exige_assinatura') && config.exige_assinatura !== null && config.exige_assinatura ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="exige_assinatura"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-hand-holding cinzaColor"></i> Exigir a vincula\u00E7\u00E3o de entregas do '+__.programa+'</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="exige_entregas_programa" id="exige_entregas_programa" tabindex="0" '+(config &&  config.hasOwnProperty('exige_entregas_programa') && config.exige_entregas_programa !== null && config.exige_entregas_programa ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="exige_entregas_programa"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="exige_entregas_programa" id="exige_entregas_programa" tabindex="0" '+(config &&  config.hasOwnProperty('exige_entregas_programa') && config.exige_entregas_programa !== null && config.exige_entregas_programa ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="exige_entregas_programa"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-gavel cinzaColor"></i> Exigir a ades\u00E3o a vincula\u00E7\u00E3o de ato administrativo autorizativo</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="exige_autorizacao" id="exige_autorizacao" tabindex="0" '+(config &&  config.hasOwnProperty('exige_autorizacao') && config.exige_autorizacao !== null && config.exige_autorizacao ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="exige_autorizacao"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="exige_autorizacao" id="exige_autorizacao" tabindex="0" '+(config &&  config.hasOwnProperty('exige_autorizacao') && config.exige_autorizacao !== null && config.exige_autorizacao ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="exige_autorizacao"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-users-slash cinzaColor"></i> Excluir modalidade do c\u00E1lculo de quantitativo de vagas</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" onchange="configModalidadesLimitePlanos(this)" class="onoffswitch-checkbox singleOptionConfig" data-key="exclui_calculo_vagas" id="exclui_calculo_vagas" tabindex="0" '+(config &&  config.hasOwnProperty('exclui_calculo_vagas') && config.exclui_calculo_vagas !== null && config.exclui_calculo_vagas ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="exclui_calculo_vagas"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" onchange="configModalidadesLimitePlanos(this)" class="infraLinkOrgao singleOptionConfig" data-key="exclui_calculo_vagas" id="exclui_calculo_vagas" tabindex="0" '+(config &&  config.hasOwnProperty('exclui_calculo_vagas') && config.exclui_calculo_vagas !== null && config.exclui_calculo_vagas ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="exclui_calculo_vagas"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -10573,18 +10588,18 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;border-bottom: none;"><i class="iconPopup fas fa-thumbs-up cinzaColor"></i> Permitir apenas '+__.atividades+' '+getNameGenre('atividade', 'homologados', 'homologadas')+'</td>'+
                         '                      <td style="border-bottom: none;">'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="atividades_homologadas" id="atividades_homologadas" tabindex="0" '+(config &&  config.hasOwnProperty('atividades_homologadas') && config.atividades_homologadas !== null && config.atividades_homologadas ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="atividades_homologadas"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="atividades_homologadas" id="atividades_homologadas" tabindex="0" '+(config &&  config.hasOwnProperty('atividades_homologadas') && config.atividades_homologadas !== null && config.atividades_homologadas ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="atividades_homologadas"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-star cinzaColor"></i> Dispensar a avalia\u00E7\u00E3o de '+__.demandas+'</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="dispensa_avaliacao" id="dispensa_avaliacao" tabindex="0" '+(config &&  config.hasOwnProperty('dispensa_avaliacao') && config.dispensa_avaliacao !== null && config.dispensa_avaliacao ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="dispensa_avaliacao"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="dispensa_avaliacao" id="dispensa_avaliacao" tabindex="0" '+(config &&  config.hasOwnProperty('dispensa_avaliacao') && config.dispensa_avaliacao !== null && config.dispensa_avaliacao ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="dispensa_avaliacao"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -10600,9 +10615,9 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;border-bottom: none;"><i class="iconPopup fas fa-cogs cinzaColor"></i> Permitir cadastro manual de afastamentos j\u00E1 integrados a sistemas internos</td>'+
                         '                      <td style="border-bottom: none;">'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="integracao_interna_manual" id="integracao_interna_manual" tabindex="0" '+(config &&  config.hasOwnProperty('integracao_interna_manual') && config.integracao_interna_manual !== null && config.integracao_interna_manual ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="integracao_interna_manual"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="integracao_interna_manual" id="integracao_interna_manual" tabindex="0" '+(config &&  config.hasOwnProperty('integracao_interna_manual') && config.integracao_interna_manual !== null && config.integracao_interna_manual ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="integracao_interna_manual"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -10618,9 +10633,9 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;border-bottom: none;"><i class="iconPopup fas fa-building cinzaColor"></i> Modalidade integrante do Programa de Gest\u00E3o por Desempenho - PGD <br>(envia dados API)</td>'+
                         '                      <td style="border-bottom: none;">'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="pgd_api" id="pgd_api" tabindex="0" '+(config &&  config.hasOwnProperty('pgd_api') && config.pgd_api !== null && config.pgd_api ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="pgd_api"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="pgd_api" id="pgd_api" tabindex="0" '+(config &&  config.hasOwnProperty('pgd_api') && config.pgd_api !== null && config.pgd_api ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="pgd_api"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -10702,45 +10717,45 @@ function editConfigOptions(this_, id = false) {
                         '      <tr style="height: 40px;">'+
                         '          <td style="text-align: left;border-bottom: none;"><i class="iconPopup fas fa-clock cinzaColor"></i> Permite cadastro de horas e minutos</td>'+
                         '          <td style="border-bottom: none;">'+
-                        '              <div class="onoffswitch" style="float: right;">'+
-                        '                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="horas_afastamento" id="horas_afastamento" tabindex="0" '+(config &&  config.hasOwnProperty('horas_afastamento') && config.horas_afastamento !== null && config.horas_afastamento ? 'checked' : '')+'>'+
-                        '                  <label class="onoff-switch-label" for="horas_afastamento"></label>'+
+                        '              <div class="infraAncoraSigla" style="float: right;">'+
+                        '                  <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="horas_afastamento" id="horas_afastamento" tabindex="0" '+(config &&  config.hasOwnProperty('horas_afastamento') && config.horas_afastamento !== null && config.horas_afastamento ? 'checked' : '')+'>'+
+                        '                  <label class="infraTd" for="horas_afastamento"></label>'+
                         '              </div>'+
                         '          </td>'+
                         '      </tr>'+
                         '      <tr style="height: 40px;">'+
                         '          <td style="text-align: left;border-bottom: none;"><i class="iconPopup fas fa-cogs cinzaColor"></i> Possui integra\u00E7\u00E3o interna com outros sistemas</td>'+
                         '          <td style="border-bottom: none;">'+
-                        '              <div class="onoffswitch" style="float: right;">'+
-                        '                  <input type="checkbox" name="onoffswitch" onchange="configMotivosAfastamentoIntegracao(this)" class="onoffswitch-checkbox singleOptionConfig" data-key="integracao_interna" id="integracao_interna" tabindex="0" '+(config &&  config.hasOwnProperty('integracao_interna') && config.integracao_interna !== null && config.integracao_interna ? 'checked' : '')+'>'+
-                        '                  <label class="onoff-switch-label" for="integracao_interna"></label>'+
+                        '              <div class="infraAncoraSigla" style="float: right;">'+
+                        '                  <input type="checkbox" name="infraAncoraSigla" onchange="configMotivosAfastamentoIntegracao(this)" class="infraLinkOrgao singleOptionConfig" data-key="integracao_interna" id="integracao_interna" tabindex="0" '+(config &&  config.hasOwnProperty('integracao_interna') && config.integracao_interna !== null && config.integracao_interna ? 'checked' : '')+'>'+
+                        '                  <label class="infraTd" for="integracao_interna"></label>'+
                         '              </div>'+
                         '          </td>'+
                         '      </tr>'+
                         '      <tr style="height: 40px;'+(config &&  config.hasOwnProperty('integracao_interna') && config.integracao_interna !== null && config.integracao_interna ? '' : 'display:none;')+'" class="configTiposAfast_editarintegracao"">'+
                         '          <td style="text-align: left;border-bottom: none;"><i class="iconPopup fas fa-pencil cinzaColor"></i> Permite a edi\u00E7\u00E3o do afastamento com integra\u00E7\u00E3o interna com outros sistemas</td>'+
                         '          <td style="border-bottom: none;">'+
-                        '              <div class="onoffswitch" style="float: right;">'+
-                        '                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="editar_integracao_interna" id="editar_integracao_interna" tabindex="0" '+(config &&  config.hasOwnProperty('editar_integracao_interna') && config.editar_integracao_interna !== null && config.editar_integracao_interna ? 'checked' : '')+'>'+
-                        '                  <label class="onoff-switch-label" for="editar_integracao_interna"></label>'+
+                        '              <div class="infraAncoraSigla" style="float: right;">'+
+                        '                  <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="editar_integracao_interna" id="editar_integracao_interna" tabindex="0" '+(config &&  config.hasOwnProperty('editar_integracao_interna') && config.editar_integracao_interna !== null && config.editar_integracao_interna ? 'checked' : '')+'>'+
+                        '                  <label class="infraTd" for="editar_integracao_interna"></label>'+
                         '              </div>'+
                         '          </td>'+
                         '      </tr>'+
                         '      <tr style="height: 40px;'+(config &&  config.hasOwnProperty('integracao_interna') && config.integracao_interna !== null && config.integracao_interna ? '' : 'display:none;')+'" class="configTiposAfast_editarintegracao"">'+
                         '          <td style="text-align: left;border-bottom: none;"><i class="iconPopup fas fa-recycle cinzaColor"></i> Permite a sobreposi\u00E7\u00E3o com outros afastamentos que cont\u00EAm o mesmo per\u00EDodo</td>'+
                         '          <td style="border-bottom: none;">'+
-                        '              <div class="onoffswitch" style="float: right;">'+
-                        '                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="permite_sobreposicao" id="permite_sobreposicao" tabindex="0" '+(config &&  config.hasOwnProperty('permite_sobreposicao') && config.permite_sobreposicao !== null && config.permite_sobreposicao ? 'checked' : '')+'>'+
-                        '                  <label class="onoff-switch-label" for="permite_sobreposicao"></label>'+
+                        '              <div class="infraAncoraSigla" style="float: right;">'+
+                        '                  <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="permite_sobreposicao" id="permite_sobreposicao" tabindex="0" '+(config &&  config.hasOwnProperty('permite_sobreposicao') && config.permite_sobreposicao !== null && config.permite_sobreposicao ? 'checked' : '')+'>'+
+                        '                  <label class="infraTd" for="permite_sobreposicao"></label>'+
                         '              </div>'+
                         '          </td>'+
                         '      </tr>'+
                         '      <tr style="height: 40px;">'+
                         '          <td style="text-align: left;border-bottom: none;"><i class="iconPopup fas fa-random cinzaColor"></i> Exige vincula\u00E7\u00E3o de documento SEI</td>'+
                         '          <td style="border-bottom: none;">'+
-                        '              <div class="onoffswitch" style="float: right;">'+
-                        '                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="exige_documentacao" id="exige_documentacao" tabindex="0" '+(config &&  config.hasOwnProperty('exige_documentacao') && config.exige_documentacao !== null && config.exige_documentacao ? 'checked' : '')+'>'+
-                        '                  <label class="onoff-switch-label" for="exige_documentacao"></label>'+
+                        '              <div class="infraAncoraSigla" style="float: right;">'+
+                        '                  <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="exige_documentacao" id="exige_documentacao" tabindex="0" '+(config &&  config.hasOwnProperty('exige_documentacao') && config.exige_documentacao !== null && config.exige_documentacao ? 'checked' : '')+'>'+
+                        '                  <label class="infraTd" for="exige_documentacao"></label>'+
                         '              </div>'+
                         '          </td>'+
                         '      </tr>'+
@@ -10753,9 +10768,9 @@ function editConfigOptions(this_, id = false) {
                         '      <tr style="text-align: right;">'+
                         '          <td style="text-align: left;"><i class="iconPopup fas fa-procedures cinzaColor"></i> Possui dados sens\u00EDveis em rela\u00E7\u00E3o \u00E0 sa\u00FAde do usu\u00E1rio (LGPD)</td>'+
                         '          <td style="text-align: right;">'+
-                        '              <div class="onoffswitch" style="float: right;">'+
-                        '                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="dados_sensiveis" id="dados_sensiveis" tabindex="0" '+(config &&  config.hasOwnProperty('dados_sensiveis') && config.dados_sensiveis !== null && config.dados_sensiveis ? 'checked' : '')+'>'+
-                        '                  <label class="onoff-switch-label" for="dados_sensiveis"></label>'+
+                        '              <div class="infraAncoraSigla" style="float: right;">'+
+                        '                  <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="dados_sensiveis" id="dados_sensiveis" tabindex="0" '+(config &&  config.hasOwnProperty('dados_sensiveis') && config.dados_sensiveis !== null && config.dados_sensiveis ? 'checked' : '')+'>'+
+                        '                  <label class="infraTd" for="dados_sensiveis"></label>'+
                         '              </div>'+
                         '          </td>'+
                         '      </tr>'+
@@ -10804,9 +10819,9 @@ function editConfigOptions(this_, id = false) {
                         '                       <tr style="height: 40px;">'+
                         '                           <td style="text-align: left;"><i class="iconPopup fas fa-exclamation-circle cinzaColor"></i> Alertar sobre avalia\u00E7\u00E3o com baixa produtividade</td>'+
                         '                           <td style="text-align: right;">'+
-                        '                               <div class="onoffswitch" style="float: right;">'+
-                        '                                   <input type="checkbox" name="onoffswitch" data-key="alerta_baixa_produtividade" onchange="changeConfigOptions(this)" data-ref="configEntidade_alerta_baixa_produtividade" data-ref_type="class" class="onoffswitch-checkbox singleOptionConfig" id="alerta_baixa_produtividade" tabindex="0" '+(config && typeof config.alerta_baixa_produtividade !== 'undefined' && config.alerta_baixa_produtividade ? 'checked' : '')+'>'+
-                        '                                   <label class="onoff-switch-label" for="alerta_baixa_produtividade"></label>'+
+                        '                               <div class="infraAncoraSigla" style="float: right;">'+
+                        '                                   <input type="checkbox" name="infraAncoraSigla" data-key="alerta_baixa_produtividade" onchange="changeConfigOptions(this)" data-ref="configEntidade_alerta_baixa_produtividade" data-ref_type="class" class="infraLinkOrgao singleOptionConfig" id="alerta_baixa_produtividade" tabindex="0" '+(config && typeof config.alerta_baixa_produtividade !== 'undefined' && config.alerta_baixa_produtividade ? 'checked' : '')+'>'+
+                        '                                   <label class="infraTd" for="alerta_baixa_produtividade"></label>'+
                         '                               </div>'+
                         '                           </td>'+
                         '                       </tr>'+
@@ -10908,9 +10923,9 @@ function editConfigOptions(this_, id = false) {
                         '               <label><i class="iconPopup iconSwitch fas fa-mars cinzaColor"></i>Masculino</label>'+
                         '           </td>'+
                         '           <td>'+
-                        '               <div class="onoffswitch" style="float: left;">'+
-                        '                   <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="masculino" id="masculino" tabindex="0" '+(config &&  config.hasOwnProperty('masculino') && config.masculino !== null && config.masculino ? 'checked' : '')+'>'+
-                        '                   <label class="onoff-switch-label" for="masculino"></label>'+
+                        '               <div class="infraAncoraSigla" style="float: left;">'+
+                        '                   <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="masculino" id="masculino" tabindex="0" '+(config &&  config.hasOwnProperty('masculino') && config.masculino !== null && config.masculino ? 'checked' : '')+'>'+
+                        '                   <label class="infraTd" for="masculino"></label>'+
                         '               </div>'+
                         '           </td>'+
                         '      </tr>'+
@@ -10919,9 +10934,9 @@ function editConfigOptions(this_, id = false) {
                         '               <label><i class="iconPopup iconSwitch fas fa-spell-check cinzaColor"></i>Adicionar preposi\u00E7\u00E3o <br>(do, da, dos, das)</label>'+
                         '           </td>'+
                         '           <td>'+
-                        '               <div class="onoffswitch" style="float: left;">'+
-                        '                   <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox singleOptionConfig" data-key="preposicao" id="preposicao" tabindex="0" '+(config &&  config.hasOwnProperty('preposicao') && config.preposicao !== null && config.preposicao ? 'checked' : '')+'>'+
-                        '                   <label class="onoff-switch-label" for="preposicao"></label>'+
+                        '               <div class="infraAncoraSigla" style="float: left;">'+
+                        '                   <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao singleOptionConfig" data-key="preposicao" id="preposicao" tabindex="0" '+(config &&  config.hasOwnProperty('preposicao') && config.preposicao !== null && config.preposicao ? 'checked' : '')+'>'+
+                        '                   <label class="infraTd" for="preposicao"></label>'+
                         '               </div>'+
                         '           </td>'+
                         '      </tr>'+
@@ -10945,9 +10960,9 @@ function editConfigOptions(this_, id = false) {
                 htmlBox +=  '      <tr data-id_perfil="'+v.id_perfil+'" data-id="'+id+'">'+
                             '           <td style="width: 250px; padding: 0 10px; text-align: left;">'+v.nome_perfil+'</td>'+
                             '           <td data-key="perfil" data-type="switch" style="width: 100px; text-align: center;">'+
-                            '              <div class="onoffswitch" style="transform: scale(0.8);">'+
-                            '                  <input type="checkbox" name="onoffswitch" onchange="changeConfigPerfilCapacidade(this)" data-id="'+id+'" data-id_perfil="'+v.id_perfil+'" data-id_capacidade="'+id_capacidade+'" class="onoffswitch-checkbox" id="'+idInput+'" tabindex="0" '+(checked  ? 'checked' : '')+'>'+
-                            '                  <label class="onoff-switch-label" for="'+idInput+'"></label>'+
+                            '              <div class="infraAncoraSigla" style="transform: scale(0.8);">'+
+                            '                  <input type="checkbox" name="infraAncoraSigla" onchange="changeConfigPerfilCapacidade(this)" data-id="'+id+'" data-id_perfil="'+v.id_perfil+'" data-id_capacidade="'+id_capacidade+'" class="infraLinkOrgao" id="'+idInput+'" tabindex="0" '+(checked  ? 'checked' : '')+'>'+
+                            '                  <label class="infraTd" for="'+idInput+'"></label>'+
                             '              </div>'+
                             '           </td>'+
                             '       </tr>';
@@ -10976,9 +10991,9 @@ function editConfigOptions(this_, id = false) {
                     _htmlB  +=  '      <tr data-id_perfil="'+value.id_perfil+'" data-id="'+v.id_tipo_capacidade+'">'+
                                 '           <td style="width: 250px; padding: 0 10px; text-align: left;">'+v.descricao+' ('+v.nome_capacidade+')</td>'+
                                 '           <td data-key="perfil" data-type="switch" style="width: 100px; text-align: center;">'+
-                                '              <div class="onoffswitch" style="transform: scale(0.8);">'+
-                                '                  <input type="checkbox" name="onoffswitch" onchange="changeConfigPerfilCapacidade(this)" data-id="'+v.id_tipo_capacidade+'" data-id_perfil="'+id+'" data-id_capacidade="'+id_capacidade+'" class="onoffswitch-checkbox" id="'+idInput+'" tabindex="0" '+(checked  ? 'checked' : '')+'>'+
-                                '                  <label class="onoff-switch-label" for="'+idInput+'"></label>'+
+                                '              <div class="infraAncoraSigla" style="transform: scale(0.8);">'+
+                                '                  <input type="checkbox" name="infraAncoraSigla" onchange="changeConfigPerfilCapacidade(this)" data-id="'+v.id_tipo_capacidade+'" data-id_perfil="'+id+'" data-id_capacidade="'+id_capacidade+'" class="infraLinkOrgao" id="'+idInput+'" tabindex="0" '+(checked  ? 'checked' : '')+'>'+
+                                '                  <label class="infraTd" for="'+idInput+'"></label>'+
                                 '              </div>'+
                                 '           </td>'+
                                 '       </tr>';
@@ -11091,15 +11106,15 @@ function editConfigOptions(this_, id = false) {
                     htmlBox +=  '                                              <tr data-index="'+i+'" data-key="feriados">'+
                                 '                                                  <td class="editCell" data-key="nome_feriado" data-type="text" style="width: 250px; padding: 0 10px; text-align: left;">'+unicodeToChar(v.nome_feriado)+'</td>'+
                                 '                                                  <td data-key="recorrente" data-type="switch" style="width: 100px; text-align: center;">'+
-                                '                                                     <div class="onoffswitch" style="transform: scale(0.8);">'+
-                                '                                                         <input type="checkbox" name="onoffswitch" onchange="changeConfigFeriadoRecorrente(this)" class="onoffswitch-checkbox switch_feriadoRecorrente switch_feriadoRecorrente_'+i+'" id="changeItemConfig_'+data.type+'_'+i+'" tabindex="0" '+(v.recorrente  ? 'checked' : '')+'>'+
-                                '                                                         <label class="onoff-switch-label" for="changeItemConfig_'+data.type+'_'+i+'"></label>'+
+                                '                                                     <div class="infraAncoraSigla" style="transform: scale(0.8);">'+
+                                '                                                         <input type="checkbox" name="infraAncoraSigla" onchange="changeConfigFeriadoRecorrente(this)" class="infraLinkOrgao switch_feriadoRecorrente switch_feriadoRecorrente_'+i+'" id="changeItemConfig_'+data.type+'_'+i+'" tabindex="0" '+(v.recorrente  ? 'checked' : '')+'>'+
+                                '                                                         <label class="infraTd" for="changeItemConfig_'+data.type+'_'+i+'"></label>'+
                                 '                                                     </div>'+
                                 '                                                  </td>'+
                                 '                                                  <td data-key="meio_periodo" data-type="switch" style="width: 100px; text-align: center;">'+
-                                '                                                     <div class="onoffswitch" style="transform: scale(0.8);">'+
-                                '                                                         <input type="checkbox" name="onoffswitch" onchange="changeHorasDesconto(this)" class="onoffswitch-checkbox switch_feriadoMeioPeriodo switch_feriadoMeioPeriodo_'+i+'" id="changeItemConfigMP_'+data.type+'_'+i+'" tabindex="0" '+(v.meio_periodo  ? 'checked' : '')+'>'+
-                                '                                                         <label class="onoff-switch-label" for="changeItemConfigMP_'+data.type+'_'+i+'"></label>'+
+                                '                                                     <div class="infraAncoraSigla" style="transform: scale(0.8);">'+
+                                '                                                         <input type="checkbox" name="infraAncoraSigla" onchange="changeHorasDesconto(this)" class="infraLinkOrgao switch_feriadoMeioPeriodo switch_feriadoMeioPeriodo_'+i+'" id="changeItemConfigMP_'+data.type+'_'+i+'" tabindex="0" '+(v.meio_periodo  ? 'checked' : '')+'>'+
+                                '                                                         <label class="infraTd" for="changeItemConfigMP_'+data.type+'_'+i+'"></label>'+
                                 '                                                     </div>'+
                                 '                                                  </td>'+
                                 '                                                  <td class="'+(v.meio_periodo ? 'editCellNum' : '')+'" data-key="horas_desconto" data-type="number" style="width: 150px; text-align: center;">'+(v.meio_periodo ? (v.horas_desconto ? v.horas_desconto : 4) : (v.horas_desconto ? v.horas_desconto : ''))+'</td>'+ 
@@ -11114,15 +11129,15 @@ function editConfigOptions(this_, id = false) {
             htmlBox +=  '                                              <tr data-index="'+feriados_len+'" data-key="feriados">'+
                         '                                                  <td class="editCell" data-key="nome_feriado" data-type="text" style="width: 250px; padding: 0 10px; text-align: left;"></td>'+
                         '                                                  <td data-key="recorrente" data-type="switch" style="width: 100px; text-align: center;">'+
-                        '                                                     <div class="onoffswitch" style="transform: scale(0.8);">'+
-                        '                                                         <input type="checkbox" onchange="changeConfigFeriadoRecorrente(this)" name="onoffswitch" class="onoffswitch-checkbox switch_feriadoRecorrente switch_feriadoRecorrente_'+feriados_len+'" id="changeItemConfig_'+data.type+'_'+feriados_len+'" tabindex="0" checked>'+
-                        '                                                         <label class="onoff-switch-label" for="changeItemConfig_'+data.type+'_'+feriados_len+'"></label>'+
+                        '                                                     <div class="infraAncoraSigla" style="transform: scale(0.8);">'+
+                        '                                                         <input type="checkbox" onchange="changeConfigFeriadoRecorrente(this)" name="infraAncoraSigla" class="infraLinkOrgao switch_feriadoRecorrente switch_feriadoRecorrente_'+feriados_len+'" id="changeItemConfig_'+data.type+'_'+feriados_len+'" tabindex="0" checked>'+
+                        '                                                         <label class="infraTd" for="changeItemConfig_'+data.type+'_'+feriados_len+'"></label>'+
                         '                                                     </div>'+
                         '                                                  </td>'+
                         '                                                  <td data-key="meio_periodo" data-type="switch" style="width: 100px; text-align: center;">'+
-                        '                                                     <div class="onoffswitch" style="transform: scale(0.8);">'+
-                        '                                                         <input type="checkbox" name="onoffswitch" onchange="changeHorasDesconto(this)" class="onoffswitch-checkbox switch_feriadoMeioPeriodo switch_feriadoMeioPeriodo_'+feriados_len+'" id="changeItemConfigMP_'+data.type+'_'+feriados_len+'" tabindex="0">'+
-                        '                                                         <label class="onoff-switch-label" for="changeItemConfigMP_'+data.type+'_'+feriados_len+'"></label>'+
+                        '                                                     <div class="infraAncoraSigla" style="transform: scale(0.8);">'+
+                        '                                                         <input type="checkbox" name="infraAncoraSigla" onchange="changeHorasDesconto(this)" class="infraLinkOrgao switch_feriadoMeioPeriodo switch_feriadoMeioPeriodo_'+feriados_len+'" id="changeItemConfigMP_'+data.type+'_'+feriados_len+'" tabindex="0">'+
+                        '                                                         <label class="infraTd" for="changeItemConfigMP_'+data.type+'_'+feriados_len+'"></label>'+
                         '                                                     </div>'+
                         '                                                  </td>'+
                         '                                                  <td class="editCellNum" data-key="horas_desconto" data-type="number" style="width: 150px; text-align: left;"></td>'+
@@ -11175,9 +11190,9 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-calendar cinzaColor"></i> Limitar os planos de trabalho e '+__.programas+' ao ano civil</td>'+
                         '                      <td style="text-align: right;">'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="limitar_ano_civil" onchange="changeConfigOptions(this)" data-ref="configEntidade_limite_meses_planos" data-ref_type="class" class="onoffswitch-checkbox singleOptionConfig" id="limitar_ano_civil" tabindex="0" '+(config && typeof config.limitar_ano_civil !== 'undefined' && config.limitar_ano_civil ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="limitar_ano_civil"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="limitar_ano_civil" onchange="changeConfigOptions(this)" data-ref="configEntidade_limite_meses_planos" data-ref_type="class" class="infraLinkOrgao singleOptionConfig" id="limitar_ano_civil" tabindex="0" '+(config && typeof config.limitar_ano_civil !== 'undefined' && config.limitar_ano_civil ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="limitar_ano_civil"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11244,9 +11259,9 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-thumbs-up cinzaColor"></i> Exigir a homologa\u00E7\u00E3o de planos de trabalho antes da sua execu\u00E7\u00E3o</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="exigir_homologacao_previa_planos" onchange="changeConfigOptions(this)" data-ref_type="class" data-ref="configEntidade_verificacoes_planos_trabalho" class="onoffswitch-checkbox singleOptionConfig" id="exigir_homologacao_previa_planos" tabindex="0" '+(config && typeof config.exigir_homologacao_previa_planos !== 'undefined' && config.exigir_homologacao_previa_planos ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="exigir_homologacao_previa_planos"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="exigir_homologacao_previa_planos" onchange="changeConfigOptions(this)" data-ref_type="class" data-ref="configEntidade_verificacoes_planos_trabalho" class="infraLinkOrgao singleOptionConfig" id="exigir_homologacao_previa_planos" tabindex="0" '+(config && typeof config.exigir_homologacao_previa_planos !== 'undefined' && config.exigir_homologacao_previa_planos ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="exigir_homologacao_previa_planos"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11259,27 +11274,27 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr class="configEntidade_verificacoes_planos_trabalho" style="height: 40px;" style="'+(config && typeof config.exigir_homologacao_previa_planos !== 'undefined' && config.exigir_homologacao_previa_planos  ? '' : 'display:none;')+'">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-star cinzaColor"></i> Exigir a avalia\u00E7\u00E3o de planos de trabalho anteriores para a homologa\u00E7\u00E3o de novos planos</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="exigir_avaliacao_previa_planos" onchange="changeConfigOptions(this)" data-ref_type="class" data-ref="configEntidade_exigir_avaliacao_previa_planos"  class="onoffswitch-checkbox singleOptionConfig" id="exigir_avaliacao_previa_planos" tabindex="0" '+(config && typeof config.exigir_avaliacao_previa_planos !== 'undefined' && config.exigir_avaliacao_previa_planos ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="exigir_avaliacao_previa_planos"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="exigir_avaliacao_previa_planos" onchange="changeConfigOptions(this)" data-ref_type="class" data-ref="configEntidade_exigir_avaliacao_previa_planos"  class="infraLinkOrgao singleOptionConfig" id="exigir_avaliacao_previa_planos" tabindex="0" '+(config && typeof config.exigir_avaliacao_previa_planos !== 'undefined' && config.exigir_avaliacao_previa_planos ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="exigir_avaliacao_previa_planos"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr class="configEntidade_exigir_avaliacao_previa_planos configEntidade_verificacoes_planos_trabalho" style="height: 40px;" style="'+(config && typeof config.exigir_avaliacao_previa_planos !== 'undefined' && config.exigir_avaliacao_previa_planos  ? '' : 'display:none;')+'">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-door-closed cinzaColor"></i> Permitir a avalia\u00E7\u00E3o de planos antes do seu encerramento</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="permitir_avaliacao_planos_vincendos" onchange="changeConfigOptions(this)" class="onoffswitch-checkbox singleOptionConfig" id="permitir_avaliacao_planos_vincendos" tabindex="0" '+(config && typeof config.permitir_avaliacao_planos_vincendos !== 'undefined' && config.permitir_avaliacao_planos_vincendos ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="permitir_avaliacao_planos_vincendos"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="permitir_avaliacao_planos_vincendos" onchange="changeConfigOptions(this)" class="infraLinkOrgao singleOptionConfig" id="permitir_avaliacao_planos_vincendos" tabindex="0" '+(config && typeof config.permitir_avaliacao_planos_vincendos !== 'undefined' && config.permitir_avaliacao_planos_vincendos ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="permitir_avaliacao_planos_vincendos"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr class="configEntidade_exigir_avaliacao_previa_planos configEntidade_verificacoes_planos_trabalho" style="height: 40px;" style="'+(config && typeof config.exigir_avaliacao_previa_planos !== 'undefined' && config.exigir_avaliacao_previa_planos  ? '' : 'display:none;')+'">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-user-cog cinzaColor"></i> Permitir a autohomologa\u00E7\u00E3o de planos de trabalho</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="permitir_autohomologacao_planos" onchange="changeConfigOptions(this)" class="onoffswitch-checkbox singleOptionConfig" id="permitir_autohomologacao_planos" tabindex="0" '+(config && typeof config.permitir_autohomologacao_planos !== 'undefined' && config.permitir_autohomologacao_planos ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="permitir_autohomologacao_planos"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="permitir_autohomologacao_planos" onchange="changeConfigOptions(this)" class="infraLinkOrgao singleOptionConfig" id="permitir_autohomologacao_planos" tabindex="0" '+(config && typeof config.permitir_autohomologacao_planos !== 'undefined' && config.permitir_autohomologacao_planos ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="permitir_autohomologacao_planos"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11292,18 +11307,18 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr class="configEntidade_verificacoes_planos_trabalho" data-ref_invert="true" style="height: 40px;'+(config && typeof config.exigir_homologacao_previa_planos !== 'undefined' && config.exigir_homologacao_previa_planos  ? 'display:none;' : '')+'">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-clone cinzaColor"></i> Duplicar planos de trabalho automaticamente ap\u00F3s a homologa\u00E7\u00E3o</td>'+
                         '                      <td style="text-align: right;">'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="duplicar_automaticamente" class="onoffswitch-checkbox singleOptionConfig" id="duplicar_automaticamente" tabindex="0" '+(config && typeof config.duplicar_automaticamente !== 'undefined' && config.duplicar_automaticamente ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="duplicar_automaticamente"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="duplicar_automaticamente" class="infraLinkOrgao singleOptionConfig" id="duplicar_automaticamente" tabindex="0" '+(config && typeof config.duplicar_automaticamente !== 'undefined' && config.duplicar_automaticamente ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="duplicar_automaticamente"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr class="configEntidade_verificacoes_planos_trabalho" data-ref_invert="true" style="height: 40px;'+(config && typeof config.exigir_homologacao_previa_planos !== 'undefined' && config.exigir_homologacao_previa_planos  ? 'display:none;' : '')+'">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-history cinzaColor"></i> Arquivar planos de trabalho homologados</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="arquivar_planos_trabalho" onchange="changeConfigOptions(this)" data-ref="configEntidade_prazo_arquivar_planos_trabalho" class="onoffswitch-checkbox singleOptionConfig" id="arquivar_planos_trabalho" tabindex="0" '+(config && typeof config.arquivar_planos_trabalho !== 'undefined' && config.arquivar_planos_trabalho ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="arquivar_planos_trabalho"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="arquivar_planos_trabalho" onchange="changeConfigOptions(this)" data-ref="configEntidade_prazo_arquivar_planos_trabalho" class="infraLinkOrgao singleOptionConfig" id="arquivar_planos_trabalho" tabindex="0" '+(config && typeof config.arquivar_planos_trabalho !== 'undefined' && config.arquivar_planos_trabalho ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="arquivar_planos_trabalho"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11325,36 +11340,36 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-star cinzaColor"></i> Avalia\u00E7\u00F5es pendentes</td>'+
                         '                      <td style="text-align: right;">'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="pendencias_plano_avaliacao_pendente" class="onoffswitch-checkbox singleOptionConfig" id="pendencias_plano_avaliacao_pendente" tabindex="0" '+(config && typeof config.pendencias_plano_avaliacao_pendente !== 'undefined' && config.pendencias_plano_avaliacao_pendente ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="pendencias_plano_avaliacao_pendente"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="pendencias_plano_avaliacao_pendente" class="infraLinkOrgao singleOptionConfig" id="pendencias_plano_avaliacao_pendente" tabindex="0" '+(config && typeof config.pendencias_plano_avaliacao_pendente !== 'undefined' && config.pendencias_plano_avaliacao_pendente ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="pendencias_plano_avaliacao_pendente"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-inbox cinzaColor"></i> Entregas insuficientes</td>'+
                         '                      <td style="text-align: right;">'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="pendencias_plano_entrega_insuficiente" class="onoffswitch-checkbox singleOptionConfig" id="pendencias_plano_entrega_insuficiente" tabindex="0" '+(config && typeof config.pendencias_plano_entrega_insuficiente !== 'undefined' && config.pendencias_plano_entrega_insuficiente ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="pendencias_plano_entrega_insuficiente"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="pendencias_plano_entrega_insuficiente" class="infraLinkOrgao singleOptionConfig" id="pendencias_plano_entrega_insuficiente" tabindex="0" '+(config && typeof config.pendencias_plano_entrega_insuficiente !== 'undefined' && config.pendencias_plano_entrega_insuficiente ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="pendencias_plano_entrega_insuficiente"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-handshake cinzaColor"></i> Pactua\u00E7\u00E3o Insuficiente</td>'+
                         '                      <td style="text-align: right;">'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="pendencias_plano_pactuacao_insuficiente" class="onoffswitch-checkbox singleOptionConfig" id="pendencias_plano_pactuacao_insuficiente" tabindex="0" '+(config && typeof config.pendencias_plano_pactuacao_insuficiente !== 'undefined' && config.pendencias_plano_pactuacao_insuficiente ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="pendencias_plano_pactuacao_insuficiente"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="pendencias_plano_pactuacao_insuficiente" class="infraLinkOrgao singleOptionConfig" id="pendencias_plano_pactuacao_insuficiente" tabindex="0" '+(config && typeof config.pendencias_plano_pactuacao_insuficiente !== 'undefined' && config.pendencias_plano_pactuacao_insuficiente ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="pendencias_plano_pactuacao_insuficiente"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-chart-line cinzaColor"></i> Produtividade Insuficiente</td>'+
                         '                      <td style="text-align: right;">'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="pendencias_plano_produtividade_insuficiente" class="onoffswitch-checkbox singleOptionConfig" id="pendencias_plano_produtividade_insuficiente" tabindex="0" '+(config && typeof config.pendencias_plano_produtividade_insuficiente !== 'undefined' && config.pendencias_plano_produtividade_insuficiente ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="pendencias_plano_produtividade_insuficiente"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="pendencias_plano_produtividade_insuficiente" class="infraLinkOrgao singleOptionConfig" id="pendencias_plano_produtividade_insuficiente" tabindex="0" '+(config && typeof config.pendencias_plano_produtividade_insuficiente !== 'undefined' && config.pendencias_plano_produtividade_insuficiente ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="pendencias_plano_produtividade_insuficiente"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11370,18 +11385,18 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-thumbs-up cinzaColor"></i> Exigir a homologa&ccedil;&atilde;o de '+__.programas+' antes da sua execu\u00E7\u00E3o</td>'+
                         '                      <td style="text-align: right;">'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="exigir_homologacao_programas" onchange="changeConfigOptions(this)" data-ref_type="class" data-ref="configEntidade_verificacoes_programa" class="onoffswitch-checkbox singleOptionConfig" id="exigir_homologacao_programas" tabindex="0" '+(config && typeof config.exigir_homologacao_programas !== 'undefined' && config.exigir_homologacao_programas ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="exigir_homologacao_programas"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="exigir_homologacao_programas" onchange="changeConfigOptions(this)" data-ref_type="class" data-ref="configEntidade_verificacoes_programa" class="infraLinkOrgao singleOptionConfig" id="exigir_homologacao_programas" tabindex="0" '+(config && typeof config.exigir_homologacao_programas !== 'undefined' && config.exigir_homologacao_programas ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="exigir_homologacao_programas"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr class="configEntidade_verificacoes_programa" style="height: 40px;" style="'+(config && typeof config.exigir_homologacao_programas !== 'undefined' && config.exigir_homologacao_programas  ? '' : 'display:none;')+'">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-star cinzaColor"></i> Exigir a avalia\u00E7\u00E3o de '+__.programas+' anteriores para a homologa\u00E7\u00E3o de novos '+__.programas+'</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="exigir_avaliacao_previa_programas" onchange="changeConfigOptions(this)" class="onoffswitch-checkbox singleOptionConfig" id="exigir_avaliacao_previa_programas" tabindex="0" '+(config && typeof config.exigir_avaliacao_previa_programas !== 'undefined' && config.exigir_avaliacao_previa_programas ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="exigir_avaliacao_previa_programas"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="exigir_avaliacao_previa_programas" onchange="changeConfigOptions(this)" class="infraLinkOrgao singleOptionConfig" id="exigir_avaliacao_previa_programas" tabindex="0" '+(config && typeof config.exigir_avaliacao_previa_programas !== 'undefined' && config.exigir_avaliacao_previa_programas ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="exigir_avaliacao_previa_programas"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11401,36 +11416,36 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-history cinzaColor"></i> Gravar o hist\u00F3rico '+__.demandas_programadas+' no hist\u00F3rico do processo (somente '+__.demandas+' processuais)</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="gravar_historico_processo" class="onoffswitch-checkbox singleOptionConfig" id="gravar_historico_processo" tabindex="0" '+(config && typeof config.gravar_historico_processo !== 'undefined' && config.gravar_historico_processo  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="gravar_historico_processo"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="gravar_historico_processo" class="infraLinkOrgao singleOptionConfig" id="gravar_historico_processo" tabindex="0" '+(config && typeof config.gravar_historico_processo !== 'undefined' && config.gravar_historico_processo  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="gravar_historico_processo"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-random cinzaColor"></i> Limitar a vincula\u00E7\u00E3o de '+__.demandas+' da unidade apenas ao seus usu\u00E1rios lotados</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="limitar_vinculacao_atividades" class="onoffswitch-checkbox singleOptionConfig" id="limitar_vinculacao_atividades" tabindex="0" '+(config && typeof config.limitar_vinculacao_atividades !== 'undefined' && config.limitar_vinculacao_atividades  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="limitar_vinculacao_atividades"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="limitar_vinculacao_atividades" class="infraLinkOrgao singleOptionConfig" id="limitar_vinculacao_atividades" tabindex="0" '+(config && typeof config.limitar_vinculacao_atividades !== 'undefined' && config.limitar_vinculacao_atividades  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="limitar_vinculacao_atividades"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-user-tie cinzaColor"></i> Exigir a atribui\u00E7\u00E3o de '+__.demandas+' (campo respons\u00E1vel obrigat\u00F3rio)</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="exigir_atribuicao_demandas" onchange="changeConfigOptions(this)" data-ref="configEntidade_exigir_atribuicao_demandas" class="onoffswitch-checkbox singleOptionConfig" id="exigir_atribuicao_demandas" tabindex="0" '+(config && typeof config.exigir_atribuicao_demandas !== 'undefined' && config.exigir_atribuicao_demandas ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="exigir_atribuicao_demandas"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="exigir_atribuicao_demandas" onchange="changeConfigOptions(this)" data-ref="configEntidade_exigir_atribuicao_demandas" class="infraLinkOrgao singleOptionConfig" id="exigir_atribuicao_demandas" tabindex="0" '+(config && typeof config.exigir_atribuicao_demandas !== 'undefined' && config.exigir_atribuicao_demandas ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="exigir_atribuicao_demandas"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-history cinzaColor"></i> Limitar o cadastramento de '+__.demandas+' '+getNameGenre('demanda', 'retroativos', 'retroativas')+' (dias ap\u00F3s a encerramento do plano)</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="limitar_demandas_retroativas" onchange="changeConfigOptions(this)" data-ref="configEntidade_prazo_demandas_retroativas" class="onoffswitch-checkbox singleOptionConfig" id="limitar_demandas_retroativas" tabindex="0" '+(config && typeof config.limitar_demandas_retroativas !== 'undefined' && config.limitar_demandas_retroativas ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="limitar_demandas_retroativas"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="limitar_demandas_retroativas" onchange="changeConfigOptions(this)" data-ref="configEntidade_prazo_demandas_retroativas" class="infraLinkOrgao singleOptionConfig" id="limitar_demandas_retroativas" tabindex="0" '+(config && typeof config.limitar_demandas_retroativas !== 'undefined' && config.limitar_demandas_retroativas ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="limitar_demandas_retroativas"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11456,9 +11471,9 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-star-half-alt cinzaColor"></i> Exigir a avalia\u00E7\u00E3o antes do cadastramento de '+getNameGenre('demanda', 'novos', 'novas')+' '+__.demandas+'</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="checar_avaliacao" onchange="changeConfigOptions(this)" data-ref="configEntidade_prazo_avaliacao" class="onoffswitch-checkbox singleOptionConfig" id="checar_avaliacao" tabindex="0" '+(config && typeof config.checar_avaliacao !== 'undefined' && config.checar_avaliacao ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="checar_avaliacao"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="checar_avaliacao" onchange="changeConfigOptions(this)" data-ref="configEntidade_prazo_avaliacao" class="infraLinkOrgao singleOptionConfig" id="checar_avaliacao" tabindex="0" '+(config && typeof config.checar_avaliacao !== 'undefined' && config.checar_avaliacao ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="checar_avaliacao"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11471,9 +11486,9 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup far fa-star cinzaColor"></i> Restringir a avalia\u00E7\u00E3o m\u00E1xima de produtividades menores que 100%</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="limitar_avaliacao_maxima" class="onoffswitch-checkbox singleOptionConfig" id="limitar_avaliacao_maxima" tabindex="0" '+(config && typeof config.limitar_avaliacao_maxima !== 'undefined' && config.limitar_avaliacao_maxima ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="limitar_avaliacao_maxima"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="limitar_avaliacao_maxima" class="infraLinkOrgao singleOptionConfig" id="limitar_avaliacao_maxima" tabindex="0" '+(config && typeof config.limitar_avaliacao_maxima !== 'undefined' && config.limitar_avaliacao_maxima ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="limitar_avaliacao_maxima"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11489,9 +11504,9 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-gavel cinzaColor"></i> Utilizar a an\u00E1lise de recursos de avalia\u00E7\u00F5es de planos de trabalho</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="recurso_avaliacao_planos" onchange="changeConfigOptions(this)" data-ref="configEntidade_recurso_avaliacao_planos" data-ref_type="class" class="onoffswitch-checkbox singleOptionConfig" id="recurso_avaliacao_planos" tabindex="0" '+(config && typeof config.recurso_avaliacao_planos !== 'undefined' && config.recurso_avaliacao_planos ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="recurso_avaliacao_planos"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="recurso_avaliacao_planos" onchange="changeConfigOptions(this)" data-ref="configEntidade_recurso_avaliacao_planos" data-ref_type="class" class="infraLinkOrgao singleOptionConfig" id="recurso_avaliacao_planos" tabindex="0" '+(config && typeof config.recurso_avaliacao_planos !== 'undefined' && config.recurso_avaliacao_planos ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="recurso_avaliacao_planos"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11585,63 +11600,63 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-window-restore cinzaColor"></i> Abrir as configura\u00E7\u00F5es do sistema em janela apartada (modal)</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="modal_configuracoes" class="onoffswitch-checkbox singleOptionConfig" id="modal_configuracoes" tabindex="0" '+(config && typeof config.modal_configuracoes !== 'undefined' && config.modal_configuracoes ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="modal_configuracoes"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="modal_configuracoes" class="infraLinkOrgao singleOptionConfig" id="modal_configuracoes" tabindex="0" '+(config && typeof config.modal_configuracoes !== 'undefined' && config.modal_configuracoes ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="modal_configuracoes"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;display:none">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-tasks cinzaColor"></i> Utilizar o cadastro simplificado de demandas como padr\u00E3o</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="cadastro_simplificado" class="onoffswitch-checkbox singleOptionConfig" id="cadastro_simplificado" tabindex="0" '+(config && typeof config.cadastro_simplificado !== 'undefined' && config.cadastro_simplificado  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="cadastro_simplificado"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="cadastro_simplificado" class="infraLinkOrgao singleOptionConfig" id="cadastro_simplificado" tabindex="0" '+(config && typeof config.cadastro_simplificado !== 'undefined' && config.cadastro_simplificado  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="cadastro_simplificado"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-tasks cinzaColor"></i> Utilizar o cadastro r\u00E1pido de demandas como padr\u00E3o</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="cadastro_rapido" class="onoffswitch-checkbox singleOptionConfig" id="cadastro_rapido" tabindex="0" '+(config && typeof config.cadastro_rapido !== 'undefined' && config.cadastro_rapido  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="cadastro_rapido"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="cadastro_rapido" class="infraLinkOrgao singleOptionConfig" id="cadastro_rapido" tabindex="0" '+(config && typeof config.cadastro_rapido !== 'undefined' && config.cadastro_rapido  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="cadastro_rapido"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-file-alt cinzaColor"></i> Dispensar os campos de Tipo de Requisi\u00E7\u00E3o e Tipos de Documentos<br>nos formul\u00E1rios de '+__.demanda+'</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="dispensa_tipos_requisicao" class="onoffswitch-checkbox singleOptionConfig" id="dispensa_tipos_requisicao" tabindex="0" '+(config && typeof config.dispensa_tipos_requisicao !== 'undefined' && config.dispensa_tipos_requisicao  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="dispensa_tipos_requisicao"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="dispensa_tipos_requisicao" class="infraLinkOrgao singleOptionConfig" id="dispensa_tipos_requisicao" tabindex="0" '+(config && typeof config.dispensa_tipos_requisicao !== 'undefined' && config.dispensa_tipos_requisicao  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="dispensa_tipos_requisicao"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-redo-alt cinzaColor"></i> Desativar a cria\u00E7\u00E3o de '+__.demandas+' recorrentes</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="desativa_demandas_recorrentes" class="onoffswitch-checkbox singleOptionConfig" id="desativa_demandas_recorrentes" tabindex="0" '+(config && typeof config.desativa_demandas_recorrentes !== 'undefined' && config.desativa_demandas_recorrentes  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="desativa_demandas_recorrentes"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="desativa_demandas_recorrentes" class="infraLinkOrgao singleOptionConfig" id="desativa_demandas_recorrentes" tabindex="0" '+(config && typeof config.desativa_demandas_recorrentes !== 'undefined' && config.desativa_demandas_recorrentes  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="desativa_demandas_recorrentes"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-phone cinzaColor"></i> Visualizar telefones na lista de contatos</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="visualizar_telefones" class="onoffswitch-checkbox singleOptionConfig" id="visualizar_telefones" tabindex="0" '+(config && typeof config.visualizar_telefones !== 'undefined' && config.visualizar_telefones  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="visualizar_telefones"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="visualizar_telefones" class="infraLinkOrgao singleOptionConfig" id="visualizar_telefones" tabindex="0" '+(config && typeof config.visualizar_telefones !== 'undefined' && config.visualizar_telefones  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="visualizar_telefones"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-birthday-cake cinzaColor"></i> Visualizar anivers\u00E1rios na lista de contatos</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="visualizar_aniversarios" class="onoffswitch-checkbox singleOptionConfig" id="visualizar_aniversarios" tabindex="0" '+(config && typeof config.visualizar_aniversarios !== 'undefined' && config.visualizar_aniversarios  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="visualizar_aniversarios"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="visualizar_aniversarios" class="infraLinkOrgao singleOptionConfig" id="visualizar_aniversarios" tabindex="0" '+(config && typeof config.visualizar_aniversarios !== 'undefined' && config.visualizar_aniversarios  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="visualizar_aniversarios"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11662,18 +11677,18 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-toolbox cinzaColor"></i> Desativar a visualiza\u00E7\u00E3o de \u00EDndices de produtividade em todo sistema</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="desativa_produtividade_geral" class="onoffswitch-checkbox singleOptionConfig" id="desativa_produtividade_geral" tabindex="0" '+(config && typeof config.desativa_produtividade_geral !== 'undefined' && config.desativa_produtividade_geral  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="desativa_produtividade_geral"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="desativa_produtividade_geral" class="infraLinkOrgao singleOptionConfig" id="desativa_produtividade_geral" tabindex="0" '+(config && typeof config.desativa_produtividade_geral !== 'undefined' && config.desativa_produtividade_geral  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="desativa_produtividade_geral"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-trash-restore cinzaColor"></i> Visualizar registros inativos expurgados (> 1 semana)</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="visualizar_registros_expurgados" class="onoffswitch-checkbox singleOptionConfig" id="visualizar_registros_expurgados" tabindex="0" '+(config && typeof config.visualizar_registros_expurgados !== 'undefined' && config.visualizar_registros_expurgados  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="visualizar_registros_expurgados"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="visualizar_registros_expurgados" class="infraLinkOrgao singleOptionConfig" id="visualizar_registros_expurgados" tabindex="0" '+(config && typeof config.visualizar_registros_expurgados !== 'undefined' && config.visualizar_registros_expurgados  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="visualizar_registros_expurgados"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11690,9 +11705,9 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-envelope cinzaColor"></i> Enviar notifica\u00E7\u00E3o para a caixa de email da unidade e seus respons\u00E1veis (metadados titular_unidade e substituto_unidade)</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="notificacao_email_unidade" onchange="changeConfigOptions(this)" data-ref="configEntidade_notificacao_email_unidade" data-ref_type="class" class="onoffswitch-checkbox singleOptionConfig" id="notificacao_email_unidade" tabindex="0" '+(config && typeof config.notificacao_email_unidade !== 'undefined' && config.notificacao_email_unidade ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="notificacao_email_unidade"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="notificacao_email_unidade" onchange="changeConfigOptions(this)" data-ref="configEntidade_notificacao_email_unidade" data-ref_type="class" class="infraLinkOrgao singleOptionConfig" id="notificacao_email_unidade" tabindex="0" '+(config && typeof config.notificacao_email_unidade !== 'undefined' && config.notificacao_email_unidade ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="notificacao_email_unidade"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11838,18 +11853,18 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-flag cinzaColor"></i> Gerar relat\u00F3rios gerenciais di\u00E1rios</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="gerar_relatorios_gerenciais" class="onoffswitch-checkbox singleOptionConfig" id="gerar_relatorios_gerenciais" tabindex="0" '+(config && typeof config.gerar_relatorios_gerenciais !== 'undefined' && config.gerar_relatorios_gerenciais  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="gerar_relatorios_gerenciais"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="gerar_relatorios_gerenciais" class="infraLinkOrgao singleOptionConfig" id="gerar_relatorios_gerenciais" tabindex="0" '+(config && typeof config.gerar_relatorios_gerenciais !== 'undefined' && config.gerar_relatorios_gerenciais  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="gerar_relatorios_gerenciais"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-exchange-alt cinzaColor"></i> Sincronizar dados com sistemas externos</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="sincronizar_dados_externos" onchange="changeConfigOptions(this)" data-ref="configEntidade_acoes_dados_externos" class="onoffswitch-checkbox singleOptionConfig" id="sincronizar_dados_externos" tabindex="0" '+(config && typeof config.sincronizar_dados_externos !== 'undefined' && config.sincronizar_dados_externos  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="sincronizar_dados_externos"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="sincronizar_dados_externos" onchange="changeConfigOptions(this)" data-ref="configEntidade_acoes_dados_externos" class="infraLinkOrgao singleOptionConfig" id="sincronizar_dados_externos" tabindex="0" '+(config && typeof config.sincronizar_dados_externos !== 'undefined' && config.sincronizar_dados_externos  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="sincronizar_dados_externos"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11880,9 +11895,9 @@ function editConfigOptions(this_, id = false) {
                         '                  <tr style="height: 40px;">'+
                         '                      <td style="text-align: left;"><i class="iconPopup fas fa-sync-alt cinzaColor"></i> Sincronizar dados de API</td>'+
                         '                      <td>'+
-                        '                          <div class="onoffswitch" style="float: right;">'+
-                        '                              <input type="checkbox" name="onoffswitch" data-key="sincronizar_dados_api" onchange="changeConfigOptions(this)" data-ref="configEntidade_dados_api" data-ref_type="class" class="onoffswitch-checkbox singleOptionConfig" id="sincronizar_dados_api" tabindex="0" '+(config && typeof config.sincronizar_dados_api !== 'undefined' && config.sincronizar_dados_api  ? 'checked' : '')+'>'+
-                        '                              <label class="onoff-switch-label" for="sincronizar_dados_api"></label>'+
+                        '                          <div class="infraAncoraSigla" style="float: right;">'+
+                        '                              <input type="checkbox" name="infraAncoraSigla" data-key="sincronizar_dados_api" onchange="changeConfigOptions(this)" data-ref="configEntidade_dados_api" data-ref_type="class" class="infraLinkOrgao singleOptionConfig" id="sincronizar_dados_api" tabindex="0" '+(config && typeof config.sincronizar_dados_api !== 'undefined' && config.sincronizar_dados_api  ? 'checked' : '')+'>'+
+                        '                              <label class="infraTd" for="sincronizar_dados_api"></label>'+
                         '                          </div>'+
                         '                      </td>'+
                         '                  </tr>'+
@@ -11913,9 +11928,9 @@ function editConfigOptions(this_, id = false) {
                         '                                       <i class="iconPopup fas fa-inbox cinzaColor"></i> Enviar dados j\u00E1 arquivados'+
                         '                                  </td>'+
                         '                                  <td style="width: 250px;text-align: right;">'+
-                        '                                       <div class="onoffswitch" style="float: right;">'+
-                        '                                           <input type="checkbox" name="onoffswitch" data-key="arquivados_dados_api" onchange="changeConfigOptions(this)" class="onoffswitch-checkbox singleOptionConfig" id="arquivados_dados_api" tabindex="0" '+(config && typeof config.arquivados_dados_api !== 'undefined' && config.arquivados_dados_api  ? 'checked' : '')+'>'+
-                        '                                           <label class="onoff-switch-label" for="arquivados_dados_api"></label>'+
+                        '                                       <div class="infraAncoraSigla" style="float: right;">'+
+                        '                                           <input type="checkbox" name="infraAncoraSigla" data-key="arquivados_dados_api" onchange="changeConfigOptions(this)" class="infraLinkOrgao singleOptionConfig" id="arquivados_dados_api" tabindex="0" '+(config && typeof config.arquivados_dados_api !== 'undefined' && config.arquivados_dados_api  ? 'checked' : '')+'>'+
+                        '                                           <label class="infraTd" for="arquivados_dados_api"></label>'+
                         '                                       </div>'+
                         // '                                      <input type="number" style="width: 40% !important;" class="singleOptionConfig" data-key="abrangencia_dados_api" id="abrangencia_dados_api" value="'+(config && typeof config.abrangencia_dados_api !== 'undefined' && config.abrangencia_dados_api != ''  ? config.abrangencia_dados_api : '0' )+'">'+
                         '                                      <input type="hidden" disabled style="width: 40% !important;" class="hiddenOptionConfig" data-key="last_update_dados_api" id="last_update_dados_api" value="'+(config && typeof config.last_update_dados_api !== 'undefined' && config.last_update_dados_api != ''  ? config.last_update_dados_api : moment().format('YYYY-MM-DD HH:mm:ss') )+'">'+
@@ -12507,7 +12522,7 @@ function updateConfigPerfilCapacidade(param, ativData) {
             }
         }
         $('#accordion-perfis .ui-accordion-content').each(function(){
-            var count = $(this).find('.onoffswitch-checkbox:checked').length;
+            var count = $(this).find('input.infraLinkOrgao:checked').length;
             var ref = $(this).attr('aria-labelledby');
             $('h3#'+ref+' span').text(count);
         }) 
@@ -13436,36 +13451,36 @@ function configPessoal() {
                     '   <tr style="height: 40px;">'+
                     '       <td style="width: 460px;vertical-align: bottom;"><i class="iconPopup far fa-hand-rock cinzaColor"></i> Ordenar pain\u00E9is de gest\u00E3o arrastando e soltando</td>'+
                     '       <td colspan="2" style="vertical-align: top;">'+
-                    '           <div class="onoffswitch" style="float: left;">'+
-                    '               <input type="checkbox" onchange="changePanelSortPro(this);saveConfigPersonalUser(this);" name="onoffswitch" class="onoffswitch-checkbox" id="panelSortPro" tabindex="0" '+statePanelSortPro+'>'+
-                    '               <label class="onoff-switch-label" for="panelSortPro"></label>'+
+                    '           <div class="infraAncoraSigla" style="float: left;">'+
+                    '               <input type="checkbox" onchange="changePanelSortPro(this);saveConfigPersonalUser(this);" name="infraAncoraSigla" class="infraLinkOrgao" id="panelSortPro" tabindex="0" '+statePanelSortPro+'>'+
+                    '               <label class="infraTd" for="panelSortPro"></label>'+
                     '           </div>'+
                     '       </td>'+
                     '   </tr>'+
                     '   <tr style="height: 40px;">'+
                     '       <td style="vertical-align: bottom;"><i class="iconPopup fas fa-arrows-alt-h cinzaColor"></i> Ordenar colunas do painel de '+__.demandas+' arrastando e soltando</td>'+
                     '       <td colspan="2" style="vertical-align: top;">'+
-                    '           <div class="onoffswitch" style="float: left;">'+
-                    '               <input type="checkbox" onchange="changePanelSortColumnsPro(this);saveConfigPersonalUser(this);" name="onoffswitch" class="onoffswitch-checkbox" id="panelSortColumnsPro" tabindex="0" '+statePanelSortColumnsPro+'>'+
-                    '               <label class="onoff-switch-label" for="panelSortColumnsPro"></label>'+
+                    '           <div class="infraAncoraSigla" style="float: left;">'+
+                    '               <input type="checkbox" onchange="changePanelSortColumnsPro(this);saveConfigPersonalUser(this);" name="infraAncoraSigla" class="infraLinkOrgao" id="panelSortColumnsPro" tabindex="0" '+statePanelSortColumnsPro+'>'+
+                    '               <label class="infraTd" for="panelSortColumnsPro"></label>'+
                     '           </div>'+
                     '       </td>'+
                     '   </tr>'+
                     '   <tr style="height: 40px;">'+
                     '       <td style="vertical-align: bottom;"><i class="iconPopup fas fa-street-view cinzaColor"></i> Visualizar apenas '+__.minhas_demandas+'</td>'+
                     '       <td colspan="2" style="vertical-align: top;">'+
-                    '           <div class="onoffswitch" style="float: left;">'+
-                    '               <input type="checkbox" data-type="view_ativ_self" onchange="changeViewStatesAtiv(this);saveConfigPersonalUser(this);" name="onoffswitch" class="onoffswitch-checkbox" id="panelAtividadesViewSelf" tabindex="0" '+selfAtivData+'>'+
-                    '               <label class="onoff-switch-label" for="panelAtividadesViewSelf"></label>'+
+                    '           <div class="infraAncoraSigla" style="float: left;">'+
+                    '               <input type="checkbox" data-type="view_ativ_self" onchange="changeViewStatesAtiv(this);saveConfigPersonalUser(this);" name="infraAncoraSigla" class="infraLinkOrgao" id="panelAtividadesViewSelf" tabindex="0" '+selfAtivData+'>'+
+                    '               <label class="infraTd" for="panelAtividadesViewSelf"></label>'+
                     '           </div>'+
                     '       </td>'+
                     '   </tr>'+
                     '   <tr style="height: 40px;">'+
                     '       <td style="vertical-align: bottom;"><i class="iconPopup fas fa-archive cinzaColor"></i> Visualizar '+__.demandas+' j\u00E1 '+__.arquivadas+'</td>'+
                     '       <td style="width: 50px;">'+
-                    '           <div class="onoffswitch" style="float: left;">'+
-                    '               <input type="checkbox" data-type="view_ativ_send" onchange="changeViewStatesAtiv(this);saveConfigPersonalUser(this);getConfigProgramas(this);" name="onoffswitch" class="onoffswitch-checkbox" id="panelAtividadesViewSend" tabindex="0" '+stateAtivData+'>'+
-                    '               <label class="onoff-switch-label" for="panelAtividadesViewSend"></label>'+
+                    '           <div class="infraAncoraSigla" style="float: left;">'+
+                    '               <input type="checkbox" data-type="view_ativ_send" onchange="changeViewStatesAtiv(this);saveConfigPersonalUser(this);getConfigProgramas(this);" name="infraAncoraSigla" class="infraLinkOrgao" id="panelAtividadesViewSend" tabindex="0" '+stateAtivData+'>'+
+                    '               <label class="infraTd" for="panelAtividadesViewSend"></label>'+
                     '           </div>'+
                     '       </td>'+
                     '       <td style="'+(getOptionsPro('panelAtividadesViewSend') ? '' : 'display:none;')+'" class="selectProgramaAtiv">'+
@@ -13475,18 +13490,18 @@ function configPessoal() {
                     '   <tr style="height: 40px;">'+
                     '       <td style="vertical-align: bottom;"><i class="iconPopup fas fa-exchange-alt cinzaColor"></i> Visualizar '+__.demandas+' e afastamentos das unidades subordinadas</td>'+
                     '       <td colspan="2" style="vertical-align: top;">'+
-                    '           <div class="onoffswitch" style="float: left;">'+
-                    '               <input type="checkbox" data-type="view_ativ_sub" onchange="changeViewStatesAtiv(this);saveConfigPersonalUser(this);" name="onoffswitch" class="onoffswitch-checkbox" id="panelAtividadesViewSub" tabindex="0" '+stateAtivDataSub+'>'+
-                    '               <label class="onoff-switch-label" for="panelAtividadesViewSub"></label>'+
+                    '           <div class="infraAncoraSigla" style="float: left;">'+
+                    '               <input type="checkbox" data-type="view_ativ_sub" onchange="changeViewStatesAtiv(this);saveConfigPersonalUser(this);" name="infraAncoraSigla" class="infraLinkOrgao" id="panelAtividadesViewSub" tabindex="0" '+stateAtivDataSub+'>'+
+                    '               <label class="infraTd" for="panelAtividadesViewSub"></label>'+
                     '           </div>'+
                     '       </td>'+
                     '   </tr>'+
                     '   <tr style="height: 40px;">'+
                     '       <td style="vertical-align: bottom;"><i class="iconPopup fas fa-tractor cinzaColor"></i> Desativar sincroniza\u00E7\u00E3o de dados locais (reduz desempenho)</td>'+
                     '       <td style="width: 300px;" colspan="2">'+
-                    '           <div class="onoffswitch" style="float: left;">'+
-                    '               <input type="checkbox" data-type="view_disable_local" onchange="changeViewStatesAtiv(this);saveConfigPersonalUser(this);" name="onoffswitch" class="onoffswitch-checkbox" id="panelLocalStorePro" tabindex="0" '+statePanelLocalStorePro+'>'+
-                    '               <label class="onoff-switch-label" for="panelLocalStorePro"></label>'+
+                    '           <div class="infraAncoraSigla" style="float: left;">'+
+                    '               <input type="checkbox" data-type="view_disable_local" onchange="changeViewStatesAtiv(this);saveConfigPersonalUser(this);" name="infraAncoraSigla" class="infraLinkOrgao" id="panelLocalStorePro" tabindex="0" '+statePanelLocalStorePro+'>'+
+                    '               <label class="infraTd" for="panelLocalStorePro"></label>'+
                     '           </div>'+
                     '       </td>'+
                     '   </tr>'+
@@ -13494,9 +13509,9 @@ function configPessoal() {
                     '   <tr style="height: 40px;">'+
                     '       <td><i class="iconPopup fas fa-sign-out-alt cinzaColor"></i> Sincronizar a troca de unidade do sistema \u00E0 troca de unidade do SEI </td>'+
                     '       <td>'+
-                    '           <div class="onoffswitch" style="float: right;">'+
-                    '               <input type="checkbox" data-type="sync_unidades" onchange="changeViewStatesAtiv(this)" name="onoffswitch" class="onoffswitch-checkbox" id="changeViewStatesSyncUnidade" tabindex="0" '+stateAtivDataSyncUnidade+'>'+
-                    '               <label class="onoff-switch-label" for="changeViewStatesSyncUnidade"></label>'+
+                    '           <div class="infraAncoraSigla" style="float: right;">'+
+                    '               <input type="checkbox" data-type="sync_unidades" onchange="changeViewStatesAtiv(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="changeViewStatesSyncUnidade" tabindex="0" '+stateAtivDataSyncUnidade+'>'+
+                    '               <label class="infraTd" for="changeViewStatesSyncUnidade"></label>'+
                     '           </div>'+
                     '       </td>'+
                     '   </tr>'+
@@ -13577,9 +13592,9 @@ function configPessoal() {
                     '   <tr style="height: 40px;">'+
                     '       <td style="vertical-align: bottom;"><i class="iconPopup fas fa-birthday-cake cinzaColor"></i>Ocultar meu anivers\u00E1rio e foto do perfil da lista de contatos</td>'+
                     '       <td colspan="2" style="vertical-align: top;">'+
-                    '           <div class="onoffswitch" style="float: left;">'+
-                    '               <input type="checkbox" onchange="saveConfigPersonalUser(this);" name="onoffswitch" class="onoffswitch-checkbox" id="configUserViewNiver" tabindex="0" '+(configUser && typeof configUser.oculta_aniversario !== 'undefined' && !!configUser.oculta_aniversario && configUser.oculta_aniversario == 'true' ? 'checked' : '')+'>'+
-                    '               <label class="onoff-switch-label" for="configUserViewNiver"></label>'+
+                    '           <div class="infraAncoraSigla" style="float: left;">'+
+                    '               <input type="checkbox" onchange="saveConfigPersonalUser(this);" name="infraAncoraSigla" class="infraLinkOrgao" id="configUserViewNiver" tabindex="0" '+(configUser && typeof configUser.oculta_aniversario !== 'undefined' && !!configUser.oculta_aniversario && configUser.oculta_aniversario == 'true' ? 'checked' : '')+'>'+
+                    '               <label class="infraTd" for="configUserViewNiver"></label>'+
                     '           </div>'+
                     '       </td>'+
                     '   </tr>'+
@@ -13805,9 +13820,9 @@ function initFunctionPanelRelatorios(data, param, type) {
                 var btnAllData =    (check_programas && ((!data.id_plano && checkCapacidade('report_alldata')) || (!data.id_plano && checkPerfilNivelAdm())) ? 
                                     '   <div class="viewTableToggle editTableToggle" style="right: 600px;">'+
                                     '           <label class="label" for="changeViewTableRelatorio_'+type+'"><i class="fas fa-university cinzaColor" style="margin: 0px 6px 0 4px;"></i> Toda entidade</label>'+
-                                    '           <div class="onoffswitch">'+
-                                    '               <input type="checkbox" name="onoffswitch" data-type="'+type+'" onchange="changeViewTableReport(this)" class="onoffswitch-checkbox" id="changeViewTableRelatorio_'+type+'" tabindex="0" '+(getOptionsPro('changeViewTableReport_'+type) == 'show' ? 'checked' : false )+'>'+
-                                    '               <label class="onoff-switch-label" for="changeViewTableRelatorio_'+type+'"></label>'+
+                                    '           <div class="infraAncoraSigla">'+
+                                    '               <input type="checkbox" name="infraAncoraSigla" data-type="'+type+'" onchange="changeViewTableReport(this)" class="infraLinkOrgao" id="changeViewTableRelatorio_'+type+'" tabindex="0" '+(getOptionsPro('changeViewTableReport_'+type) == 'show' ? 'checked' : false )+'>'+
+                                    '               <label class="infraTd" for="changeViewTableRelatorio_'+type+'"></label>'+
                                     '           </div>'+
                                     '   </div>'
                                     : '');
@@ -13815,9 +13830,9 @@ function initFunctionPanelRelatorios(data, param, type) {
                 var btnViewDisabled =    (type == 'atividades' ? 
                                     '   <div class="editTableToggle hideDisabledItens" style="right: 440px;top: 50px;">'+
                                     '           <label class="label" for="changeDisabledTableReport_'+type+'"><i class="fas fa-eye-slash '+(getOptionsPro('changeDisabledTableReport_'+type) && getOptionsPro('changeDisabledTableReport_'+type) == 'show' ? 'azulColor' : 'cinzaColor')+'" style="margin: 0px 6px 0 4px;"></i> Inativos</label>'+
-                                    '           <div class="onoffswitch">'+
-                                    '               <input type="checkbox" name="onoffswitch" data-type="'+type+'" onchange="changeDisabledTableReport(this)" class="onoffswitch-checkbox" id="changeDisabledTableReport_'+type+'" tabindex="0" '+(getOptionsPro('changeDisabledTableReport_'+type) && getOptionsPro('changeDisabledTableReport_'+type) == 'show' ? 'checked' : '')+'>'+
-                                    '               <label class="onoff-switch-label" for="changeDisabledTableReport_'+type+'"></label>'+
+                                    '           <div class="infraAncoraSigla">'+
+                                    '               <input type="checkbox" name="infraAncoraSigla" data-type="'+type+'" onchange="changeDisabledTableReport(this)" class="infraLinkOrgao" id="changeDisabledTableReport_'+type+'" tabindex="0" '+(getOptionsPro('changeDisabledTableReport_'+type) && getOptionsPro('changeDisabledTableReport_'+type) == 'show' ? 'checked' : '')+'>'+
+                                    '               <label class="infraTd" for="changeDisabledTableReport_'+type+'"></label>'+
                                     '           </div>'+
                                     '   </div>'
                                     : '');
@@ -15176,9 +15191,9 @@ function saveAfastamento(this_, id_afastamento = 0) {
                     '      <tr style="height: 20px;">'+
                     '          <td colspan="3"></td>'+
                     '          <td>'+
-                    '               <div class="onoffswitch" style="float: left;transform: scale(0.8);">'+
-                    '                   <input type="checkbox" data-key="afast_all_day" onchange="changeInputAfast(this)" name="onoffswitch" class="onoffswitch-checkbox" id="afast_all_day" tabindex="0" checked>'+
-                    '                   <label class="onoff-switch-label" for="afast_all_day"></label>'+
+                    '               <div class="infraAncoraSigla" style="float: left;transform: scale(0.8);">'+
+                    '                   <input type="checkbox" data-key="afast_all_day" onchange="changeInputAfast(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="afast_all_day" tabindex="0" checked>'+
+                    '                   <label class="infraTd" for="afast_all_day"></label>'+
                     '               </div>'+
                     '               <label for="afast_all_day" style="float: left;display: inline-block;margin: 5px;">O dia inteiro</label>'+
                     '          </td>'+
@@ -18188,9 +18203,9 @@ function saveAtividadeSimple(id_demanda = 0) {
                         '                                   <i class="iconPopup iconSwitch fas fa-sticky-note cinzaColor"></i>Adicionar '+__.observacao+' '+__.gerencial+' nas anota\u00E7\u00F5es do processo?</label>'+
                         '                           </td>'+
                         '                           <td style="width: 50px;">'+
-                        '                               <div class="onoffswitch" style="float: right;">'+
-                        '                                   <input type="checkbox" data-key="anotacoes_processo" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_anotacoes_processo" tabindex="0">'+
-                        '                                   <label class="onoff-switch-label" for="ativ_anotacoes_processo"></label>'+
+                        '                               <div class="infraAncoraSigla" style="float: right;">'+
+                        '                                   <input type="checkbox" data-key="anotacoes_processo" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_anotacoes_processo" tabindex="0">'+
+                        '                                   <label class="infraTd" for="ativ_anotacoes_processo"></label>'+
                         '                               </div>'+
                         '                           </td>'+
                         '                       </tr>'+
@@ -18259,9 +18274,9 @@ function saveAtividadeSimple(id_demanda = 0) {
                         '                                       <label for="ativ_multiprocesso"><i class="iconPopup iconSwitch fas fa-clone cinzaColor"></i>Clonar '+__.esta_demanda+' nos processos <br> listados no documento?</label>'+
                         '                                   </td>'+
                         '                                   <td style="text-align: left;'+(dadosMultProcessos ? '' : 'display:none;')+'">'+
-                        '                                       <div class="onoffswitch" style="float: left;">'+
-                        '                                           <input type="checkbox" data-key="multiprocesso" onchange="changeAtivMultiProcesso(this)" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_multiprocesso" tabindex="0">'+
-                        '                                           <label class="onoff-switch-label" for="ativ_multiprocesso"></label>'+
+                        '                                       <div class="infraAncoraSigla" style="float: left;">'+
+                        '                                           <input type="checkbox" data-key="multiprocesso" onchange="changeAtivMultiProcesso(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_multiprocesso" tabindex="0">'+
+                        '                                           <label class="infraTd" for="ativ_multiprocesso"></label>'+
                         '                                       </div>'+
                         '                                   </td>'+
                         '                               </tr>'+
@@ -18275,9 +18290,9 @@ function saveAtividadeSimple(id_demanda = 0) {
                         '                                        <label for="ativ_multiplicacao"><i class="iconPopup iconSwitch fas fa-retweet cinzaColor"></i>Multiplicar '+__.demanda+'?</label>'+
                         '                                    </td>'+
                         '                                    <td style="text-align: left;width: 50px;">'+
-                        '                                        <div class="onoffswitch">'+
-                        '                                            <input type="checkbox" data-key="multiplicacao" onchange="changeAtivMultiSwitch(this)" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_multiplicacao" tabindex="0">'+
-                        '                                            <label class="onoff-switch-label" for="ativ_multiplicacao"></label>'+
+                        '                                        <div class="infraAncoraSigla">'+
+                        '                                            <input type="checkbox" data-key="multiplicacao" onchange="changeAtivMultiSwitch(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_multiplicacao" tabindex="0">'+
+                        '                                            <label class="infraTd" for="ativ_multiplicacao"></label>'+
                         '                                        </div>'+
                         '                                    </td>'+
                         '                                    <td>'+
@@ -18298,9 +18313,9 @@ function saveAtividadeSimple(id_demanda = 0) {
                         '                                        <label for="ativ_vinculacao"><i class="iconPopup iconSwitch fas fa-random cinzaColor"></i>Vincular '+__.demanda+'?</label>'+
                         '                                    </td>'+
                         '                                    <td style="width: 50px; text-align: left;">'+
-                        '                                        <div class="onoffswitch">'+
-                        '                                            <input type="checkbox" data-key="vinculacao" onchange="changeAtivVinculacaoSwitch(this)" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_vinculacao" tabindex="0">'+
-                        '                                            <label class="onoff-switch-label" for="ativ_vinculacao"></label>'+
+                        '                                        <div class="infraAncoraSigla">'+
+                        '                                            <input type="checkbox" data-key="vinculacao" onchange="changeAtivVinculacaoSwitch(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_vinculacao" tabindex="0">'+
+                        '                                            <label class="infraTd" for="ativ_vinculacao"></label>'+
                         '                                        </div>'+
                         '                                    </td>'+
                         '                                    <td>'+
@@ -18323,9 +18338,9 @@ function saveAtividadeSimple(id_demanda = 0) {
                         '                                        <label for="ativ_prioridades"><i class="iconPopup iconSwitch fas fa-exclamation cinzaColor"></i>Priorizar '+__.demanda+'?</label>'+
                         '                                    </td>'+
                         '                                    <td style="width: 50px; text-align: left;">'+
-                        '                                        <div class="onoffswitch">'+
-                        '                                            <input type="checkbox" data-key="prioridades" onchange="changeAtivPrioritySwitch(this)" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_prioridades" tabindex="0">'+
-                        '                                            <label class="onoff-switch-label" for="ativ_prioridades"></label>'+
+                        '                                        <div class="infraAncoraSigla">'+
+                        '                                            <input type="checkbox" data-key="prioridades" onchange="changeAtivPrioritySwitch(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_prioridades" tabindex="0">'+
+                        '                                            <label class="infraTd" for="ativ_prioridades"></label>'+
                         '                                        </div>'+
                         '                                    </td>'+
                         '                                    <td>'+
@@ -18347,9 +18362,9 @@ function saveAtividadeSimple(id_demanda = 0) {
                         '                                        <label for="ativ_insert_checklist"><i class="iconPopup iconSwitch fas fa-check-double cinzaColor"></i>Inserir <br>Checklist?</label>'+
                         '                                    </td>'+
                         '                                    <td style="width: 50px; text-align: left;">'+
-                        '                                        <div class="onoffswitch">'+
-                        '                                            <input type="checkbox" data-key="checklist" onchange="changeAtivChecklistSwitch(this)" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_insert_checklist" tabindex="0">'+
-                        '                                            <label class="onoff-switch-label" for="ativ_insert_checklist"></label>'+
+                        '                                        <div class="infraAncoraSigla">'+
+                        '                                            <input type="checkbox" data-key="checklist" onchange="changeAtivChecklistSwitch(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_insert_checklist" tabindex="0">'+
+                        '                                            <label class="infraTd" for="ativ_insert_checklist"></label>'+
                         '                                        </div>'+
                         '                                    </td>'+
                         '                                    <td>'+
@@ -18760,9 +18775,9 @@ function saveAtividadeFull(id_demanda = 0) {
                         '                           <label for="ativ_multiprocesso"><i class="iconPopup iconSwitch fas fa-clone cinzaColor"></i>Clonar '+__.esta_demanda+' nos processos <br> listados no documento?</label>'+
                         '                       </td>'+
                         '                       <td '+(dadosMultProcessos ? '' : 'style="display:none;"')+'>'+
-                        '                           <div class="onoffswitch" style="float: right;">'+
-                        '                               <input type="checkbox" data-key="multiprocesso" onchange="changeAtivMultiProcesso(this)" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_multiprocesso" tabindex="0">'+
-                        '                               <label class="onoff-switch-label" for="ativ_multiprocesso"></label>'+
+                        '                           <div class="infraAncoraSigla" style="float: right;">'+
+                        '                               <input type="checkbox" data-key="multiprocesso" onchange="changeAtivMultiProcesso(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_multiprocesso" tabindex="0">'+
+                        '                               <label class="infraTd" for="ativ_multiprocesso"></label>'+
                         '                           </div>'+
                         '                       </td>'+
                         '                   </tr>'+
@@ -18846,9 +18861,9 @@ function saveAtividadeFull(id_demanda = 0) {
                         '                           <label for="ativ_multiplicacao"><i class="iconPopup iconSwitch fas fa-retweet cinzaColor"></i>Multiplicar '+__.demanda+'?</label>'+
                         '                       </td>'+
                         '                       <td>'+
-                        '                           <div class="onoffswitch" style="float: right;">'+
-                        '                               <input type="checkbox" data-key="multiplicacao" onchange="changeAtivMultiSwitch(this)" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_multiplicacao" tabindex="0">'+
-                        '                               <label class="onoff-switch-label" for="ativ_multiplicacao"></label>'+
+                        '                           <div class="infraAncoraSigla" style="float: right;">'+
+                        '                               <input type="checkbox" data-key="multiplicacao" onchange="changeAtivMultiSwitch(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_multiplicacao" tabindex="0">'+
+                        '                               <label class="infraTd" for="ativ_multiplicacao"></label>'+
                         '                           </div>'+
                         '                       </td>'+
                         '                       <td style="width: 105px;">'+
@@ -19012,9 +19027,9 @@ function saveAtividadeFull(id_demanda = 0) {
                         '                           <label for="ativ_recalcula_prazo"><i class="iconPopup iconSwitch fas fa-calendar-check cinzaColor"></i>Prazo M\u00F3vel?</label>'+
                         '                       </td>'+
                         '                       <td style="width: 50px; text-align: left;">'+
-                        '                           <div class="onoffswitch">'+
-                        '                               <input type="checkbox" data-key="recalcula_prazo" onchange="changeAtivRecalcPrazoSwitch(this)" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_recalcula_prazo" tabindex="0" data-mode-insert="'+(value && typeof value.recalcula_prazo !== 'undefined' ? 'manual' : 'auto')+'" '+(value && typeof value.recalcula_prazo !== 'undefined' && value.recalcula_prazo == 1 ? 'checked' : '')+'>'+
-                        '                               <label class="onoff-switch-label" for="ativ_recalcula_prazo"></label>'+
+                        '                           <div class="infraAncoraSigla">'+
+                        '                               <input type="checkbox" data-key="recalcula_prazo" onchange="changeAtivRecalcPrazoSwitch(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_recalcula_prazo" tabindex="0" data-mode-insert="'+(value && typeof value.recalcula_prazo !== 'undefined' ? 'manual' : 'auto')+'" '+(value && typeof value.recalcula_prazo !== 'undefined' && value.recalcula_prazo == 1 ? 'checked' : '')+'>'+
+                        '                               <label class="infraTd" for="ativ_recalcula_prazo"></label>'+
                         '                           </div>'+
                         '                       </td>'+
                         '                       <td style="text-align: left;">'+
@@ -19031,9 +19046,9 @@ function saveAtividadeFull(id_demanda = 0) {
                         '                                        <label for="ativ_marcador"><i class="iconPopup iconSwitch fas fa-clock cinzaColor"></i>Adicionar Prazo no Processo?</label>'+
                         '                                    </td>'+
                         '                                    <td style="width: 50px; text-align: left;">'+
-                        '                                        <div class="onoffswitch">'+
-                        '                                            <input type="checkbox" data-key="marcador" onchange="changeAtivMarcadorSwitch(this)" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_marcador" tabindex="0">'+
-                        '                                            <label class="onoff-switch-label" for="ativ_marcador"></label>'+
+                        '                                        <div class="infraAncoraSigla">'+
+                        '                                            <input type="checkbox" data-key="marcador" onchange="changeAtivMarcadorSwitch(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_marcador" tabindex="0">'+
+                        '                                            <label class="infraTd" for="ativ_marcador"></label>'+
                         '                                        </div>'+
                         '                                    </td>'+
                         '                                    <td>'+
@@ -19054,9 +19069,9 @@ function saveAtividadeFull(id_demanda = 0) {
                         '                                        <label for="ativ_vinculacao"><i class="iconPopup iconSwitch fas fa-random cinzaColor"></i>Vincular '+__.demanda+'?</label>'+
                         '                                    </td>'+
                         '                                    <td style="width: 50px; text-align: left;">'+
-                        '                                        <div class="onoffswitch">'+
-                        '                                            <input type="checkbox" data-key="vinculacao" onchange="changeAtivVinculacaoSwitch(this)" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_vinculacao" tabindex="0">'+
-                        '                                            <label class="onoff-switch-label" for="ativ_vinculacao"></label>'+
+                        '                                        <div class="infraAncoraSigla">'+
+                        '                                            <input type="checkbox" data-key="vinculacao" onchange="changeAtivVinculacaoSwitch(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_vinculacao" tabindex="0">'+
+                        '                                            <label class="infraTd" for="ativ_vinculacao"></label>'+
                         '                                        </div>'+
                         '                                    </td>'+
                         '                                    <td>'+
@@ -19079,9 +19094,9 @@ function saveAtividadeFull(id_demanda = 0) {
                         '                                        <label for="ativ_prioridades"><i class="iconPopup iconSwitch fas fa-exclamation cinzaColor"></i>Priorizar '+__.demanda+'?</label>'+
                         '                                    </td>'+
                         '                                    <td style="width: 50px; text-align: left;">'+
-                        '                                        <div class="onoffswitch">'+
-                        '                                            <input type="checkbox" data-key="prioridades" onchange="changeAtivPrioritySwitch(this)" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_prioridades" tabindex="0">'+
-                        '                                            <label class="onoff-switch-label" for="ativ_prioridades"></label>'+
+                        '                                        <div class="infraAncoraSigla">'+
+                        '                                            <input type="checkbox" data-key="prioridades" onchange="changeAtivPrioritySwitch(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_prioridades" tabindex="0">'+
+                        '                                            <label class="infraTd" for="ativ_prioridades"></label>'+
                         '                                        </div>'+
                         '                                    </td>'+
                         '                                    <td>'+
@@ -19118,9 +19133,9 @@ function saveAtividadeFull(id_demanda = 0) {
                         '                                        <label for="ativ_insert_checklist"><i class="iconPopup iconSwitch fas fa-check-double cinzaColor"></i>Inserir <br>Checklist?</label>'+
                         '                                    </td>'+
                         '                                    <td style="width: 50px; text-align: left;">'+
-                        '                                        <div class="onoffswitch">'+
-                        '                                            <input type="checkbox" data-key="checklist" onchange="changeAtivChecklistSwitch(this)" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_insert_checklist" tabindex="0">'+
-                        '                                            <label class="onoff-switch-label" for="ativ_insert_checklist"></label>'+
+                        '                                        <div class="infraAncoraSigla">'+
+                        '                                            <input type="checkbox" data-key="checklist" onchange="changeAtivChecklistSwitch(this)" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_insert_checklist" tabindex="0">'+
+                        '                                            <label class="infraTd" for="ativ_insert_checklist"></label>'+
                         '                                        </div>'+
                         '                                    </td>'+
                         '                                    <td>'+
@@ -19161,9 +19176,9 @@ function saveAtividadeFull(id_demanda = 0) {
                         '                                                   <i class="iconPopup iconSwitch fas fa-sticky-note cinzaColor"></i>Adicionar '+__.observacao+' '+__.gerencial+' nas anota\u00E7\u00F5es do processo?</label>'+
                         '                                           </td>'+
                         '                                           <td style="width: 50px;">'+
-                        '                                               <div class="onoffswitch" style="float: right;">'+
-                        '                                                   <input type="checkbox" data-key="anotacoes_processo" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_anotacoes_processo" tabindex="0">'+
-                        '                                                   <label class="onoff-switch-label" for="ativ_anotacoes_processo"></label>'+
+                        '                                               <div class="infraAncoraSigla" style="float: right;">'+
+                        '                                                   <input type="checkbox" data-key="anotacoes_processo" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_anotacoes_processo" tabindex="0">'+
+                        '                                                   <label class="infraTd" for="ativ_anotacoes_processo"></label>'+
                         '                                               </div>'+
                         '                                           </td>'+
                         '                                       </tr>'+
@@ -20172,9 +20187,9 @@ function completeAtividade(id_demanda, confirmeBox = false) {
                                     '                                   <i class="iconPopup iconSwitch fas fa-sticky-note cinzaColor"></i>Adicionar '+__.observacao+' '+__.tecnica+' nas anota\u00E7\u00F5es do processo?</label>'+
                                     '                           </td>'+
                                     '                           <td>'+
-                                    '                               <div class="onoffswitch" style="float: right;">'+
-                                    '                                   <input type="checkbox" data-key="anotacoes_processo" name="onoffswitch" class="onoffswitch-checkbox" id="ativ_anotacoes_processo" tabindex="0">'+
-                                    '                                   <label class="onoff-switch-label" for="ativ_anotacoes_processo"></label>'+
+                                    '                               <div class="infraAncoraSigla" style="float: right;">'+
+                                    '                                   <input type="checkbox" data-key="anotacoes_processo" name="infraAncoraSigla" class="infraLinkOrgao" id="ativ_anotacoes_processo" tabindex="0">'+
+                                    '                                   <label class="infraTd" for="ativ_anotacoes_processo"></label>'+
                                     '                               </div>'+
                                     '                           </td>'+
                                     '                       </tr>'+
@@ -20340,9 +20355,9 @@ function completeAtividade(id_demanda, confirmeBox = false) {
                                     '                           <label for="complete_others"><i class="iconPopup iconSwitch fas fa-check-circle cinzaColor"></i> '+(listAtividadesVinculadas.length_check > 1 ? 'Concluir '+getNameGenre('demanda', 'os outros', 'as outras')+' '+listAtividadesVinculadas.length_check+' '+__.demandas+' '+getNameGenre('demanda', 'vinculados', 'vinculadas') : 'Concluir '+__.a_outra_demanda_vinculada)+'?</label>'+
                                     '                      </td>'+
                                     '                      <td style="width: 50px;">'+
-                                    '                          <div class="onoffswitch" style="float: right;">'+
-                                    '                              <input type="checkbox" name="onoffswitch" data-target="#listCompleteOtherAtiv" onchange="changeOthersAtiv(this)" class="onoffswitch-checkbox singleOptionConfig" id="complete_others" data-key="complete_others" tabindex="0" checked>'+
-                                    '                              <label class="onoff-switch-label" for="complete_others"></label>'+
+                                    '                          <div class="infraAncoraSigla" style="float: right;">'+
+                                    '                              <input type="checkbox" name="infraAncoraSigla" data-target="#listCompleteOtherAtiv" onchange="changeOthersAtiv(this)" class="infraLinkOrgao singleOptionConfig" id="complete_others" data-key="complete_others" tabindex="0" checked>'+
+                                    '                              <label class="infraTd" for="complete_others"></label>'+
                                     '                          </div>'+
                                     '                      </td>'+
                                     '                  </tr>'+
@@ -20351,9 +20366,9 @@ function completeAtividade(id_demanda, confirmeBox = false) {
                                     '                           <label for="dividir_tempo_despendido"><i class="iconPopup iconSwitch fas fa-hourglass-half cinzaColor"></i> Dividir o tempo despendido entre todas as demandas?</label>'+
                                     '                      </td>'+
                                     '                      <td style="width: 50px;">'+
-                                    '                          <div class="onoffswitch" style="float: right;">'+
-                                    '                              <input type="checkbox" name="onoffswitch" data-target="#listCompleteOtherAtiv" onchange="changeDadosTrabalho(this)" class="onoffswitch-checkbox singleOptionConfig" id="dividir_tempo_despendido" data-key="dividir_tempo_despendido" tabindex="0" checked>'+
-                                    '                              <label class="onoff-switch-label" for="dividir_tempo_despendido"></label>'+
+                                    '                          <div class="infraAncoraSigla" style="float: right;">'+
+                                    '                              <input type="checkbox" name="infraAncoraSigla" data-target="#listCompleteOtherAtiv" onchange="changeDadosTrabalho(this)" class="infraLinkOrgao singleOptionConfig" id="dividir_tempo_despendido" data-key="dividir_tempo_despendido" tabindex="0" checked>'+
+                                    '                              <label class="infraTd" for="dividir_tempo_despendido"></label>'+
                                     '                          </div>'+
                                     '                      </td>'+
                                     '                  </tr>'+
@@ -21036,9 +21051,9 @@ function startAtividade(id_demanda = 0) {
                             '                           <label><i class="iconPopup fas fa-pause-circle cinzaColor"></i> '+(listAtividadesIniciadas.length > 1 ? __.Paralisar+' '+getNameGenre('demanda', 'os', 'as')+' '+listAtividadesIniciadas.length+' '+__.demandas+' j\u00E1 '+getNameGenre('demanda', 'iniciados', 'iniciadas') : __.Paralisar+' '+__.a_demanda+' j\u00E1 '+getNameGenre('demanda', 'iniciado', 'iniciada'))+' '+(arrayConfigAtividades.perfil.id_user != value.id_user ? 'por '+value.apelido : 'por mim')+'?</label>'+
                             '                      </td>'+
                             '                      <td>'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" data-target="#listPauseOtherAtiv" onchange="changeOthersAtiv(this)" class="onoffswitch-checkbox singleOptionConfig" id="pause_others" data-key="pause_others" tabindex="0">'+
-                            '                              <label class="onoff-switch-label" for="pause_others"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" data-target="#listPauseOtherAtiv" onchange="changeOthersAtiv(this)" class="infraLinkOrgao singleOptionConfig" id="pause_others" data-key="pause_others" tabindex="0">'+
+                            '                              <label class="infraTd" for="pause_others"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  </tr>'+
@@ -21071,9 +21086,9 @@ function startAtividade(id_demanda = 0) {
                             '                           <label for="init_others"><i class="iconPopup fas fa-play-circle cinzaColor"></i> '+(listAtividadesVinculadas.length_check > 1 ? 'Iniciar '+getNameGenre('demanda', 'os outros', 'as outras')+' '+listAtividadesVinculadas.length_check+' '+__.demandas+' '+getNameGenre('demanda', 'vinculados', 'vinculadas') : 'Iniciar '+__.a_outra_demanda_vinculada)+'?</label>'+
                             '                      </td>'+
                             '                      <td style="width: 50px;">'+
-                            '                          <div class="onoffswitch" style="float: right;">'+
-                            '                              <input type="checkbox" name="onoffswitch" data-target="#listInitOtherAtiv" data-id_demanda="'+value.id_demanda+'" onchange="changeOthersAtiv(this)" class="onoffswitch-checkbox singleOptionConfig" id="init_others" data-key="init_others" tabindex="0" checked>'+
-                            '                              <label class="onoff-switch-label" for="init_others"></label>'+
+                            '                          <div class="infraAncoraSigla" style="float: right;">'+
+                            '                              <input type="checkbox" name="infraAncoraSigla" data-target="#listInitOtherAtiv" data-id_demanda="'+value.id_demanda+'" onchange="changeOthersAtiv(this)" class="infraLinkOrgao singleOptionConfig" id="init_others" data-key="init_others" tabindex="0" checked>'+
+                            '                              <label class="infraTd" for="init_others"></label>'+
                             '                          </div>'+
                             '                      </td>'+
                             '                  </tr>'+
@@ -21333,9 +21348,9 @@ function pauseAtividade(id_demanda) {
                     '                           <label for="pause_others"><i class="iconPopup fas fa-'+(check_ispaused ? 'play' : 'pause')+'-circle cinzaColor"></i> '+(listAtividadesVinculadas.length_check > 1 ? txtTitle+' '+getNameGenre('demanda', 'os outros', 'as outras')+' '+listAtividadesVinculadas.length_check+' '+__.demandas+' '+getNameGenre('demanda', 'vinculados', 'vinculadas') : txtTitle+' '+__.a_outra_demanda_vinculada)+'?</label>'+
                     '                      </td>'+
                     '                      <td style="width: 50px;">'+
-                    '                          <div class="onoffswitch" style="float: right;">'+
-                    '                              <input type="checkbox" name="onoffswitch" data-target="#listPauseOtherAtiv" onchange="changeOthersAtiv(this)" class="onoffswitch-checkbox singleOptionConfig" id="pause_others" data-key="pause_others" tabindex="0" checked>'+
-                    '                              <label class="onoff-switch-label" for="pause_others"></label>'+
+                    '                          <div class="infraAncoraSigla" style="float: right;">'+
+                    '                              <input type="checkbox" name="infraAncoraSigla" data-target="#listPauseOtherAtiv" onchange="changeOthersAtiv(this)" class="infraLinkOrgao singleOptionConfig" id="pause_others" data-key="pause_others" tabindex="0" checked>'+
+                    '                              <label class="infraTd" for="pause_others"></label>'+
                     '                          </div>'+
                     '                      </td>'+
                     '                  </tr>'+
@@ -25007,9 +25022,9 @@ function rateAtividadeVinculadasBox(value) {
                 '               <label for="rate_others"><i class="iconPopup iconSwitch fas fa-star cinzaColor"></i> '+(listAtividadesVinculadas.length_check > 1 ? 'Avaliar '+getNameGenre('demanda', 'os outros', 'as outras')+' '+listAtividadesVinculadas.length_check+' '+__.demandas+' '+getNameGenre('demanda', 'vinculados', 'vinculadas') : 'Avaliar '+__.a_outra_demanda_vinculada)+'?</label>'+
                 '          </td>'+
                 '          <td style="width: 50px;">'+
-                '              <div class="onoffswitch" style="float: right;">'+
-                '                  <input type="checkbox" name="onoffswitch" data-target="#listRateOtherAtiv" onchange="changeOthersAtiv(this)" class="onoffswitch-checkbox singleOptionConfig" id="rate_others" data-key="rate_others" tabindex="0" checked>'+
-                '                  <label class="onoff-switch-label" for="rate_others"></label>'+
+                '              <div class="infraAncoraSigla" style="float: right;">'+
+                '                  <input type="checkbox" name="infraAncoraSigla" data-target="#listRateOtherAtiv" onchange="changeOthersAtiv(this)" class="infraLinkOrgao singleOptionConfig" id="rate_others" data-key="rate_others" tabindex="0" checked>'+
+                '                  <label class="infraTd" for="rate_others"></label>'+
                 '              </div>'+
                 '          </td>'+
                 '      </tr>'+
@@ -26204,7 +26219,7 @@ function initPerfilLoginAtiv(TimeOut = 9000) {
 // Verifica dominios permitidos
 function getServersPro() {
     $.ajax({
-        url: 'https://seipro.app/servers/',
+        url: 'https://www.seipro.io/servers/',
         type: 'GET',
         dataType: 'json',
         success: function(result) {

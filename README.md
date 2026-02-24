@@ -1,4 +1,9 @@
-# Bem vindo ao SEI Pro ![SEI Pro](/img/icon-32.png)
+# Bem vindo ao SEI Pro com esteroides![SEI Pro](/img/icon-32.png)
+
+Adicionado suporte ao ollama como assistente de IA.
+Adicionada várias funcionalidades de IA.
+Corrigido o menu de ações em lotes.
+Demais modificações no arquivo CHANGELOG.md
 
 **SEI Pro!** adiciona ao [Sistema Eletrônico de Informações (SEI)](https://softwarepublico.gov.br/social/sei) diversas funções avançadas na página inicial e no editor de textos:
 

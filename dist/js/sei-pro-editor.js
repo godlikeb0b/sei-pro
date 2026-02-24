@@ -1,6 +1,6 @@
-
+const isNewEditor = (typeof CKEDITOR !== 'undefined') ? false : true;
 var 
-    frmEditor = isSEI_5 ? $('.infra-editor__editor-completo') : $('#frmEditor'),
+    frmEditor = isNewEditor ? $('.infra-editor__editor-completo') : $('#frmEditor'),
     idEditor,
     oEditor, 
     imgEditor, 
@@ -16,7 +16,7 @@ var
     resultTextTip = false,
     CKWebSpeechHandler;
 
-    txaEditor = isSEI_5 ? '.infra-editor__editor-completo' : txaEditor;
+    txaEditor = isNewEditor ? '.infra-editor__editor-completo' : txaEditor;
 
 
 var loadOnKeyEditor = false;
@@ -31,7 +31,7 @@ var qualidadeImagens = (checkConfigValue('qualidadeimagens')) ? getConfigValue('
     qualidadeImagens = (qualidadeImagens < 0) ? 0 : qualidadeImagens;
 
 function setParamEditor(this_) {
-    if (!isSEI_5) {
+    if (!isNewEditor) {
         idEditor = $(this_).closest('div.cke').attr('id').replace('cke_', '');
         oEditor = CKEDITOR.instances[idEditor];
         iframeEditor = (frmEditor.length) ? $('iframe[title*="'+idEditor+'"]').contents() : $(txaEditor).find('iframe[title*="txaConteudo"]').contents();
@@ -85,13 +85,13 @@ function htmlButton(status) {
             'getQuickTableButtom',
             'quicktable',
             'Tabela R\u00E1pida',
-            isSEI_5 ? 'fab fa-bolt rosaColor' : icon16baseQuickTable
+            isNewEditor ? 'fab fa-bolt rosaColor' : icon16baseQuickTable
         ) +
         htmlButtonPro(
             'getTablestylesButtom',
             'tablestyles',
             'Adicionar estilo \u00E0 tabela',
-            isSEI_5 ? 'fab fa-paint-brush rosaColor' : icon16baseTable
+            isNewEditor ? 'fab fa-paint-brush rosaColor' : icon16baseTable
         );
     
     const htmlButtonAfterImage = 
@@ -99,13 +99,13 @@ function htmlButton(status) {
             'getBatchImgQualityButtom',
             'batch_quality_pro',
             'Reduzir qualidade das imagens',
-            isSEI_5 ? 'fab fa-compress azulColor' : icon16baseBatchImgQuality
+            isNewEditor ? 'fab fa-compress azulColor' : icon16baseBatchImgQuality
         ) +
         htmlButtonPro(
             'getInsertCheckboxButtom',
             'insert_checkbox_pro',
             'Inserir caixa de sele\u00E7\u00E3o',
-            isSEI_5 ? 'fab fa-check-square azulColor' : icon16baseInsertCheckboxQuality
+            isNewEditor ? 'fab fa-check-square azulColor' : icon16baseInsertCheckboxQuality
         );
     
     const htmlButtonBeforeCut = 
@@ -113,7 +113,7 @@ function htmlButton(status) {
             'getCopyStyleButtom',
             'copy_style_pro',
             'Copiar formata\u00E7\u00E3o',
-            isSEI_5 ? 'fab fa-brush rosaColor' : icon16baseCopyStyle
+            isNewEditor ? 'fab fa-brush rosaColor' : icon16baseCopyStyle
         );
     
     const htmlButtonBeforeList = 
@@ -122,32 +122,32 @@ function htmlButton(status) {
                 'getAlignLeftButtom',
                 'align_left_pro',
                 'Alinhar texto \u00E0 esquerda',
-                isSEI_5 ? 'fab fa-align-left roxoColor' : icon16baseAlignLeft
+                isNewEditor ? 'fab fa-align-left roxoColor' : icon16baseAlignLeft
             ) +
             htmlButtonPro(
                 'getAlignCenterButtom',
                 'align_center_pro',
                 'Alinhar texto ao centro',
-                isSEI_5 ? 'fab fa-align-center roxoColor' : icon16baseAlignCenter
+                isNewEditor ? 'fab fa-align-center roxoColor' : icon16baseAlignCenter
             ) +
             htmlButtonPro(
                 'getAlignRightButtom',
                 'align_right_pro',
                 'Alinhar texto \u00E0 direita',
-                isSEI_5 ? 'fab fa-align-right roxoColor' : icon16baseAlignRight
+                isNewEditor ? 'fab fa-align-right roxoColor' : icon16baseAlignRight
             ) +
             htmlButtonPro(
                 'getAlignJustifyButtom',
                 'align_justify_pro',
                 'Alinhar texto justificadamente',
-                isSEI_5 ? 'fab fa-align-justify roxoColor' : icon16baseAlignJustify
+                isNewEditor ? 'fab fa-align-justify roxoColor' : icon16baseAlignJustify
             ) +
         '</div>' +
         htmlButtonPro(
             'getAlignButtom',
             'align_pro',
             'Alinhar texto roxoColor',
-            isSEI_5 ? 'fab fa-align-left roxoColor' : icon16baseAlignCenter
+            isNewEditor ? 'fab fa-align-left roxoColor' : icon16baseAlignCenter
         );
 
     const htmlButtonAfterLetters = 
@@ -155,26 +155,26 @@ function htmlButton(status) {
             'getCapLetterButtom', 
             'capletter_pro', 
             'Primeira Letra Mai\u00FAscula (Exceto artigos e preposi\u00E7\u00F5es)', 
-            isSEI_5 ? 'fab fa-font-case cianoColor' : icon16baseCapLetter
+            isNewEditor ? 'fab fa-font-case cianoColor' : icon16baseCapLetter
         ) +
         htmlButtonPro(
             'getFontSizeUpButtom', 
             'fontsize_up_pro', 
             'Aumentar tamanho da fonte', 
-            isSEI_5 ? 'fab fa-sort-alpha-up cianoColor' : icon16baseFonteSizeUp
+            isNewEditor ? 'fab fa-sort-alpha-up cianoColor' : icon16baseFonteSizeUp
         ) +
         htmlButtonPro(
             'getFontSizeDownButtom', 
             'fontsize_down_pro', 
             'Diminuir tamanho da fonte cianoColor', 
-            isSEI_5 ? 'fab fa-sort-alpha-down cianoColor' : icon16baseFonteSizeDown
+            isNewEditor ? 'fab fa-sort-alpha-down cianoColor' : icon16baseFonteSizeDown
         );
 
     const htmlButtonAfterSave = htmlButtonPro(
         'getAutoSaveButtom',
         'autosave',
         `Salvamento autom\u00E1tico (${autoSaveInterval} ${autoSaveInterval === 1 ? 'minuto' : 'minutos'})`,
-        isSEI_5 ? '' : icon16baseAutoSave
+        isNewEditor ? '' : icon16baseAutoSave
     );
 
     const htmlButton = 
@@ -183,70 +183,70 @@ function htmlButton(status) {
                 'getPlataformAIButtom',
                 'openai',
                 'Inserir texto de intelig\u00EAncia artificial',
-                isSEI_5 ? 'fab fa-robot roxoColor' : icon16baseOpenAI
+                isNewEditor ? 'fab fa-robot roxoColor' : icon16baseOpenAI
             ) : '') +
         htmlButtonPro(
             'importDocButtom',
             'externalfile',
             'Inserir conte\u00FAdo externo',
-            isSEI_5 ? 'fab fa-upload vermelhoColor' : icon16baseImport
+            isNewEditor ? 'fab fa-upload vermelhoColor' : icon16baseImport
         ) +
         htmlButtonPro(
             'getLinkLegisButtom',
             'linklegis',
             'Adicionar link de legisla\u00E7\u00E3o',
-            isSEI_5 ? 'fab fa-balance-scale-right verdeColor' : icon16baseLegis
+            isNewEditor ? 'fab fa-balance-scale-right verdeColor' : icon16baseLegis
         ) +
         (frmEditor.length ? 
             htmlButtonPro(
                 'getCitacaoDocumentoButtom',
                 'citacaodoc',
                 'Inserir refer\u00EAncia de documento do processo',
-                isSEI_5 ? 'fab fa-folder-tree amareloColor' : icon16baseCitaDocumento
+                isNewEditor ? 'fab fa-folder-tree amareloColor' : icon16baseCitaDocumento
             ) : '') +
         htmlButtonPro(
             'getNotaRodapeButtom',
             'notarodape',
             'Inserir nota de rodap\u00E9',
-            isSEI_5 ? 'fab fa-comment-alt-dots cianoColor' : icon16baseNotaRodape
+            isNewEditor ? 'fab fa-comment-alt-dots cianoColor' : icon16baseNotaRodape
         ) +
         htmlButtonPro(
             'getRefInternaButtom',
             'refinterna',
             'Inserir refer\u00EAncia interna',
-            isSEI_5 ? 'fab fa-retweet cianoColor' : icon16baseRefInterna
+            isNewEditor ? 'fab fa-retweet cianoColor' : icon16baseRefInterna
         ) +
         htmlButtonPro(
             'getSumarioButtom',
             'sumario',
             'Inserir sum\u00E1rio',
-            isSEI_5 ? 'fab fa-list-alt roxoColor' : icon16baseSumario
+            isNewEditor ? 'fab fa-list-alt roxoColor' : icon16baseSumario
         ) +
         (frmEditor.length == 0 ? '' : 
             htmlButtonPro(
                 'getDadosProcessoButtom',
                 'dadosprocesso',
                 'Inserir dados do processo',
-                isSEI_5 ? 'fab fa-book-spells rosaColor' : icon16baseDadosProcesso
+                isNewEditor ? 'fab fa-book-spells rosaColor' : icon16baseDadosProcesso
             )
         ) +
         htmlButtonPro(
             'getTinyUrlButtom',
             'tinyurl',
             'Gerar link curto do TinyURL',
-            isSEI_5 ? 'fab fa-compress-arrows-alt azulColor' : icon16baseTinyUrl
+            isNewEditor ? 'fab fa-compress-arrows-alt azulColor' : icon16baseTinyUrl
         ) +
         htmlButtonPro(
             'getQrCodeButtom',
             'qrcode',
             'Gerar C\u00F3digo QR',
-            isSEI_5 ? 'fab fa-qrcode rosaColor' : icon16baseQrCode
+            isNewEditor ? 'fab fa-qrcode rosaColor' : icon16baseQrCode
         ) +
         htmlButtonPro(
             'getPageBreakButtom',
             'pagebreak',
             'Inserir Quebra de P\u00E1gina',
-            isSEI_5 ? 'fab fa-page-break azulColor' : icon16basePageBreak,
+            isNewEditor ? 'fab fa-page-break azulColor' : icon16basePageBreak,
             '', 
             isSeiSlim ? '' : '!important'
         ) +
@@ -254,31 +254,31 @@ function htmlButton(status) {
             'getSessionBreakButtom',
             'sessionbreak',
             'Inserir Quebra de Se\u00E7\u00E3o',
-            isSEI_5 ? 'fab fa-page-break verdeColor' : icon16baseSessionBreak
+            isNewEditor ? 'fab fa-page-break verdeColor' : icon16baseSessionBreak
         ) +
         htmlButtonPro(
             'getLatexButtom',
             'latex',
             'Inserir Equa\u00E7\u00E3o',
-            isSEI_5 ? 'fab fa-sigma vermelhoColor' : icon16baseLatex
+            isNewEditor ? 'fab fa-sigma vermelhoColor' : icon16baseLatex
         ) +
         htmlButtonPro(
             'getProcessoPublicoButton',
             'processopublico',
             'Adicionar Link de Documento P\u00FAblico',
-            isSEI_5 ? 'fab fa-globe-americas azulColor' : icon16baseDocPublico
+            isNewEditor ? 'fab fa-globe-americas azulColor' : icon16baseDocPublico
         ) +
         htmlButtonPro(
             'getMinutaWatermarkButton',
             'watermark',
             'Adicionar Marca D\'\u00E1gua de MINUTA/MODELO',
-            isSEI_5 ? 'fab fa-layer-plus verdeColor' : icon16baseWatermark
+            isNewEditor ? 'fab fa-layer-plus verdeColor' : icon16baseWatermark
         ) +
         htmlButtonPro(
             'pageImageBackgroundButtom',
             'pageimagebackground',
             'Adicionar Image de Fundo e Configura\u00E7\u00F5es de P\u00E1gina para Impress\u00E3o',
-            isSEI_5 ? 'fab fa-print roxoColor' : icon16baseImagePage
+            isNewEditor ? 'fab fa-print roxoColor' : icon16baseImagePage
         );
 
     const htmlButtonReview = checkConfigValue('revisaotexto') ? 
@@ -286,13 +286,13 @@ function htmlButton(status) {
             'getReviewButton',
             'review',
             'Ativar revis\u00E3o de texto',
-            isSEI_5 ? 'fab fa-user-edit azulColor' : icon16baseReview
+            isNewEditor ? 'fab fa-user-edit azulColor' : icon16baseReview
         ) + 
         htmlButtonPro(
             'getCtrReviewButton',
             'ctr_review',
             'Gerenciar revis\u00F5es de texto',
-            isSEI_5 ? 'fab fa-comments azulColor' : icon16baseCtrReview
+            isNewEditor ? 'fab fa-comments azulColor' : icon16baseCtrReview
         ) : '';
     
     const htmlButtonDitado = checkConfigValue('ditado') ? 
@@ -300,13 +300,13 @@ function htmlButton(status) {
             'getDitadoButton',
             'ditado',
             'Ativar ditado de texto',
-            isSEI_5 ? 'fab fa-microphone-alt rosaColor' : URL_SPRO + 'icons/editor/webspeech.png'
+            isNewEditor ? 'fab fa-microphone-alt rosaColor' : URL_SPRO + 'icons/editor/webspeech.png'
         ) + 
         htmlButtonPro(
             'getCtrDitadoButton',
             'ctr_ditado',
             'Gerenciar configura\u00E7\u00F5es do ditado',
-            isSEI_5 ? 'fab fa-cogs rosaColor' : URL_SPRO + 'icons/editor/webspeech-settings.png'
+            isNewEditor ? 'fab fa-cogs rosaColor' : URL_SPRO + 'icons/editor/webspeech-settings.png'
         ) : '';
     
     const htmlButtonNewStyle = isNewSEI ? 
@@ -314,7 +314,7 @@ function htmlButton(status) {
             'getNewStyleButton',
             'newstyle',
             'Ativar estilo avan\u00E7ado',
-            isSEI_5 ? 'fab fa-palette azulColor' : icon16baseNewStyle,
+            isNewEditor ? 'fab fa-palette azulColor' : icon16baseNewStyle,
             '', 
             localStorage.getItem('seiSlim_editor') ? 'cke_button_on' : 'cke_button_off'
         ) : '';
@@ -324,13 +324,13 @@ function htmlButton(status) {
             'getMarkSigiloButton',
             'mark_sigilo_pro',
             'Adicionar / Remover marca de sigilo no texto',
-            isSEI_5 ? 'fab fa-lock-open-alt azulColor' : icon16baseMarkSigilo
+            isNewEditor ? 'fab fa-lock-open-alt azulColor' : icon16baseMarkSigilo
         ) +
         htmlButtonPro(
             'getBoxSigiloButton',
             'boxsigilo',
             'Gerenciar marcas de sigilo do documento',
-            isSEI_5 ? 'fab fa-user-unlock azulColor' : icon16baseBoxSigilo
+            isNewEditor ? 'fab fa-user-unlock azulColor' : icon16baseBoxSigilo
         );
     
     const htmlButtonLegis = 
@@ -338,21 +338,21 @@ function htmlButton(status) {
             'getLegisButtom',
             'legis',
             'Enumerar norma',
-            isSEI_5 ? 'fab fa-pi azulColor' : icon16baseSEILegis
+            isNewEditor ? 'fab fa-pi azulColor' : icon16baseSEILegis
         ) +
         htmlButtonPro(
             'helpLegisButtom',
             'legis_help',
             'Ajuda',
-            isSEI_5 ? 'fab fa-info-circle azulColor' : window.location.origin+'/sei/editor/ck/skins/moonocolor/icons.png',
-            isSEI_5 ? '' : ';background-position: 0 -168px;',
+            isNewEditor ? 'fab fa-info-circle azulColor' : window.location.origin+'/sei/editor/ck/skins/moonocolor/icons.png',
+            isNewEditor ? '' : ';background-position: 0 -168px;',
             ''
         );
-    const blockHtmlButton = isSEI_5
+    const blockHtmlButton = isNewEditor
         ? htmlButton
         : `<span class="cke_iconPro cke_toolgroup ${classStatus}" role="presentation">${htmlButton}</span>`;
 
-    const htmlNewBlock = isSEI_5 
+    const htmlNewBlock = isNewEditor 
         ? htmlButtonSigilo+htmlButtonReview+htmlButtonLegis+htmlButtonDitado+htmlButtonNewStyle
         : `
             <span class="cke_iconPro cke_toolgroup ${classStatus}" role="presentation">
@@ -378,7 +378,7 @@ function htmlButton(status) {
 function addButton(TimeOut = 9000) {
     if (TimeOut <= 0) { return; }
     setTimeout(function(){ 
-        if (isSEI_5) {
+        if (isNewEditor) {
             $('.ck.ck-toolbar__items').append(htmlButton('').default);
             $('button[data-cke-tooltip-text="Inserir tabela"]').closest('.ck.ck-dropdown').after(htmlButton('').tables);
             // $('button[data-cke-tooltip-text="Transformar o texto em MAI\u00DASCULO ou min\u00FAsculo"]').closest('.ck.ck-dropdown').append(htmlButton('').afterletters);
@@ -390,7 +390,7 @@ function addButton(TimeOut = 9000) {
             initFunctions();
         } else {
             if ( $(txaEditor).length && !$('.cke_buttonPro').length ) {
-                    if ( !$('#idEditor').length ) { $(isSEI_5 ? 'body' : '#divComandos').append('<input style="display:none" type="hidden" id="idEditor">'); }
+                    if ( !$('#idEditor').length ) { $(isNewEditor ? 'body' : '#divComandos').append('<input style="display:none" type="hidden" id="idEditor">'); }
                         $(txaEditor).each(function(index){ 
                             var idEditor = $(this).attr('id').replace('cke_', '');
                             if ( $('iframe[title*="'+idEditor+'"]').contents().find('body').attr('contenteditable') == 'true' ) {
@@ -425,7 +425,7 @@ function addButton(TimeOut = 9000) {
     }, 500);
 }
 const htmlButtonPro = (classClick, cke_class, title, icon, extraStyle = '', important = '') => {
-    const htmlButton = isSEI_5
+    const htmlButton = isNewEditor
     ? `
         <button class="ck ck-button ck-off cke_iconPro cke_buttonPro ${classClick}" type="button" style="${extraStyle} ${important}" aria-labelledby="ck-editor__aria-label_${classClick}" tabindex="-1" aria-pressed="false" data-cke-tooltip-text="${title}" data-cke-tooltip-position="s">
             <i class="${icon}"></i>
@@ -2538,10 +2538,73 @@ function getDialogNotaRodape() {
 						html: '<div id="nrABNTResult" style="padding: 5px 5px 8px 5px; background: #f9f9dc; border-radius: 5px; white-space: break-spaces;"></div>'
 					}
                   ]
-               }
+               }, {
+                id : 'tab_update',
+                label : 'Atualizar notas de rodap\u00E9',
+                elements :
+                [
+                  {
+                      type: 'html',
+                      html: `<table role="presentation" class="cke_dialog_ui_hbox">
+                            <tbody>
+                                <tr class="cke_dialog_ui_hbox">
+                                    <td class="cke_dialog_ui_hbox_first" role="presentation" style="width:50%; padding:0px">
+                                        <label class="cke_dialog_ui_labeled_label" id="cke_inputUpdateNtRodape_label">Atualizar todas as <br>notas de rodap\u00E9 do documento</label>
+                                    </td>
+                                    <td class="cke_dialog_ui_hbox_last" role="presentation" style="width:50%; padding:0px">
+                                        <a style="user-select: none;" onclick="updateNtRodape()" title="Atualizar" hidefocus="true" class="cke_dialog_ui_button cke_dialog_ui_button_cancel" role="button" aria-labelledby="buttonUpdateNtRodape_label" id="buttonUpdateNtRodape_uiElement">
+                                            <span id="buttonUpdateNtRodape_label" class="cke_dialog_ui_button">Atualizar</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            </table>`
+                   }
+                ]
+             }, {
+                id : 'tab_remove',
+                label : 'Remover notas de rodap\u00E9',
+                elements :
+                [
+                  {
+                      type: 'html',
+                      html: `<table role="presentation" class="cke_dialog_ui_hbox">
+                            <tbody>
+                                <tr class="cke_dialog_ui_hbox">
+                                    <td class="cke_dialog_ui_hbox_first" role="presentation" style="width:50%; padding:0px">
+                                        <label class="cke_dialog_ui_labeled_label" id="cke_inputRemoveNtRodape_label">Remover todas as <br>notas de rodap\u00E9 do documento</label>
+                                    </td>
+                                    <td class="cke_dialog_ui_hbox_last" role="presentation" style="width:50%; padding:0px">
+                                        <a style="user-select: none;" onclick="removeNtRodape(this, 'remove')" title="Remover" hidefocus="true" class="cke_dialog_ui_button cke_dialog_ui_button_cancel" role="button" aria-labelledby="buttonRemoveNtRodape_label" id="buttonRemoveNtRodape_uiElement">
+                                            <span id="buttonRemoveNtRodape_label" class="cke_dialog_ui_button">Remover</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            </table>`
+                   }
+                ]
+             }
             ]
          };
       } );
+}
+function removeNtRodape(this_) {
+    oEditor.focus();
+    oEditor.fire('saveSnapshot');
+    $(txaEditor).each(function(){ 
+        var idEditor = $(this).attr('id').replace('cke_', '');
+        var _content = $('iframe[title*="'+idEditor+'"]').contents().find('body');
+        if ( _content.attr('contenteditable') == 'true' ) {
+            _content.find('a[data-cke-saved-href*="#footer_"]').each(function(){ $(this).remove() });
+            _content.find('.ntRodape_tr').each(function(){ $(this).remove() });
+            _content.find('.ntRodape').each(function(){ $(this).remove() });
+            _content.find('span.ntRodape_item[data-ntrodape-ref]').closest('sup').remove();
+            _content.find('span.ntRodape_footer[data-ntrodape-ref]').closest('p').remove();
+        }
+    });
+    oEditor.fire('saveSnapshot');
+    alertaBoxPro('Sucesso', 'check-circle',  'Notas de rodap\u00E9 removidas com sucesso');
 }
 function updateNrABNT(this_) {
     setMomentPtBr();
@@ -2590,6 +2653,12 @@ function insertNtRodape(txt_NotaRodape) {
     reorderNtRodape(iframeEditor);
     oEditor.fire('saveSnapshot');
     clickScroolToRef();
+}
+function updateNtRodape() {
+    oEditor.focus();
+    oEditor.fire('saveSnapshot');
+    reorderNtRodape(iframeEditor);
+    oEditor.fire('saveSnapshot');
 }
 function reorderNtRodape(iframeEditor) {
     iframeEditor.find('.ntRodape_item').each(function(index){
@@ -5265,23 +5334,23 @@ function importDocPro(this_) {
                         <tr>
                             <td>
                                 <div style="display: flex;">
-                                    <div class="onoffswitch" style="transform: scale(0.5);display: inline-block;float: left;">
-                                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="importWord" tabindex="0">
-                                        <label class="onoff-switch-label" for="importWord"></label>
+                                    <div class="infraAncoraSigla" style="transform: scale(0.5);display: inline-block;float: left;">
+                                        <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="importWord" tabindex="0">
+                                        <label class="infraTd" for="importWord"></label>
                                     </div>
                                     <label style="font-size: 80%;padding-top: 5px;display: inline-block;" for="importWord">Corrigir erros de codifica\u00E7\u00E3o de documentos Word</label>
                                 </div>
                                 <div style="display: flex;">
-                                    <div class="onoffswitch" style="transform: scale(0.5);display: inline-block;float: left;">
-                                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="replaceText" tabindex="0" checked>
-                                        <label class="onoff-switch-label" for="replaceText"></label>
+                                    <div class="infraAncoraSigla" style="transform: scale(0.5);display: inline-block;float: left;">
+                                        <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="replaceText" tabindex="0" checked>
+                                        <label class="infraTd" for="replaceText"></label>
                                     </div>
                                     <label style="font-size: 80%;padding-top: 5px;display: inline-block;" for="replaceText">Substituir todo o documento pelo conte\u00FAdo externo</label>
                                 </div>
                                 <div style="display: flex;">
-                                    <div class="onoffswitch" style="transform: scale(0.5);display: inline-block;float: left;">
-                                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="replaceTags" tabindex="0" checked>
-                                        <label class="onoff-switch-label" for="replaceTags"></label>
+                                    <div class="infraAncoraSigla" style="transform: scale(0.5);display: inline-block;float: left;">
+                                        <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="replaceTags" tabindex="0" checked>
+                                        <label class="infraTd" for="replaceTags"></label>
                                     </div>
                                     <label style="font-size: 80%;padding-top: 5px;display: inline-block;" for="replaceTags">Substituir campos din\u00E2micos no documento (se dispon\u00EDvel)</label>
                                 </div>
@@ -5304,9 +5373,9 @@ function importDocPro(this_) {
                         <tr>
                             <td>
                                 <div style="display: flex;">
-                                    <div class="onoffswitch" style="transform: scale(0.5);display: inline-block;float: left;">
-                                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="replaceTextDocs" tabindex="0" checked>
-                                        <label class="onoff-switch-label" for="replaceTextDocs"></label>
+                                    <div class="infraAncoraSigla" style="transform: scale(0.5);display: inline-block;float: left;">
+                                        <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="replaceTextDocs" tabindex="0" checked>
+                                        <label class="infraTd" for="replaceTextDocs"></label>
                                     </div>
                                     <label style="font-size: 80%;padding-top: 5px;display: inline-block;" for="replaceTextDocs">Substituir todo o documento pelo conte\u00FAdo externo</label>
                                 </div>
@@ -5338,9 +5407,9 @@ function importDocPro(this_) {
                         <tr>
                             <td>
                                 <div style="display: flex;">
-                                    <div class="onoffswitch" style="transform: scale(0.5);display: inline-block;float: left;">
-                                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="replaceTextSheets" tabindex="0" checked>
-                                        <label class="onoff-switch-label" for="replaceTextSheets"></label>
+                                    <div class="infraAncoraSigla" style="transform: scale(0.5);display: inline-block;float: left;">
+                                        <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="replaceTextSheets" tabindex="0" checked>
+                                        <label class="infraTd" for="replaceTextSheets"></label>
                                     </div>
                                     <label style="font-size: 80%;padding-top: 5px;display: inline-block;" for="replaceTextSheets">Substituir todo o documento pelo conte\u00FAdo externo</label>
                                 </div>
@@ -5866,7 +5935,7 @@ function tableSorterPro( editor ) {
     }
 }
 function initContextMenuPro() {
-    if (isSEI_5) {
+    if (isNewEditor) {
 
     } else {
         $(txaEditor).each(function(){ 
@@ -5900,7 +5969,7 @@ function initDropImages() {
             $('iframe.cke_wysiwyg_frame').each(function(index){
                 var iframe = $(this).contents();
                 var instanceIframe = $(this).attr('title');
-                    instanceIframe = (typeof instanceIframe !== 'undefined') ? instanceIframe.split(',')[1].trim() : '';
+                    instanceIframe = (typeof instanceIframe !== 'undefined' && instanceIframe && instanceIframe.split(',').length > 1) ? instanceIframe.split(',')[1].trim() : '';
                 if ( iframe.find('body').attr('contenteditable') == 'true' ) {
                     iframe.find('body').attr('data-editor', instanceIframe).unbind().on('drop dragdrop',function(e){
                         var items = e.originalEvent.dataTransfer.items;
@@ -6035,8 +6104,8 @@ function openDialogProcessoPublicoPro(this_) {
                 });
 
                 $(document).off('keypress', '#captchaPub').on('keypress', '#captchaPub', function(event) {
-                    event.preventDefault();
                     if (event.which == 13) {
+                        event.preventDefault();
                         loadListaProcessoPublicoPro();
                     }
                 });
@@ -6067,11 +6136,14 @@ function openDialogProcessoPublicoPro(this_) {
         });
 }
 async function resolveCapchaProcessoPublico() {
-    if (typeof perfilGemini !== 'undefined' && perfilGemini.KEY_USER && !$('.trListDocPublico').is(':visible') && !delayCrash) {
-        const base64ImgCaptcha = await getImageBase64FromImgElement($('#searchPub_captcha img')[0]);
+    if (typeof perfilGemini !== 'undefined' && perfilGemini.KEY_USER && !$('.trListDocPublico').is(':visible')) {
+        var imgCaptcha = $('#searchPub_captcha img');
+        const base64ImgCaptcha = imgCaptcha.attr('src').startsWith('data:image/') ? imgCaptcha.attr('src') : await getImageBase64FromImgElement(imgCaptcha[0]);
         const captchaResolve = await resolveCaptchaAI("Quais os caracteres da imagem? Responsa apenas com os caracteres, sem espaço entre eles", base64ImgCaptcha);
         $('#captchaPub').val(captchaResolve);
-        if ($('#processoPub').val() != '') loadListaProcessoPublicoPro();
+        setTimeout(() => {
+            if ($('#captchaPub').val() != '' && $('#processoPub').val() != '' && captchaResolve) loadListaProcessoPublicoPro();
+        }, 1000);
     }
 }
 function getDadosIframeProcessoPublicoPro() {
@@ -6083,14 +6155,19 @@ function getDadosIframeProcessoPublicoPro() {
 }
 function checkDadosIframeProcessoPublicoPro(TimeOut = 9000) {
     if (TimeOut <= 0) { return; }
+    if (TimeOut === 9000) $.getScript(URL_SPRO + 'js/sei-pro-ai.js');
     var ifrPublico = $('#frmCheckerProcessoPublicoPro').contents();
     if ( ifrPublico.find('#seiSearch').length ) {
         var captcha = ifrPublico.find('#lblCaptcha').find('img').attr('src');
+            captcha = typeof captcha === 'undefined' ? ifrPublico.find('#imgCaptcha').attr('src') : captcha;
         var htmlCaptcha =   '<img src="'+captcha+'"> <i onclick="getDadosIframeProcessoPublicoPro()" class="fas fa-redo" style="color: #969696; cursor: pointer; padding: 3px 8px;"></i>';
         $('#searchPub_captcha').html(htmlCaptcha);
         $('#searchPub_load').hide();
         $('#captchaPub').val('').focus(); 
-        resolveCapchaProcessoPublico();
+        if (typeof loadSEIProAI !== 'undefined') resolveCapchaProcessoPublico();
+        else setTimeout(function () {
+            resolveCapchaProcessoPublico();
+        }, 1500);
     } else {
         setTimeout(function () { 
             checkDadosIframeProcessoPublicoPro(TimeOut - 100);
@@ -6105,8 +6182,10 @@ function loadListaProcessoPublicoPro() {
     if (processo != '' && captcha != '') {
         $('#searchPub_load').show();
         var ifrPublico = $('#frmCheckerProcessoPublicoPro').contents();
+        var inputCaptcha = ifrPublico.find('#txtCaptcha');
+            inputCaptcha = typeof inputCaptcha.length === 'undefined' ? ifrPublico.find('#txtInfraCaptcha') : inputCaptcha;
             ifrPublico.find('#txtProtocoloPesquisa').val(processo);
-            ifrPublico.find('#txtCaptcha').val(captcha);
+            inputCaptcha.val(captcha);
             ifrPublico.find('#sbmPesquisar').trigger('click');
             setTimeout(function () {
                 waitLoadPro($('#frmCheckerProcessoPublicoPro').contents(), '#conteudo', "a.protocoloNormal", getListaProcessoPublicoPro);
@@ -7082,9 +7161,9 @@ function getRefInterna(this_) {
                     <td>
                         <input type="text" id="prefixo" style="width:70%">
                         <div style="float: right;">
-                            <div class="onoffswitch" style="transform: scale(0.5);display: inline-block;float: left;">
-                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="hidePrefix" tabindex="0">
-                                <label class="onoff-switch-label" for="hidePrefix"></label>
+                            <div class="infraAncoraSigla" style="transform: scale(0.5);display: inline-block;float: left;">
+                                <input type="checkbox" name="infraAncoraSigla" class="infraLinkOrgao" id="hidePrefix" tabindex="0">
+                                <label class="infraTd" for="hidePrefix"></label>
                             </div>
                             <label style="font-size: 80%;padding-top: 5px;display: inline-block;" for="hidePrefix">N\u00E3o utilizar prefixo</label>
                         </div>
@@ -8249,6 +8328,6 @@ function initFunctions() {
 }
 $('body').addClass('seiEditor');
 
-if (!isSEI_5) {
+if (typeof CKEDITOR !== 'undefined') {
     addButton();
 }
